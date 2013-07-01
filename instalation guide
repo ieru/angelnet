@@ -5,6 +5,18 @@ Technical requirements:
 - Signed digital certificate with Java keytool.
 - Maven installed, v. 3.0.4.
 
+Note: In the file server.xml of the Apache Tomcat add this lines:
+
+    <Connector SSLEnabled="true" acceptCount="100" clientAuth="false"
+    disableUploadTimeout="true" enableLookups="false" maxThreads="25"
+    port="8443" 
+    keystoreFile="PATH/.keystore"
+    keystorePass="password"
+    protocol="org.apache.coyote.http11.Http11NioProtocol" scheme="https"
+    secure="true" sslProtocol="TLS" />
+
+And modify the parameters 'keystoreFile' and 'keystorePass' with the setting of your signed digital certificate.
+
 1. Installing data base SocialNetwork
 In MySql Server, install the file socialNetwork_20130630.sql contains in the folder DB.
 
