@@ -146,8 +146,13 @@ public class WallFilterFuncionality {
         for(int i = 0; i < streamCommentsList.size(); i++){
             StreamCommentsFacebook auxStreamComments = streamCommentsList.get(i);
             JSONObject jsonAuxStreamComments = auxStreamComments.toJson();
-
-            this.snsObject.getClient().userFacebook_setComentsPost(String.class, jsonAuxStreamComments);
+            try{
+                this.snsObject.getClient().userFacebook_setComentsPost(String.class, jsonAuxStreamComments);
+            } catch(Exception e){
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: No se ha podido almacenar el comentario...");
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Excepcion capturada Exception: " + e.getMessage());
+                logger.fatal(e);
+            }
         }
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Fin getStreamComents...");
@@ -503,10 +508,13 @@ public class WallFilterFuncionality {
         String wordFile = "";
         for (int i = 0; i < buffer.length(); i++) {
             wordFile = buffer.getString(i);
-            if (comentario.toLowerCase().contains(wordFile.toLowerCase())) {
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
-                aux = true;
-                break;
+            String[] arrayComm = comentario.split(" ");
+            for(int j = 0; j < arrayComm.length; j++){
+                if (arrayComm[j].toLowerCase().equals(wordFile.toLowerCase())) {
+                    logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
+                    aux = true;
+                    break;
+                }
             }
         }
 
