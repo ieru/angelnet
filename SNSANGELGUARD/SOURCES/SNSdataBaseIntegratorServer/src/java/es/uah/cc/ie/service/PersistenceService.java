@@ -22,12 +22,16 @@ public class PersistenceService {
     
     private static EntityManagerFactory pmf;
     
+    private static ConfigurationManagerService configManager = null;
+    
     static {
-        try {
-            pmf = (EntityManagerFactory) new InitialContext().lookup("java:comp/env/persistence/" + DEFAULT_PU);
-        } catch (NamingException ex) {
-            pmf = Persistence.createEntityManagerFactory(DEFAULT_PU);
-        }  
+        configManager = new ConfigurationManagerService();
+        pmf = Persistence.createEntityManagerFactory(DEFAULT_PU, configManager.getDbPool());
+//        try {
+//            pmf = (EntityManagerFactory) new InitialContext().lookup("java:comp/env/persistence/" + DEFAULT_PU);
+//        } catch (NamingException ex) {
+//            pmf = Persistence.createEntityManagerFactory(DEFAULT_PU);
+//        }  
     }
     
     private static ThreadLocal<PersistenceService> instance = new ThreadLocal<PersistenceService>() {
@@ -42,7 +46,10 @@ public class PersistenceService {
     private EntityTransaction utx;
     
     private PersistenceService() { 
-        this.em = pmf.createEntityManager();
+        if(configManager == null){
+            configManager = new ConfigurationManagerService();
+        }
+        this.em = pmf.createEntityManager(configManager.getDbPool());
         this.utx = em.getTransaction();
     }
 
