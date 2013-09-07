@@ -28,11 +28,11 @@ In MySql Server, install the file socialNetwork_20130630.sql contains in the fol
 	harvestedSNSAngelGuardFB.
 	2.3. Create the folder 'logs' in the path /usr/local/snsangelguardfb/harvested
 
-3. Copy the file config.properties in the path /usr/local/snsangelguardfb/config and change the settings of the host's server.
+3. Copy the files config.properties and pool.properties in the path /usr/local/snsangelguardfb/config and change the settings of the host's server and data base configuration.
 
 4. Copy the proyect harvestedSNSAngelGuard in the path /usr/local/snsangelguardfb/harvested. Modifies the script 
 harvestedSNSAngelGuardFB.sh the line:
-mvn exec:java -Dexec.mainClass="es.uah.cc.ie.harvestedsnsangelguard.Main host pathToKeyStore passwdKeyStore
+mvn exec:java -Dexec.mainClass="es.uah.cc.ie.harvestedsnsangelguard.Main" -Dexec.args="host pathToKeyStore passwdKeyStore"
 with the settings of the signed digital certificate installed in the Unix Server.
 
 

@@ -38,7 +38,7 @@ public class Main {
     public static void main(String[] args) throws MalformedURLException {
         try {
             if ((args.length < 3) || (args.length > 3)) {
-                System.out.println("Los par?metros introducidos no son correctos");
+                System.out.println("Los parametros introducidos no son correctos");
             } else {
                 String contextApp = args[0];
                 String pathSSL = args[1];
