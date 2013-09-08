@@ -257,7 +257,7 @@ public class FriendsFilterFuncionality {
             JSONObject jsonFriendFacebook = friendsFacebookList.get(0).toJson();
             try {
                 jsonFriendFacebook.put("userBirthday", this.snsObject.getDateTimeUtilities().formatearFecha(friendsFacebookList.get(0).getBirthdayDate()));
-                System.out.println(jsonFriendFacebook.toString());
+                
                 if (isNewInFriendsFacebook(jsonFriendFacebook)) {
                     this.snsObject.getClient().userFacebook_setNewFriendFacebook(String.class, jsonFriendFacebook);
                     updateRelationshipNewFriend(jsonFriendFacebook);
