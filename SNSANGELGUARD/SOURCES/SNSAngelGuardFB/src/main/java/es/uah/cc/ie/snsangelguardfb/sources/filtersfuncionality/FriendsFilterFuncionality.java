@@ -114,7 +114,6 @@ public class FriendsFilterFuncionality {
 
      try {
             String collection = this.snsObject.getClient().userFacebook_isNewFriendsFacebookByUid(String.class, jsonFriend.getString("userUid"));
-            System.out.println(collection);
             jsonAux = new JSONObject(collection);
             JSONArray aux = new JSONArray();
             jsonCollection = jsonAux.getJSONObject("userFacebookCollection");
@@ -186,6 +185,59 @@ public class FriendsFilterFuncionality {
     }
 
     /**
+     * Actualiza los datos de un amigo del usuario en base de datos.
+     * Podra lanzar excepciones del tipo JSONException, InterDataBaseException, InterProcessException o InterEmailException.
+     * 
+     * @param jsonFriend
+     * @throws JSONException
+     * @throws InterDataBaseException
+     * @throws InterProcessException
+     * @throws InterEmailException 
+     */
+    public void updateFriend(JSONObject jsonFriend) throws JSONException, InterDataBaseException, InterProcessException, InterEmailException{
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFriend: Inicio updateFriend para amigo " + jsonFriend.getString("userUid"));
+        
+        try {
+            this.snsObject.getClient().userFacebook_setFriendsFacebookByUid(String.class, jsonFriend, jsonFriend.getString("userUid"));
+        } catch (UniformInterfaceException ex) {
+            if(ex.getResponse().getStatus() >= 200 && ex.getResponse().getStatus() < 300){
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFriend: La informacion del amigo " + jsonFriend.getString("userUid") + " ha sido actualizada!!");
+            }else{
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFriend: No se ha podido actualizar la informacion del amigo: " + jsonFriend.getString("userUid"));
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFriend: Excepcion capturada UniformInterfaceException: " + ex.getMessage());
+                this.snsObject.getExceptionManager().initControlException(ex);
+            }
+        }
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFriend: Fin updateFriend para amigo " + jsonFriend.getString("userUid"));
+    }
+    /**
+     * Actualiza los datos de un amigo del usuario en la base de datos SocialNetwork. 
+     * Podra lanzar excepciones del tipo JSONException, InterDataBaseException, InterProcessException o InterEmailException.
+     *
+     * @param jsonFriendFacebook Amigo de Facebook.
+     * @throws JSONException
+     */
+    public void updateDatesFriend(JSONObject jsonFriend) throws JSONException, InterDataBaseException, InterProcessException, InterEmailException{
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Inicio updateDatesFriend...");
+
+        this.updateFriend(jsonFriend);
+        try {
+            this.setCollectionFriendsFacebook(jsonFriend);
+        } catch (UniformInterfaceException ex) {
+            if (ex.getResponse().getStatus() >= 200 && ex.getResponse().getStatus() < 300) {
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Las relaciones con el amigo " + jsonFriend.getString("userUid") + " han sido actualizadas!!");
+            } else {
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: No se ha podido actualizar la informacion del amigo: " + jsonFriend.getString("userUid"));
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Excepcion capturada UniformInterfaceException: " + ex.getMessage());
+                this.snsObject.getExceptionManager().initControlException(ex);
+            }
+        }
+
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Fin updateDatesFriend...");
+    }
+    
+    /**
      * Obtiene de Facebook todos los datos necesarios para almacenar un nuevo amigo en la base de datos. 
      * Podr? lanzar excepciones del tipo UniformInterfaceException, IOException, JSONException, InterDataBaseException, InterProcessException o InterEmailException.
      *
@@ -205,13 +257,14 @@ public class FriendsFilterFuncionality {
             JSONObject jsonFriendFacebook = friendsFacebookList.get(0).toJson();
             try {
                 jsonFriendFacebook.put("userBirthday", this.snsObject.getDateTimeUtilities().formatearFecha(friendsFacebookList.get(0).getBirthdayDate()));
-
+                System.out.println(jsonFriendFacebook.toString());
                 if (isNewInFriendsFacebook(jsonFriendFacebook)) {
                     this.snsObject.getClient().userFacebook_setNewFriendFacebook(String.class, jsonFriendFacebook);
                     updateRelationshipNewFriend(jsonFriendFacebook);
-                }else if(isNewFriend(jsonFriendFacebook)){
+                } else if(isNewFriend(jsonFriendFacebook)){
                     updateRelationshipNewFriend(jsonFriendFacebook);
-                }
+                } else
+                    updateDatesFriend(jsonFriendFacebook);
             } catch (JSONException ex) {
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewFriend: Excepcion capturada JSONException: " + ex.getMessage());
                 logger.fatal(ex);

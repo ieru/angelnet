@@ -640,7 +640,7 @@ function cerrarInfoModal(){
 }
 
 function cerrarInfoError(){
-    window.close();
+    window.location = "../SNSAngelGuardFB/index.jsp";
 }
 
 function loadContactsEd(){
