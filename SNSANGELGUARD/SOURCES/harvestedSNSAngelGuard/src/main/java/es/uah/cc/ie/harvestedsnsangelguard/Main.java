@@ -35,6 +35,12 @@ public class Main {
         });
     }
     
+    /**
+     * Clase que lanza la conexion con el servlet del proyecto que se ocupa de
+     * hacer las operaciones de mantenimiento de datos offline.
+     *
+     * @author josejavierblecuadepedro1
+     */
     public static void main(String[] args) throws MalformedURLException {
         try {
             if ((args.length < 3) || (args.length > 3)) {
@@ -74,14 +80,19 @@ public class Main {
                 servletConn.getExpiration();
             }
         } catch (KeyStoreException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CertificateException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (KeyManagementException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            ex.printStackTrace();
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

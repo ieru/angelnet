@@ -214,6 +214,24 @@ public class SettingsAngelsConverter {
         entity.setUserPropAngel(userPropAngel);
     }
 
+
+    /**
+     * Getter for idFacebook.
+     *
+     * @return value for userPropAngel
+     */
+    @XmlElement
+    public String getIdFacebook() {
+        return (expandLevel > 0) ? entity.getIdFacebook() : null;
+    }
+
+    /**
+     * @param idFacebook the idFacebook to set
+     */
+    public void setIdFacebook(String idFacebook) {
+        entity.setIdFacebook(idFacebook);
+    }
+    
     /**
      * Getter for settingsfltVistCollection.
      *

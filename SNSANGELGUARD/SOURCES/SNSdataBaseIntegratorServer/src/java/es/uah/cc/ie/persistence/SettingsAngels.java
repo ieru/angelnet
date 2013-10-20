@@ -32,7 +32,8 @@ import javax.persistence.Table;
     @NamedQuery(name = "SettingsAngels.findByNameAngel", query = "SELECT s FROM SettingsAngels s WHERE s.nameAngel = :nameAngel"),
     @NamedQuery(name = "SettingsAngels.findByImgAngel", query = "SELECT s FROM SettingsAngels s WHERE s.imgAngel = :imgAngel"),
     @NamedQuery(name = "SettingsAngels.findByTypeAngel", query = "SELECT s FROM SettingsAngels s WHERE s.typeAngel = :typeAngel"),
-    @NamedQuery(name = "SettingsAngels.findByAcceptAngel", query = "SELECT s FROM SettingsAngels s WHERE s.acceptAngel = :acceptAngel")})
+    @NamedQuery(name = "SettingsAngels.findByAcceptAngel", query = "SELECT s FROM SettingsAngels s WHERE s.acceptAngel = :acceptAngel"),
+    @NamedQuery(name = "SettingsAngels.findByIdFacebook", query = "SELECT s FROM SettingsAngels s WHERE s.idFacebook = :idFacebook")})
 public class SettingsAngels implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -60,6 +61,8 @@ public class SettingsAngels implements Serializable {
     private String userPropAngel;
     @Column(name = "confirm_angel")
     private String confirmAngel;
+    @Column(name = "id_facebook")
+    private String idFacebook;
     @JoinTable(name = "settings_fltVist_has_settings_angels", joinColumns = {
         @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")}, inverseJoinColumns = {
         @JoinColumn(name = "settings_fltVist_user_settings_uid", referencedColumnName = "user_settings_uid")})
@@ -90,7 +93,7 @@ public class SettingsAngels implements Serializable {
         this.uidAngel = uidAngel;
     }
 
-    public SettingsAngels(Integer uidAngel, String idAngel, String nameAngel, String imgAngel, String typeAngel, String acceptAngel, String userPropAngel) {
+    public SettingsAngels(Integer uidAngel, String idAngel, String nameAngel, String imgAngel, String typeAngel, String acceptAngel, String userPropAngel, String idFacebook) {
         this.uidAngel = uidAngel;
         this.idAngel = idAngel;
         this.nameAngel = nameAngel;
@@ -98,6 +101,7 @@ public class SettingsAngels implements Serializable {
         this.typeAngel = typeAngel;
         this.acceptAngel = acceptAngel;
         this.userPropAngel = userPropAngel;
+        this.idFacebook = idFacebook;
     }
 
     public Integer getUidAngel() {
@@ -162,6 +166,14 @@ public class SettingsAngels implements Serializable {
 
     public void setConfirmAngel(String confirmAngel) {
         this.confirmAngel = confirmAngel;
+    }
+
+    public String getIdFacebook() {
+        return idFacebook;
+    }
+
+    public void setIdFacebook(String idFacebook) {
+        this.idFacebook = idFacebook;
     }
 
     public Collection<SettingsfltVist> getSettingsfltVistCollection() {

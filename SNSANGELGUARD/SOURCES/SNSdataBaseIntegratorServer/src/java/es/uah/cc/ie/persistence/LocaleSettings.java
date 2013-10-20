@@ -163,6 +163,8 @@ public class LocaleSettings implements Serializable {
     private String altContactsAngelsEd;
     @Column(name = "titleVisitsFilterOptions")
     private String titleVisitsFilterOptions;
+    @Column(name = "post_friend_facebook")
+    private String postFriendFacebook;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "localeSettings")
     private Collection<UserSettings> userSettingsCollection;
 
@@ -547,6 +549,14 @@ public class LocaleSettings implements Serializable {
 
     public void setTitleVisitsFilterOptions(String titleVisitsFilterOptions) {
         this.titleVisitsFilterOptions = titleVisitsFilterOptions;
+    }
+
+    public String getPostFriendFacebook() {
+        return postFriendFacebook;
+    }
+
+    public void setPostFriendFacebook(String postFriendFacebook) {
+        this.postFriendFacebook = postFriendFacebook;
     }
 
     public Collection<UserSettings> getUserSettingsCollection() {

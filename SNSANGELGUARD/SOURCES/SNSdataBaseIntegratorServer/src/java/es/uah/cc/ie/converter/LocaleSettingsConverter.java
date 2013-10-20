@@ -949,6 +949,25 @@ public class LocaleSettingsConverter {
         entity.setTitleVisitsFilterOptions(value);
     }
 
+        /**
+     * Geter for postFriendFacebook
+     *
+     * @return value of postFriendFacebook
+     */
+    @XmlElement
+    public String getPostFriendFacebook() {
+        return (expandLevel > 0) ? entity.getPostFriendFacebook() : null;
+    }
+
+    /**
+     * Setter for postFriendFacebook
+     *
+     * @param value The value to set postFriendFacebook
+     */
+    public void setPostFriendFacebook(String value) {
+        entity.setPostFriendFacebook(value);
+    }
+    
 
     /**
      * Getter for userSettingsCollection.
