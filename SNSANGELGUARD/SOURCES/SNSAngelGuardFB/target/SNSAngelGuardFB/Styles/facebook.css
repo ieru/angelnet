@@ -58,6 +58,15 @@ h1.tituloMedCabOtrosContactos{
     float: left;
 }
 
+h1.textAngelSave{
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size:14px;
+    color: #3b5998;
+    margin:5px;
+    float: left;
+    text-align:justify;
+}
+
 h1.letraNorm{
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
     font-size:12px;
@@ -297,6 +306,14 @@ div.friendsImportContainer{
     border:1px solid #CCC;
 }
 
+div.angelDatesContainer{
+    width:90%;
+    height:70px;
+    margin:5px;
+    background-color:#FFF;
+    border:1px solid #CCC;
+}
+
 div.vigilants{
     width:690px;
     height:615px;
@@ -401,6 +418,7 @@ div.divAngelUserContainer{
     /*indicamos que el margen superior, es la mitad de la altura*/
     margin-top:-225px;
     border:1px solid #CCC;
+    background: #FBF2EF;
 }
 
 div.divAngelUser{
@@ -408,7 +426,7 @@ div.divAngelUser{
     width: 620px;
     margin:15px;
     padding:10px 20px;
-    background:#f7f7f7;
+    background:#F7F4D8;
     border:1px solid #CCC;
 }
 
@@ -435,6 +453,35 @@ table.cabecera{
     border-style: ridge;
     border-color:white;
     border-collapse: separate;
+}
+
+table.tabCenterContact{
+    position: absolute;
+    top: 10%;
+    height: 200px;
+    margin-top: 10px;
+    width: 95%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+table.tabCenterAngel{
+    position: top;
+    top: 10%;
+    height: 150px;
+    margin-top: 10px;
+    width: 95%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+table.tabEmailAngel{
+    top: 10%;
+    height: 60px;
+    margin-top: 5px;
+    width: 98%;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 table.tabCenter{
@@ -507,6 +554,18 @@ table.contacts{
     border-style: ridge;
     border-color:white;
     border-collapse: separate;
+}
+
+tr.angelDatesTr{
+    height:25px;
+    border-width: 1px;
+    padding: 1px;
+    border-style: ridge;
+    border-color:white;
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size: 12px;
+    text-align: left;
+    color:gray;
 }
 
 tr.pijama1{

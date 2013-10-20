@@ -35,7 +35,7 @@ public class EmailObject {
     private static final String SMTP_AUTH_USER = "snsAngel.Guard@gmail.com";
     
     /** Contrase?a de la cuenta de correo electronico */
-    private static final String SMTP_AUTH_PWD = "snsangelguard2011";
+    private static final String SMTP_AUTH_PWD = "javnkccovogsdsjt";
 
     /**
      * Constructor sin argumentos.

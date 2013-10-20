@@ -16,8 +16,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.openide.util.Exceptions;
 
 /**
  * Clase que controla el flujo de ejecucion de la clase java legalAccepted.jsp

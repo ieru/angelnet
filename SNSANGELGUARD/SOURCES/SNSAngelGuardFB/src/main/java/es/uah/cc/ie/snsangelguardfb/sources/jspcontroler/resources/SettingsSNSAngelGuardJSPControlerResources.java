@@ -19,6 +19,9 @@ public class SettingsSNSAngelGuardJSPControlerResources {
     
     /** URL a la pesta?a inicial que se cargara por defecto */
     public final String DESTINY_JSP_INIT = "../SNSAngelGuardFB/settingsSNSAngelGuard_Angels.jsp";
+    
+    /** URL a la imagen de carga entre p?ginas */
+    public final String PATH_IMAGE_LOADING = "../resources/legalAccepted/load.gif";
 
     /** Clase manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -70,6 +73,15 @@ public class SettingsSNSAngelGuardJSPControlerResources {
     
     /** Titulo para el boton guardar */
     private String btnSaveSettings;
+    
+    /** Titulo de los post de Facebook */
+    private String titlePostFacebook;
+    
+    /** Subtitulo de los post de Facebook */
+    private String subtitlePostFacebook;
+    
+    /** Mensaje del post para la aceptacion del envio de notificaciones en Facebook */
+    private String bodyPostFacebook;
 
     public String getBtnSaveSettings() {
         return btnSaveSettings;
@@ -135,6 +147,30 @@ public class SettingsSNSAngelGuardJSPControlerResources {
         return titleHelp;
     }
 
+    public String getTitlePostFacebook() {
+        return titlePostFacebook;
+    }
+
+    public void setTitlePostFacebook(String titlePostFacebook) {
+        this.titlePostFacebook = titlePostFacebook;
+    }
+
+    public String getSubtitlePostFacebook() {
+        return subtitlePostFacebook;
+    }
+
+    public void setSubtitlePostFacebook(String subtitlePostFacebook) {
+        this.subtitlePostFacebook = subtitlePostFacebook;
+    }
+
+    public String getBodyPostFacebook() {
+        return bodyPostFacebook;
+    }
+
+    public void setBodyPostFacebook(String bodyPostFacebook) {
+        this.bodyPostFacebook = bodyPostFacebook;
+    }
+
     /**
      * Constructor de clase.
      * 
@@ -165,6 +201,11 @@ public class SettingsSNSAngelGuardJSPControlerResources {
         this.mensaje = menLoader[1];
         this.menSave = menLoader[2];
         this.menWait = menLoader[4];
+        
+        String[] arrayResourcesPost = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getPostFriendFacebook());
+        this.titlePostFacebook = arrayResourcesPost[0];
+        this.subtitlePostFacebook = arrayResourcesPost[1];
+        this.bodyPostFacebook = arrayResourcesPost[2];
 
         loadMenus();
     }

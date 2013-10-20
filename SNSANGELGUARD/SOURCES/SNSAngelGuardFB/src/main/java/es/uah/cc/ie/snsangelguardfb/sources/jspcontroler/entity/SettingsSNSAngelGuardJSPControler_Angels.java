@@ -24,6 +24,8 @@ import org.codehaus.jettison.json.JSONException;
  */
 public class SettingsSNSAngelGuardJSPControler_Angels extends GenericJSPControler {
     
+    /** URL a la imagen de carga entre p?ginas */
+    public final String PATH_IMAGE_LOADING = "../SNSAngelGuardFB/resources/legalAccepted/load.gif";
     
     /** Logger Class */
     private static Logger logger = Logger.getLogger(SettingsSNSAngelGuardJSPControler.class);

@@ -97,7 +97,7 @@ public class AngelsUtilities {
 
         if(!datesAngelsList.isEmpty()){
             System.out.println(datesAngelsList.get(0).toJson().toString());
-            angelArray[0] = getEmailUserSNSAngelGuard(datesAngelsList.get(0).getUid());
+            angelArray[0] = datesAngelsList.get(0).getUid();
             angelArray[1] = datesAngelsList.get(0).getName().replace("'", "");
             angelArray[2] = datesAngelsList.get(0).getPicSquare();
             angelArray[3] = "F";
@@ -318,7 +318,7 @@ public class AngelsUtilities {
 
         if(jsonAngel != null){
             try {
-                angelArray[0] = getEmailUserSNSAngelGuard(jsonAngel.getString("userUid"));
+                angelArray[0] = jsonAngel.getString("userUid");
                 angelArray[1] = jsonAngel.getString("userName").replace("'", "");
                 angelArray[2] = jsonAngel.getString("userPic");
                 angelArray[3] = "F";
@@ -437,7 +437,7 @@ public class AngelsUtilities {
         JSONArray jsonArrayAngels = null;
         boolean encontrado = false;
 
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uid + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uid + "\"");
        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getJsonAngel: Respuesta de base de datos: " + respuesta);
         jsonRespuesta = new JSONObject(respuesta);
         jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));

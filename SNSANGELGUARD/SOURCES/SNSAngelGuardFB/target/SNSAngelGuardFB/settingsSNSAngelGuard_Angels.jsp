@@ -103,6 +103,11 @@
                         <td width="536px">
                             <table>
                                 <tr>
+                                    <td width="10%">
+                                        <img src="<%= controler.getJspResources().PATH_IMAGE_LOADING%>" style="display: none" />
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>
                                         <div id="contactContainerGoogle" style="margin:5px;">
                                             <div id="contactContentGoogle" class="contactContentGoogle">

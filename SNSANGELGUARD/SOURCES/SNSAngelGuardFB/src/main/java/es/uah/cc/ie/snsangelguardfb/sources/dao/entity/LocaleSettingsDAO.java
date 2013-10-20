@@ -71,7 +71,7 @@ public class LocaleSettingsDAO {
      * @param altContactsAngelsEd
      * @param titleVisitsFilterOptions
      */
-    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, String titleVigSettVig, String titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions) {
+    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, String titleVigSettVig, String titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions, String postFriendFacebook) {
         this.idLocale = idLocale;
         this.acceptingTerms = acceptingTerms;
         this.legalAccepted = legalAccepted;
@@ -119,6 +119,7 @@ public class LocaleSettingsDAO {
         this.mailNotification = mailNotification;
         this.altContactsAngelsEd = altContactsAngelsEd;
         this.titleVisitsFilterOptions = titleVisitsFilterOptions;
+        this.postFriendFacebook = postFriendFacebook;
     }
 
     private String idLocale;
@@ -168,6 +169,7 @@ public class LocaleSettingsDAO {
     private String mailNotification;
     private String altContactsAngelsEd;
     private String titleVisitsFilterOptions;
+    private String postFriendFacebook;
 
     /**
      * @return the idLocale
@@ -825,5 +827,19 @@ public class LocaleSettingsDAO {
      */
     public void setTitleVisitsFilterOptions(String titleVisitsFilterOptions) {
         this.titleVisitsFilterOptions = titleVisitsFilterOptions;
+    }
+
+    /**
+     * @return the postFriendFacebook 
+     */
+    public String getPostFriendFacebook() {
+        return postFriendFacebook;
+    }
+
+    /**
+     * @param postFriendFacebook The value to set 
+     */
+    public void setPostFriendFacebook(String postFriendFacebook) {
+        this.postFriendFacebook = postFriendFacebook;
     }
 }

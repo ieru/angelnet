@@ -781,6 +781,7 @@ function loadCheckFiltro(desFiltro){
 }
 
 function loadAngelSelects(angels){
+    alert(angels);
     var arrayAngels = angels.split(';');
 
     for(var i=0;i<arrayAngels.length; i++){
@@ -1014,6 +1015,15 @@ function selectAllFilters(){
             }
         }
     }
+}
+
+function getDatesAngelFacebook(idAngel){
+    var paramAngel = '';
+    
+    paramAngel = 'idAngel=' + encodeURIComponent(idAngel) 
+               + '&typeAngel=' + 'F';
+    
+    return paramAngel;
 }
 
 function reloadAngels(){
@@ -1344,6 +1354,15 @@ function habilitarGuardar(){
     return valido;
 }
 
+function saveNewAngelSelected(menSave, menWait, idAngel){
+    muestraLoader(menSave,menWait);
+    var data = '../SNSAngelGuardFB/saveNewAngel.jsp' + '?' + getDatesAngelFacebook(idAngel);
+    
+    document.getElementById('frSNSAngels').setAttribute('action', data);
+    document.getElementById('frSNSAngels').setAttribute('method','post');
+    document.getElementById('frSNSAngels').submit();
+}
+
 function saveSettings(menSave,menWait){
     muestraLoader(menSave,menWait);
     
@@ -1437,7 +1456,7 @@ function loadInicioDatesVigilants(angels,hdAngelsEd,hdAngelsGoogleSelected,
 
 function isEmailValid(emailTutor){
     if(emailTutor != ''){
-        if(emailTutor.indexOf('@') != -1){
+        if(validarEmailTest(emailTutor)){
             return true;
         }
     }
@@ -1960,4 +1979,79 @@ function loadForm(url, menTitle, menWait){
             });
         });
     });
+}
+
+function loadFeedDialog(context, idFacebookAngel, uidAngel, uidPublic, title, subtitle, bodyPost){
+        FB.ui(
+                {
+                    to: idFacebookAngel,
+                    method: 'feed',
+                    name: title,
+                    link: context + 'SNSAngelGuardFB/saveEmailFacebookContact.jsp?uidAngel=' + uidAngel + '&uidPublicUser=' + uidPublic,
+                    picture: 'http://fbrell.com/f8.jpg',
+                    caption: subtitle,
+                    description: bodyPost
+                },
+        function(response) {
+            if (response && response.post_id) {
+                lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menSaveOk,700,300);
+            } else {
+                return false;
+            }
+        }
+        );
+}
+
+function validarEmailTest(valor)
+{
+    // creamos nuestra regla con expresiones regulares.
+    var filter = /[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+    // utilizamos test para comprobar si el parametro valor cumple la regla
+    if (filter.test(valor))
+        return true;
+    else
+        return false;
+}
+
+function validarEmail(msgEmptyEmail, msgNotValidEmail, menCarga, menWait) {
+    $(document).ready(function() {
+        $(function() {
+            if ($("#txtEmailContact").val() == '')
+            {
+                lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=1&infoMessage=' + msgEmptyEmail, 700, 300);
+            } else if (validarEmailTest($("#txtEmailContact").val()))
+            {
+                // Cargamos los parametros para ser enviados en el formulario
+                $('#par3').val('1');
+                alert();
+                $('#par4').val('F');
+                $('#par5').val($("#txtEmailContact").val());
+                
+                // Llamamos a la pagina de confirmacion del angel
+                enviarFormularioAngelConfirmation(menCarga, menWait);
+            } else
+            {
+                lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=1&infoMessage=' + msgNotValidEmail, 700, 300);
+            }
+        });
+    });
+}
+
+function enviarFormularioAngelConfirmation(menCarga, menWait){
+    
+        // Mostramos el loader mientras se carga la pagina
+        muestraLoader(menCarga, menWait);
+        
+        // Cargamos la pagina de confirmacion del angel
+        document.getElementById('frSaveEmailFacebookContact').setAttribute('method','post');
+        document.getElementById('frSaveEmailFacebookContact').submit();
+}
+
+function deleteNewContact(uidPublic, idAngel){
+    muestraLoader(menSave,menWait);
+    var data = '..SNSAngelGuardFB/angelConfirmation.jsp' + '?' + "par1=" + uidPublic + "&par2=" + idAngel + "&par3=0";
+    
+    document.getElementById('frSNSAngels').setAttribute('action', data);
+    document.getElementById('frSNSAngels').setAttribute('method','post');
+    document.getElementById('frSNSAngels').submit();
 }

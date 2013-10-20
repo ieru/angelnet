@@ -45,6 +45,9 @@ public class ConfigurationManager {
     /** Clave de la direccion de la aplicacion en Facebook */
     public static final String PATH_APPLICATION_FACEBOOK = "pathApplicationFacebook";
     
+    /** Clave de la direcci?n del servidor donde se encuentran los ficheros de idioma referentes al control del lenguaje */
+    public static final String PATH_LEXICAL_FILES = "pathLexicalFiles";
+    
     /** Host de la aplicacion */
     private String configHostApplication;
     
@@ -68,6 +71,9 @@ public class ConfigurationManager {
     
     /** Path de la aplicacion en Facebook */
     private String pathApplicationFacebook;
+    
+    /** Path a los ficheros de idioma propios del filtro de control de lenguaje */
+    private String pathLexicalFiles;
     
     public String getConfigHostApplication() {
         return configHostApplication;
@@ -100,6 +106,14 @@ public class ConfigurationManager {
     public String getPathApplicationFacebook() {
         return pathApplicationFacebook;
     }
+
+    public String getPathLexicalFiles() {
+        return pathLexicalFiles;
+    }
+
+    public void setPathLexicalFiles(String pathLexicalFiles) {
+        this.pathLexicalFiles = pathLexicalFiles;
+    }
     
     /**
      * Constructor de clase.
@@ -130,6 +144,7 @@ public class ConfigurationManager {
             this.pathKeyStoreSSL = defaultProps.getProperty(PATH_KEYSTORE_SSL);
             this.passwordKeyStoreSSL = defaultProps.getProperty(PASSWORD_KEYSTORE_SSL);
             this.pathApplicationFacebook = defaultProps.getProperty(PATH_APPLICATION_FACEBOOK);
+            this.pathLexicalFiles = defaultProps.getProperty(PATH_LEXICAL_FILES);
         } finally {
             try {
                 in.close();

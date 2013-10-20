@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,10 +49,10 @@ public class WallFilterFuncionality {
     private static Logger logger = Logger.getLogger(WallFilterFuncionality.class);
     
     /** Path lexicalFile ingles */
-    private static final String PATH_LEXICAL_FILE_EN = "SNSAngelGuardFB/lexicalFiles/badWords_en.txt";
+    private static final String PATH_LEXICAL_FILE_EN = "badWords_en.txt";
     
     /** Path lexicalFile castellano */
-    private static final String PATH_LEXICAL_FILE_ES = "SNSAngelGuardFB/lexicalFiles/badWords_es.txt";
+    private static final String PATH_LEXICAL_FILE_ES = "badWords_es.txt";
 
     /** Clase Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -246,29 +247,29 @@ public class WallFilterFuncionality {
      */
     private String getPathFileBadWords(String localeSettings){
         // Path del fichero badWords ingl?s.
-        String path = this.snsObject.getConfigurationManager().getConfigHostApplicationSSL() + PATH_LEXICAL_FILE_EN;
+        String path = this.snsObject.getConfigurationManager().getPathLexicalFiles() + PATH_LEXICAL_FILE_EN;
         
         // Si el idioma es castellano, obtenemos su path.
         if(localeSettings.equals("00000002")){
-            path = this.snsObject.getConfigurationManager().getConfigHostApplicationSSL() + PATH_LEXICAL_FILE_ES;
+            path = this.snsObject.getConfigurationManager().getPathLexicalFiles() + PATH_LEXICAL_FILE_ES;
         }
         
         return path;
     }
     
-    static {
-        //for localhost testing only
-        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-                new javax.net.ssl.HostnameVerifier() {
-            public boolean verify(String hostname,
-                    javax.net.ssl.SSLSession sslSession) {
-                if (hostname.equals("localhost")) {
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
+//    static {
+//        //for localhost testing only
+//        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+//                new javax.net.ssl.HostnameVerifier() {
+//            public boolean verify(String hostname,
+//                    javax.net.ssl.SSLSession sslSession) {
+//                if (hostname.equals("localhost")) {
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//    }
     
     /**
      * Carga el fichero badWords correspondiente al idioma configurado del usuario.
@@ -279,48 +280,63 @@ public class WallFilterFuncionality {
      * @throws JSONException 
      */
     private JSONArray loadFileBadWords() throws MalformedURLException, IOException, JSONException{
-        BufferedReader buffer = null;
-        try {
-            InputStream fileCertificadosConfianza = new FileInputStream(new File(
-                   this.snsObject.getConfigurationManager().getPathKeyStoreSSL()));
-             KeyStore ksCertificadosConfianza = KeyStore.getInstance(KeyStore
-                   .getDefaultType());
-             ksCertificadosConfianza.load(fileCertificadosConfianza,
-                   this.snsObject.getConfigurationManager().getPasswordKeyStoreSSL().toCharArray());
-             fileCertificadosConfianza.close();
+ //       BufferedReader buffer = null;
+//        try {
+//            InputStream fileCertificadosConfianza = new FileInputStream(new File(
+//                    this.snsObject.getConfigurationManager().getPathKeyStoreSSL()));
+//            KeyStore ksCertificadosConfianza = KeyStore.getInstance(KeyStore
+//                    .getDefaultType());
+//            ksCertificadosConfianza.load(fileCertificadosConfianza,
+//                    this.snsObject.getConfigurationManager().getPasswordKeyStoreSSL().toCharArray());
+//            fileCertificadosConfianza.close();
+//
+//            // Ponemos el contenido en nuestro manager de certificados de
+//            // confianza.
+//            TrustManagerFactory tmf = TrustManagerFactory
+//                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+//            tmf.init(ksCertificadosConfianza);
+//
+//            // Creamos un contexto SSL con nuestro manager de certificados en los
+//            // que confiamos.
+//            SSLContext context = SSLContext.getInstance("SSL");
+//            context.init(null, tmf.getTrustManagers(), null);
+//            SSLSocketFactory sslSocketFactory = context.getSocketFactory();
 
-             // Ponemos el contenido en nuestro manager de certificados de
-             // confianza.
-             TrustManagerFactory tmf = TrustManagerFactory
-                   .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-             tmf.init(ksCertificadosConfianza);
-
-             // Creamos un contexto SSL con nuestro manager de certificados en los
-             // que confiamos.
-             SSLContext context = SSLContext.getInstance("TLS");
-             context.init(null, tmf.getTrustManagers(), null);
-             SSLSocketFactory sslSocketFactory = context.getSocketFactory();
-             
             String path = this.getPathFileBadWords(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getLocaleSettings());
-            URL badWords = new URL(path);
-            URLConnection conexion = badWords.openConnection();
-            ((HttpsURLConnection) conexion).setSSLSocketFactory(sslSocketFactory);
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFileBadWords: Path a lexicalFile: " + path);
+            //URL badWords = new URL(path);
+            
+            //URLConnection conexion = badWords.openConnection();
+            //((HttpsURLConnection) conexion).setSSLSocketFactory(sslSocketFactory);
 
             // Ya podemos conectar y leer
-            conexion.connect();
-            InputStream is = conexion.getInputStream();
-            buffer = new BufferedReader(new InputStreamReader(is));
+            //conexion.connect();
+            //InputStream is = conexion.getInputStream();
+            //buffer = new BufferedReader(new InputStreamReader(badWords.openStream()));
             
-            
-        } catch (KeyStoreException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (CertificateException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (KeyManagementException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+            // Se abre la conexi?n
+         //URL url = new URL(path);
+         //URLConnection conexion = url.openConnection();
+         //conexion.connect();
+         
+         // Lectura
+         //InputStream is = conexion.getInputStream();
+         //BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
+         
+         File lexicalFile = new File(path);
+         FileReader lexicalFileReader = new FileReader(lexicalFile);
+         BufferedReader buffer = new BufferedReader(lexicalFileReader);
+
+
+//        } catch (KeyStoreException ex) {
+//            Exceptions.printStackTrace(ex);
+//        } catch (NoSuchAlgorithmException ex) {
+//            Exceptions.printStackTrace(ex);
+//        } catch (CertificateException ex) {
+//            Exceptions.printStackTrace(ex);
+//        } catch (KeyManagementException ex) {
+//            Exceptions.printStackTrace(ex);
+//        }
         return cargarFichero(buffer);
     }
     
@@ -480,15 +496,18 @@ public class WallFilterFuncionality {
      * @throws IOException
      */
     public JSONArray cargarFichero(BufferedReader buffer) throws JSONException, IOException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - Inicio cargarFichero...");
         JSONArray aux = new JSONArray();
         String wordFile = "";
         int i = 0;
 
         while ((wordFile = buffer.readLine()) != null) {
             aux.put(i, wordFile);
+            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - Palabra cargada: " + wordFile);
             i++;
         }
 
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - Fin cargarFichero...");
         return aux;
     }
 
@@ -508,7 +527,13 @@ public class WallFilterFuncionality {
         String wordFile = "";
         for (int i = 0; i < buffer.length(); i++) {
             wordFile = buffer.getString(i);
-            String[] arrayComm = comentario.split(" ");
+            
+//            if(comentario.toLowerCase().contains(wordFile.toLowerCase())){
+//                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
+//                aux = true;
+//                break;
+//            }
+            String[] arrayComm = comentario.split("\\ ");
             for(int j = 0; j < arrayComm.length; j++){
                 if (arrayComm[j].toLowerCase().equals(wordFile.toLowerCase())) {
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");

@@ -46,6 +46,18 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
     
     /** Resultado de la operacion */
     private String resultSave;
+
+    /** En el caso del guardado de informacion de un angel */
+    private String typeAngel;
+    
+    /** Identificador en Facebook del angel guardado */
+    private String idFacebookAngel;
+    
+    /** Identificador en base de datos de un angel */
+    private String uidAngel;
+    
+    /** Clave publica del usuario */
+    private String uidPublic;
     
     /** Angeles del usuario */
     private String[][] angels;
@@ -71,6 +83,42 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
     }
 
     /**
+     * Obtiene el tipo de angel que se ha guardado.
+     * 
+     * @return String  
+     */
+    public String getTypeAngel() {
+        return typeAngel;
+    }
+
+    /**
+     * Identificador en Facebook del angel guardado.
+     * 
+     * @return String 
+     */
+    public String getIdFacebookAngel() {
+        return idFacebookAngel;
+    }
+    
+    /**
+     * Obtiene el identificador en base de datos del angel que se ha guardado.
+     * 
+     * @return String 
+     */
+    public String getUidAngel() {
+        return uidAngel;
+    }
+
+    /**
+     * Identificador publico del usuario.
+     * 
+     * @return String 
+     */
+    public String getUidPublic() {
+        return uidPublic;
+    }
+    
+    /**
      * Constructor de clase. Al obtener par?metros del objeto request, podr? lanzar excepciones del tipo InterDataBaseException, InterProcessException o InterEmailException.
      * @param request
      * @param response
@@ -91,6 +139,10 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
             this.newConection = request.getParameter("newConection");
             this.resultSave = (request.getParameter("ok").equals("1") ? "1" : "0");
             this.angels = null;
+            this.typeAngel = request.getParameter("typeAngel");
+            this.idFacebookAngel = request.getParameter("idFacebookAngel");
+            this.uidAngel = request.getParameter("uidAngel");
+            this.uidPublic = request.getParameter("uidPublic");
         } catch (Exception ex) {
             logger.error(CodeException.UKNOWN_ERROR, ex);
             this.snsObject.getExceptionManager().initControlException(ex);

@@ -47,10 +47,10 @@
     try {
             snsObject.getFacebookQueryClient();
             
-
             uidPublic = request.getParameter("par1");
             String idAngel = request.getParameter("par2");
             boolean accept = request.getParameter("par3").equals("1");
+            String typeAngel = request.getParameter("par4");
 
             // Obtener información de userSettings por su uidPublic
             JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
@@ -59,6 +59,7 @@
             
             snsObject.getLoginAppOffline(request, response);
             snsObject.setClient(new SNSdataBaseClient(snsObject.getConfigurationManager().getConfigHostRESTFullWS()));
+            
 
             JSONObject jsonAngel = snsObject.getAngelsUtilities().getJsonAngel(idAngel, jsonUser.getString("uid"));
 
@@ -70,6 +71,12 @@
                         jsonAngel.put("acceptAngel", "1");
                     } else {
                         jsonAngel.put("acceptAngel", "0");
+                    }
+                    
+                    if(typeAngel != null && typeAngel.equals("F")){
+                        String emailAngel = request.getParameter("par5");
+                        
+                        jsonAngel.put("idAngel", emailAngel);
                     }
 
                     // Guardamos la configuracion del angel

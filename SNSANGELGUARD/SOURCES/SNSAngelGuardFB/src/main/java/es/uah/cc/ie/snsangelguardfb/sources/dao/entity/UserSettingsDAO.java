@@ -713,7 +713,7 @@ public class UserSettingsDAO {
         JSONObject jsonAngel = null;
         JSONArray jsonArrayAngels = null;
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         jsonRespuesta = new JSONObject(respuesta);
         jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
 
@@ -737,7 +737,7 @@ public class UserSettingsDAO {
         JSONObject jsonAngel = null;
         JSONArray jsonArrayAngels = null;
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         jsonRespuesta = new JSONObject(respuesta);
         jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
 
@@ -804,7 +804,7 @@ public class UserSettingsDAO {
         JSONObject jsonAngel = null;
         JSONArray jsonArrayAngels = null;
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         jsonRespuesta = new JSONObject(respuesta);
         jsonArrayAngels = snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
 
@@ -900,6 +900,25 @@ public class UserSettingsDAO {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngels: Fin getAngels...");
         return jsonAngelsFilter;
     }
+    
+    public JSONObject getNewAngelFacebook(String[] datesAngel) throws JSONException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewAngelFacebook: Inicio getNewAngelFacebook...");
+        JSONObject jsonDatesAngel = null;
+        Long uidLong = (new Double(this.getUid())).longValue();
+
+        jsonDatesAngel = new JSONObject();
+        jsonDatesAngel.put("idAngel", datesAngel[0]);
+        jsonDatesAngel.put("nameAngel", datesAngel[1]);
+        jsonDatesAngel.put("imgAngel", datesAngel[2]);
+        jsonDatesAngel.put("typeAngel", datesAngel[3]);
+        jsonDatesAngel.put("acceptAngel", "0");
+        jsonDatesAngel.put("userPropAngel", uidLong);
+        jsonDatesAngel.put("confirmAngel", "0");
+        jsonDatesAngel.put("idFacebook", datesAngel[0]);
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewAngelFacebook: Fin getAngels...");
+        return jsonDatesAngel;
+    }
 
     /**
      * Obtiene los angeles seleccionados para cada filtro definido.
@@ -948,7 +967,10 @@ public class UserSettingsDAO {
             for (int i = 0; i < angels.length(); i++) {
                 this.snsObject.getClient().settingsAngels_setNewAngel(String.class, angels.getJSONObject(i));
                 JSONObject newAngel = findAngel(angels.getJSONObject(i));
-                snsObject.getEmailObject().sendMailConfirmationAngel(newAngel, this.getUidPublic());
+                
+                if(!newAngel.getString("typeAngel").equals("F")){
+                    snsObject.getEmailObject().sendMailConfirmationAngel(newAngel, this.getUidPublic());
+                }
             }
         } catch (UnsupportedEncodingException ex) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngelsNewUser: Excepcion capturada UnsupportedEncodingException: " + ex.getMessage());
@@ -966,6 +988,33 @@ public class UserSettingsDAO {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngelsNewUser: Fin putNewAngelsNewUser...");
     }
 
+    public JSONObject putNewAngelFacebook(JSONObject jsonNewAngel) {
+        try {
+            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngelsUser: Nuevo angel...");
+            this.snsObject.getClient().settingsAngels_setNewAngel(String.class, jsonNewAngel);
+            jsonNewAngel = findAngel(jsonNewAngel);
+            if (!jsonNewAngel.toString().equals("{}")) {
+                if (!jsonNewAngel.getString("typeAngel").equals("F")) {
+                    snsObject.getEmailObject().sendMailConfirmationAngel(jsonNewAngel, this.getUidPublic());
+                }
+            }
+        } catch (JSONException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UniformInterfaceException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (java.security.NoSuchProviderException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (MessagingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        return jsonNewAngel;
+    }
+    
     /**
      * Inserta los nuevos angeles en la base de datos para un usuario ya existente.
      *
@@ -1005,7 +1054,11 @@ public class UserSettingsDAO {
                     if (!jsonAngel.toString().equals("{}")) {
                         try {
                             try {
-                                snsObject.getEmailObject().sendMailConfirmationAngel(jsonAngel, this.getUidPublic());
+                                if (jsonAngel.getString("typeAngel").equals("F")) {
+                                    snsObject.getEmailObject().postFacebookWallConfirmationAngel(jsonAngel, this.getUidPublic());
+                                } else {
+                                    snsObject.getEmailObject().sendMailConfirmationAngel(jsonAngel, this.getUidPublic());
+                                }
                             } catch (UnsupportedEncodingException ex) {
                                 Exceptions.printStackTrace(ex);
                             } catch (UniformInterfaceException ex) {
@@ -1056,7 +1109,7 @@ public class UserSettingsDAO {
         JSONObject jsonRespuesta = null;
 
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         jsonRespuesta = new JSONObject(respuesta);
         
         if (!existAnyAngel(jsonRespuesta, "settingsAngels")) {
@@ -1079,7 +1132,7 @@ public class UserSettingsDAO {
     public JSONObject findAngel(JSONObject jsonAngel) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - findAngel: Fin findAngel...");
         Long uidLong = (new Double(this.getUid())).longValue();
-        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         JSONObject jsonRespuesta = new JSONObject(respuesta);
         JSONArray jsonArrayDB = snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
         JSONObject jsonAngelDB = null;
@@ -1116,7 +1169,7 @@ public class UserSettingsDAO {
     public void setToDelOlderAngels(JSONArray angels) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setToDelOlderAngels: Inicio setToDelOlderAngels...");
         Long uidLong = (new Double(this.getUid())).longValue();
-        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         JSONObject jsonRespuesta = new JSONObject(respuesta);
         JSONObject jsonAngel = null;
         JSONObject jsonAngelDB = null;
@@ -1165,7 +1218,7 @@ public class UserSettingsDAO {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteOlderAngels: Inicio deleteOlderAngels...");
         try {
             Long uidLong = (new Double(this.getUid())).longValue();
-            String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+            String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
             JSONObject jsonRespuesta = new JSONObject(respuesta);
             JSONObject jsonAngelDB = null;
             if (jsonRespuesta.getString("settingsAngels") != null) {
@@ -1209,7 +1262,7 @@ public class UserSettingsDAO {
         JSONObject jsonAngel = null;
         JSONArray jsonArrayAngels = null;
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         jsonRespuesta = new JSONObject(respuesta);
         jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
 
@@ -1405,7 +1458,7 @@ public class UserSettingsDAO {
     public String getAngelsUser(String desTypeAngel) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Inicio getAngelsUser...");
         Long uidLong = (new Double(this.getUid())).longValue();
-        String strListAngels = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + uidLong + "\"");
+        String strListAngels = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         String angels = "";
 
         if (!strListAngels.equals("") && !strListAngels.equals("{}") && existAnyAngel(new JSONObject(strListAngels),"settingsAngels")) {
@@ -1423,9 +1476,9 @@ public class UserSettingsDAO {
 
                     if (jsonAngel.getString("typeAngel").equals(desTypeAngel)) {
                         if (i == 0) {
-                            angels = jsonAngel.getString("idAngel") + ";";
+                            angels = jsonAngel.getString("idFacebook") + ";";
                         } else {
-                            angels += jsonAngel.getString("idAngel") + ";";
+                            angels += jsonAngel.getString("idFacebook") + ";";
                         }
                     }
                 }
@@ -1475,12 +1528,16 @@ public class UserSettingsDAO {
 
         if (des.equals("fltWall")) {
             angels = this.getFltWall().getAngels();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de muro: " + angels);
         } else if (des.equals("fltFriends")) {
             angels = this.getFltFriends().getAngels();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de amigos: " + angels);
         } else if (des.equals("fltPriv")) {
             angels = this.getFltPriv().getAngels();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de privacidad: " + angels);
         } else if (des.equals("fltVist")) {
             angels = this.getFltVist().getAngels();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de visitas: " + angels);
         }
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Fin getAngelsFilter...");

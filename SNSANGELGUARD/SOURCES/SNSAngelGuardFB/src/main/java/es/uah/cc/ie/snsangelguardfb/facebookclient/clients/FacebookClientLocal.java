@@ -1258,10 +1258,11 @@ public class FacebookClientLocal {
             response.setContentType("text/html;charset=UTF-8");
 
             HttpSession session = request.getSession(true);
+            
             String urlLogin = "https://www.facebook.com/dialog/oauth/"
                     + "?client_id=" + api_key
                     + "&redirect_uri=" + path_application + "FacebookCallbackServlet/"
-                    + "&scope=read_stream,offline_access,friends_birthday,user_about_me,user_relationships,user_religion_politics,"
+                    + "&scope=publish_stream, read_stream,offline_access,friends_birthday,user_about_me,user_relationships,user_religion_politics,"
                     + "user_birthday,user_work_history,user_education_history,user_website,user_hometown,user_location,user_relationship_details,email"
                     + "&response_type=token";
             response.sendRedirect(urlLogin);

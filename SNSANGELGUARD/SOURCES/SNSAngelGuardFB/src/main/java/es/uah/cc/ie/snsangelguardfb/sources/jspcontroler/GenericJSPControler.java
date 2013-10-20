@@ -11,5 +11,8 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
  */
 public abstract class GenericJSPControler {
 
+    /**
+     * Realiza la operacion de carga de datos de la pagina JSP.
+     */
     public abstract void process() throws InterDataBaseException, InterProcessException, InterEmailException;
 }

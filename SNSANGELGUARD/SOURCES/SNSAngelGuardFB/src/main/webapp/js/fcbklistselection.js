@@ -57,9 +57,10 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
             obj.parents("li").removeAttr("addedid");
             o(obj);
         }else{
-            $("#view_selected_count").text(parseInt($("#view_selected_count").text(),10)+1);
-            obj.parents("li").attr("addedid","tester");
-            p(obj)
+            $("#view_selected_count").text(parseInt($("#view_selected_count").text(), 10) + 1);
+            obj.parents("li").attr("addedid", "tester");
+            p(obj);
+            saveNewAngelAjax(obj.find("[type=hidden]").val());           
         }
         n(obj);
         habilitarGuardar();

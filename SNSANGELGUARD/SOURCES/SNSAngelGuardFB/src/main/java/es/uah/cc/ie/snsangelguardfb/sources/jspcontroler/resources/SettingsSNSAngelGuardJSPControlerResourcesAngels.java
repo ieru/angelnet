@@ -14,6 +14,9 @@ import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
  */
 public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
 
+    /** URL a la imagen de carga entre p?ginas */
+    public final String PATH_IMAGE_LOADING = "../resources/legalAccepted/load.gif";
+    
     /** Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
     

@@ -85,7 +85,7 @@ public class HarvestedSNS extends HttpServlet {
                         this.snsObject.getUserSettingsDaoManager().getUserInfo(false);
 
                         /** Obtenemos los angeles definidos por el usuario */
-                        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"");
+                        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"");
                         JSONObject jsonRespuesta = new JSONObject(respuesta);
                         JSONArray angelsUser = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels").toString());
 

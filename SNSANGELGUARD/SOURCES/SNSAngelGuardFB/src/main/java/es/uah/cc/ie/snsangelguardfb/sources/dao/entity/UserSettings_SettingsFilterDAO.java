@@ -268,9 +268,17 @@ public class UserSettings_SettingsFilterDAO {
                 for (int i = 0; i < jsonArrayAngels.length(); i++) {
                     jsonAngel = jsonArrayAngels.getJSONObject(i);
                     if (i == 0) {
-                        lstAngels = jsonAngel.getString("idAngel") + ";";
+                        if(jsonAngel.getString("typeAngel").equals("F")){
+                            lstAngels = jsonAngel.getString("idFacebook") + ";";
+                        }else{
+                            lstAngels = jsonAngel.getString("idAngel") + ";";
+                        }
                     } else {
-                        lstAngels += jsonAngel.getString("idAngel") + ";";
+                        if(jsonAngel.getString("typeAngel").equals("F")){
+                            lstAngels += jsonAngel.getString("idFcebook") + ";";
+                        }else{
+                            lstAngels += jsonAngel.getString("idAngel") + ";";
+                        }
                     }
                 }
             }

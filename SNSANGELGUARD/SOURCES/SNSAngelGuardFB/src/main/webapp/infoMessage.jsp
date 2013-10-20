@@ -18,7 +18,7 @@
     try {
         //Obtenemos la conexión a Facebook
         snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
-        snsObject.logSession(request, response);
+        //snsObject.logSession(request, response);
 
         int type = Integer.parseInt(request.getParameter("typeInfo").toString());
         message = request.getParameter("infoMessage").toString();

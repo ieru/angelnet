@@ -4,12 +4,15 @@
  */
 package es.uah.cc.ie.snsangelguardfb.sources.email;
 
+import com.restfb.Parameter;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.clients.FacebookClientLocal;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchProviderException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.mail.MessagingException;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -45,6 +48,22 @@ public class GenericEmailObject {
         this.facebookClient = facebookClient;
         this.email = new EmailObject();
     }
+    
+   public void postFacebookWallConfirmationAngel(JSONObject jsonAngel, String uidPublic) throws JSONException, UnsupportedEncodingException, UniformInterfaceException, IOException, NoSuchProviderException, MessagingException {
+       logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - postFacebookWallConfirmationAngel: Inicio postFacebookWallConfirmationAngel al angel: " + jsonAngel.getString("idAngel"));
+       String bodyEmail = "";
+       bodyEmail = this.getBodyMailConfirmation(uidPublic, jsonAngel.getString("uidAngel"));
+       
+       Map<String, String> map = new HashMap<String, String>();
+        map.put("text", "https://snsangelguard.com");
+        map.put("href", "");
+
+       //ActionLink actionLink = new ActionLink("hola", "https://snsangelguard.com");
+       this.snsObject.getFacebookQueryClient().publish(jsonAngel.get("idAngel") + "/feed", String.class, Parameter.with("action_links", map));
+       
+       this.email.sendEmail("SNSAngelGuard: Angel Confirmation", bodyEmail, jsonAngel.getString("idAngel"));
+       logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - postFacebookWallConfirmationAngel: Fin postFacebookWallConfirmationAngel al angel: " + jsonAngel.getString("idAngel"));
+    }
 
     /**
      * Envio de la notificacion de confirmacion a un nuevo angel. Podr? lanzar excepciones del tipo
@@ -61,9 +80,9 @@ public class GenericEmailObject {
      */
     public void sendMailConfirmationAngel(JSONObject jsonAngel, String uidPublic) throws JSONException, UnsupportedEncodingException, UniformInterfaceException, IOException, NoSuchProviderException, MessagingException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendMailConfirmationAngel: Inicio sendMailConfirmationAngel al angel: " + jsonAngel.getString("idAngel"));
-        String bodyEmail = "";
-
-        bodyEmail = this.getBodyMailConfirmation(uidPublic, jsonAngel.getString("uidAngel"));
+        
+        String bodyEmail = this.getBodyMailConfirmation(uidPublic, jsonAngel.getString("uidAngel"));
+        
         this.email.sendEmail("SNSAngelGuard: Angel Confirmation", bodyEmail, jsonAngel.getString("idAngel"));
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendMailConfirmationAngel: Fin sendMailConfirmationAngel al angel: " + jsonAngel.getString("idAngel"));
     }
@@ -82,9 +101,9 @@ public class GenericEmailObject {
      */
     public void sendMailDeleteAngel(JSONObject jsonAngel, String uidPublic) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendMailDeleteAngel: Inicio sendMailDeleteAngel al angel: " + jsonAngel.getString("idAngel"));
-        String bodyEmail = "";
-
-        bodyEmail = this.getBodyMailDeleteAngel(uidPublic);
+        
+        String bodyEmail = this.getBodyMailDeleteAngel(uidPublic);
+        
         this.email.sendEmail("SNSAngelGuard: Angel Deleted", bodyEmail, jsonAngel.getString("idAngel"));
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendMailDeleteAngel: Fin sendMailDeleteAngel al angel: " + jsonAngel.getString("idAngel"));
     }
@@ -119,6 +138,23 @@ public class GenericEmailObject {
                 + "</div></div></div></form></body></html>";
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getBodyMailConfirmation: Fin getBodyMailConfirmation al angel: " + idAngel);
+        return body;
+    }
+    
+    /**
+     * Obtiene el mensaje limpio, sin formato HTML salvo para el enlace al usuario.
+     * 
+     * @param uidPublic
+     * @param idAngel
+     * @return String
+     * @throws UnsupportedEncodingException 
+     */
+    public String getStrBodyMailConfirmation(String uidPublic, String idAngel) throws UnsupportedEncodingException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStrBodyMailConfirmation: Inicio getStrBodyMailConfirmation al angel: " + idAngel);
+
+        String body = "<A href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/angelUser.jsp?par1=" + uidPublic + "\">" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + "</A> "
+                + this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getDesInfoAngConfirm();
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStrBodyMailConfirmation: Fin getStrBodyMailConfirmation al angel: " + idAngel);
         return body;
     }
 

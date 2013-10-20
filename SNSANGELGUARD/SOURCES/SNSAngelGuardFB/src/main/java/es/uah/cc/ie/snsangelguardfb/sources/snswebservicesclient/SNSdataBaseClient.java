@@ -173,9 +173,15 @@ public class SNSdataBaseClient {
         return webResource.path("settingsAngelss").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
     }
 
-    public <T> T settingsAngels_getAngelsByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
+    public <T> T settingsAngels_getAngelsByPropUid(Class<T> responseType, String uid) throws UniformInterfaceException {
         String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
         String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsAngels e WHERE e.userPropAngel = " + uid};
+        return webResource.path("settingsAngelss").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
+    public <T> T settingsAngels_getAngelsByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
+        String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
+        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsAngels e WHERE e.uidAngel = " + uid};
         return webResource.path("settingsAngelss").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

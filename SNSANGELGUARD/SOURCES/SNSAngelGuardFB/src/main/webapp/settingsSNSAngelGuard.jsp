@@ -18,6 +18,8 @@
            boolean error = false;
            String exceptionAsString = null;
            String urlError = null;
+           String typeAngel = null;
+           String idAngel = null;
                   
                 try {
                     //Obtenemos la conexión a Facebook
@@ -46,6 +48,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"lang="es" xml:lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
         <title><%= jspControler.getJspResources().getTitleSettings() %></title>
 
         <!--import css -->
@@ -66,6 +69,20 @@
 
         <script type="text/javascript">
             //jQuery.noConflict();
+            function saveNewAngelAjax(idAngel){
+                saveNewAngelSelected('<%= jspControler.getJspResources().getMenSave() %>',
+                                     '<%= jspControler.getJspResources().getMenWait() %>', 
+                                     idAngel);
+            }
+            
+            function loadPostWallFriend(){
+                jQuery(document).ready(function(){
+                    if('<%= typeAngel%>' == 'F' && '<%= idAngel%>' != null){
+                        loadFeedDialog();
+                    }
+                });
+            }
+            
             function muestraError(error, urlError){
                     if(error == true){
                         alert("error");
@@ -117,18 +134,26 @@
                     jQuery("#Menu").corner("4px");
                     jQuery("#ajaxContent").corner("4px");
 
-                    Angels.cargaInicio('<%= jspControler.getJspResources().DESTINY_JSP_INIT %>',
-                    '<%= jspControler.getJspResources().getTitleFbList() %>',
-                    '<%= jspControler.getJspResources().getTitleAngelSettAng() %>',
-                    '<%= jspControler.getJspResources().getNameTutor() %>',
-                    '<%= jspControler.getJspResources().getEmailTutor() %>',
-                    '<%= jspControler.getJspResources().getMenLoader()[3] %>',
+                    Angels.cargaInicio(
+                    '<%= jspControler.getSnsObject().getConfigurationManager().getConfigHostApplicationSSL() %>',
+                    '<%= jspControler.getJspResources().DESTINY_JSP_INIT%>',
+                    '<%= jspControler.getJspResources().getTitleFbList()%>',
+                    '<%= jspControler.getJspResources().getTitleAngelSettAng()%>',
+                    '<%= jspControler.getJspResources().getNameTutor()%>',
+                    '<%= jspControler.getJspResources().getEmailTutor()%>',
+                    '<%= jspControler.getJspResources().getMenLoader()[3]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[4]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[0]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[1]%>',
-                    '<%= jspControler.getResultSave() %>',
-                    '<%= jspControler.getJspResources().getMensaje() %>');
-
+                    '<%= jspControler.getResultSave()%>',
+                    '<%= jspControler.getJspResources().getMensaje()%>',
+                    '<%= jspControler.getTypeAngel()%>',
+                    '<%= jspControler.getIdFacebookAngel()%>',
+                    '<%= jspControler.getUidAngel()%>',
+                    '<%= jspControler.getUidPublic()%>',
+                    '<%= jspControler.getJspResources().getTitlePostFacebook() %>',
+                    '<%= jspControler.getJspResources().getSubtitlePostFacebook() %>',
+                    '<%= jspControler.getJspResources().getBodyPostFacebook() %>');
                 });
             }
             
@@ -153,6 +178,29 @@
             <input type="hidden" id="h15" name="h15" value="" />
             <input type="hidden" id="h16" name="h16" value="" />
 
+            <div id="fb-root"></div>
+            <script>
+              window.fbAsyncInit = function() {
+                // init the FB JS SDK
+                FB.init({
+                  appId      : '179105958774916',                        // App ID from the app dashboard
+                  channelUrl : '//localhost/SNSAngelGuardFB/index.jsp', // Channel file for x-domain comms
+                  status     : true,                                 // Check Facebook Login status
+                  xfbml      : true                                  // Look for social plugins on the page
+                });
+
+                // Additional initialization code such as adding Event Listeners goes here
+              };
+
+              // Load the SDK asynchronously
+              (function(d, s, id){
+                 var js, fjs = d.getElementsByTagName(s)[0];
+                 if (d.getElementById(id)) {return;}
+                 js = d.createElement(s); js.id = id;
+                 js.src = "//connect.facebook.net/en_US/all.js";
+                 fjs.parentNode.insertBefore(js, fjs);
+               }(document, 'script', 'facebook-jssdk'));
+            </script>
             
             <div id="settings" style="width:1100px;">
                 <center>
@@ -189,6 +237,11 @@
                                                '<%= jspControler.getJspResources().getMenWait() %>');"/>
                                 </td>
                             </tr>
+                                <tr>
+                                    <td width="10%">
+                                        <img src="<%= jspControler.getJspResources().PATH_IMAGE_LOADING%>" style="display: none" />
+                                    </td>
+                                </tr>
                         </table>
                     </div>
                 </center>
