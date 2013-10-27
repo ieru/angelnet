@@ -99,7 +99,7 @@
                                                 <tr class="angelDatesTr">
                                                     <td width="50%">
                                                         <label for="txtNameContact"><%= jspControler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTxtNameTutorSettAng() %></label>
-                                                        <input type="text" disabled="disabled" name="txtNameContact" id="txtNameContact" size="25" maxlength="70" onchange="" value="<%= jspControler.getJsonAngel().getString("nameAngel")%>" />
+                                                        <input type="text" disabled="disabled" name="txtNameContact" id="txtNameContact" size="25" maxlength="70" onchange="" value="<%= jspControler.getNameAngelValue() %>" />
                                                     </td>
                                                     <td width="50%">
                                                         <label for="txtEmailContact"><%= jspControler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTxtEmailTutorSettAng() %></label>
@@ -128,7 +128,7 @@
                                                         </td>
                                                         <td align="right">
                                                             <input type="button" class="boton" name="btnCancelar" value="<%=jspControler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnCancelAT()%>"
-                                                                   onclick="cerrarVentana();"/>
+                                                                   onclick="deleteContactInEmailPage('<%= jspControler.getLoaderSave() %>','<%= jspControler.getLoaderWait() %>');"/>
                                                         </td>
                                                         <td width="10%">
                                                             <img src="<%= jspControler.PATH_IMAGE_LOADING%>" style="display: none" />

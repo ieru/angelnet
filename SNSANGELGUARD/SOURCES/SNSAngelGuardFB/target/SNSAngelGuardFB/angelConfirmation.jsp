@@ -46,7 +46,7 @@
     
     try {
             snsObject.getFacebookQueryClient();
-            
+
             uidPublic = request.getParameter("par1");
             String idAngel = request.getParameter("par2");
             boolean accept = request.getParameter("par3").equals("1");
@@ -56,10 +56,10 @@
             JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
             snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
             snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
-            
+
             snsObject.getLoginAppOffline(request, response);
             snsObject.setClient(new SNSdataBaseClient(snsObject.getConfigurationManager().getConfigHostRESTFullWS()));
-            
+
 
             JSONObject jsonAngel = snsObject.getAngelsUtilities().getJsonAngel(idAngel, jsonUser.getString("uid"));
 
@@ -69,24 +69,28 @@
                     jsonAngel.put("confirmAngel", "1");
                     if (accept) {
                         jsonAngel.put("acceptAngel", "1");
-                    } else {
-                        jsonAngel.put("acceptAngel", "0");
-                    }
-                    
-                    if(typeAngel != null && typeAngel.equals("F")){
-                        String emailAngel = request.getParameter("par5");
-                        
-                        jsonAngel.put("idAngel", emailAngel);
-                    }
 
-                    // Guardamos la configuracion del angel
-                    snsObject.getAngelsUtilities().setJsonAngel(jsonAngel);
+                        if (typeAngel != null && typeAngel.equals("F")) {
+                            String emailAngel = request.getParameter("par5");
 
-                    if (accept) {
+                            jsonAngel.put("idAngel", emailAngel);
+                        }
+
+                        // Guardamos la configuracion del angel
+                        snsObject.getAngelsUtilities().setJsonAngel(jsonAngel);
+
                         // Se realiza el primer chequeo de información
                         snsObject.getGenericFilter().firstCheckAngelConfirmation(request, jsonAngel);
+                        
                         // Guardamos la información de configuración
                         snsObject.getUserSettingsDaoManager().checkAngelConfirmation(jsonUser);
+                        
+                    } else {
+                        // Eliminamos las posibles relaciones con los filtros de la aplicacion del angel
+                        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().deleteAngelFiltersRelationship(jsonAngel);
+
+                        // Eliminamos el angel de base de datos
+                        snsObject.getClient().settingsAngels_delAngelByUid(jsonAngel.getString("uidAngel"));
                     }
 
                     // Mensaje de Confirmacion
@@ -99,21 +103,21 @@
                 // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
                 response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=2&par2=" + uidPublic);
             }
-    }catch(InterDataBaseException e){
-        // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
-        String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
-        
-        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-    } catch(InterProcessException e){
-        String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
-        
-        // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
-        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-    } catch(InterEmailException e){
-        String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
-        
-        // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
-        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-    }
+        } catch (InterDataBaseException e) {
+            // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
+            String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
+
+            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+        } catch (InterProcessException e) {
+            String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
+
+            // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
+            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+        } catch (InterEmailException e) {
+            String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
+
+            // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
+            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+        }
     
 %>

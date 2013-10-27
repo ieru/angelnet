@@ -149,6 +149,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
         }
     }
 
+    @Override
     public void process() throws InterDataBaseException, InterProcessException, InterEmailException {
         
         try {

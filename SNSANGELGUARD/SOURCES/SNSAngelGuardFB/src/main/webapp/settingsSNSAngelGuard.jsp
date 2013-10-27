@@ -15,9 +15,7 @@
 
 <%
            SettingsSNSAngelGuardJSPControler jspControler = null;
-           boolean error = false;
            String exceptionAsString = null;
-           String urlError = null;
            String typeAngel = null;
            String idAngel = null;
                   
@@ -31,13 +29,11 @@
 
                     response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
                     
-                    System.exit(0);
                 } catch (InterProcessException e) {
                     exceptionAsString = jspControler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
                     response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
                     
-    //                response.sendError(404);
                 } catch (InterEmailException e) {
                     exceptionAsString = jspControler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
@@ -48,6 +44,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"lang="es" xml:lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta property="og:image" content="https://snsangelguard.com/SNSAngelGuardFB/resources/logo200.png" />
+        <meta property="og:image" content="https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif" />
 
         <title><%= jspControler.getJspResources().getTitleSettings() %></title>
 
@@ -71,6 +69,12 @@
             //jQuery.noConflict();
             function saveNewAngelAjax(idAngel){
                 saveNewAngelSelected('<%= jspControler.getJspResources().getMenSave() %>',
+                                     '<%= jspControler.getJspResources().getMenWait() %>', 
+                                     idAngel);
+            }
+            
+            function deleteAngelAjax(idAngel){
+                deleteAngelSelected('<%= jspControler.getJspResources().getMenSave() %>',
                                      '<%= jspControler.getJspResources().getMenWait() %>', 
                                      idAngel);
             }
@@ -237,11 +241,6 @@
                                                '<%= jspControler.getJspResources().getMenWait() %>');"/>
                                 </td>
                             </tr>
-                                <tr>
-                                    <td width="10%">
-                                        <img src="<%= jspControler.getJspResources().PATH_IMAGE_LOADING%>" style="display: none" />
-                                    </td>
-                                </tr>
                         </table>
                     </div>
                 </center>

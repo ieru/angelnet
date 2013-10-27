@@ -184,6 +184,12 @@ public class SNSdataBaseClient {
         String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsAngels e WHERE e.uidAngel = " + uid};
         return webResource.path("settingsAngelss").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
+    
+    public <T> T settingsAngels_getAngelsByUidFacebook(Class<T> responseType, String uidFacebook) throws UniformInterfaceException {
+        String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
+        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsAngels e WHERE e.idFacebook = " + uidFacebook};
+        return webResource.path("settingsAngelss").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
 
     public <T> T user_getEntities(Class<T> responseType) throws UniformInterfaceException {
         String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};

@@ -55,6 +55,11 @@ public class SaveNewAngelJSPControler extends GenericJSPControler {
         }
     }
     
+    /**
+     * Obtiene el objeto manager de la aplicacion.
+     * 
+     * @return SNSAngelGuardFBManager
+     */
     public SNSAngelGuardFBManager getSnsObject() {
         return snsObject;
     }

@@ -275,7 +275,7 @@ public class UserSettings_SettingsFilterDAO {
                         }
                     } else {
                         if(jsonAngel.getString("typeAngel").equals("F")){
-                            lstAngels += jsonAngel.getString("idFcebook") + ";";
+                            lstAngels += jsonAngel.getString("idFacebook") + ";";
                         }else{
                             lstAngels += jsonAngel.getString("idAngel") + ";";
                         }

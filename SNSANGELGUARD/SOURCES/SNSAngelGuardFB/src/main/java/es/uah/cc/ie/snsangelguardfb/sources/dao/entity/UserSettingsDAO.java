@@ -732,36 +732,53 @@ public class UserSettingsDAO {
      */
     public void deleteAngelsRelationship() throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelsRelationship: Inicio deleteAngelsRelationship...");
-        String respuesta = "";
-        JSONObject jsonRespuesta = null;
-        JSONObject jsonAngel = null;
-        JSONArray jsonArrayAngels = null;
+        
+        // Formateamos el identificador del usuario actual de la aplicacion
         Long uidLong = (new Double(this.getUid())).longValue();
-        respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
-        jsonRespuesta = new JSONObject(respuesta);
-        jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
+        
+        // Realizamos la consulta en base de datos para obtener los angeles para un determinado usuario
+        String respuesta = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
+        JSONObject jsonRespuesta = new JSONObject(respuesta);
+        
+        // Obtenemos los angeles definidos para el usuario en formato JSONArray
+        JSONArray jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
 
+        // Por cada angel definido, eliminamos sus relaciones
         for (int i = 0; i < jsonArrayAngels.length(); i++) {
-            jsonAngel = jsonArrayAngels.getJSONObject(i);
+            JSONObject jsonAngel = jsonArrayAngels.getJSONObject(i);
 
-            if (!jsonAngel.getString("uidAngel").equals("")) {
-                jsonAngel = deleteCollection(jsonAngel, "fltWall", 2);
-                jsonAngel = deleteCollection(jsonAngel, "fltFriends", 2);
-                jsonAngel = deleteCollection(jsonAngel, "fltPriv", 2);
-                jsonAngel = deleteCollection(jsonAngel, "fltVist", 2);
-                jsonAngel = deleteCollection(jsonAngel, "", 1);
-
-                try {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelsRelationship: Relacion eliminada: " + jsonAngel.toString());
-                    this.snsObject.getClient().userSettings_setNewAngelsCollectionByUid(String.class, jsonAngel.getString("uidAngel"), jsonAngel);
-                } catch (Exception e) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelsRelationship: Excepcion capturada Exception: " + e.getMessage());
-                }
-            }
+            // Eliminamos las relaciones del angel
+            deleteAngelFiltersRelationship(jsonAngel);
         }
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelsRelationship: Fin deleteAngelsRelationship...");
     }
 
+    /**
+     * Elimina las relaciones de un angel con respecto a los filtros de la aplicacion.
+     * 
+     * @throws JSONException 
+     */
+    public void deleteAngelFiltersRelationship(JSONObject jsonAngel) throws JSONException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Inicio deleteAngelFiltersRelationship...");
+
+        if (!jsonAngel.getString("uidAngel").equals("")) {
+            jsonAngel = deleteCollection(jsonAngel, "fltWall", 2);
+            jsonAngel = deleteCollection(jsonAngel, "fltFriends", 2);
+            jsonAngel = deleteCollection(jsonAngel, "fltPriv", 2);
+            jsonAngel = deleteCollection(jsonAngel, "fltVist", 2);
+            jsonAngel = deleteCollection(jsonAngel, "", 1);
+
+            try {
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Relacion eliminada: " + jsonAngel.toString());
+                this.snsObject.getClient().userSettings_setNewAngelsCollectionByUid(String.class, jsonAngel.getString("uidAngel"), jsonAngel);
+            } catch (JSONException | UniformInterfaceException e) {
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Excepcion capturada Exception: " + e.getMessage());
+            }
+
+        }
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Fin deleteAngelFiltersRelationship...");
+    }
+    
     /**
      * Borra del objeto angel la relaci?n que le un?a a un filtro.
      *
@@ -778,12 +795,12 @@ public class UserSettingsDAO {
         switch (mode) {
             case 1:
                 jsonUri = new JSONObject();
-                jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/userSettingsCollection/");
+                jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/userSettingsCollection/");
                 jsonAngel.put("userSettingsCollection", jsonUri);
                 break;
             case 2:
                 jsonUri = new JSONObject();
-                jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/settings" + des + "Collection/");
+                jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/settings" + des + "Collection/");
                 jsonAngel.put("settings" + des + "Collection", jsonUri);
                 break;
         }
@@ -1054,9 +1071,7 @@ public class UserSettingsDAO {
                     if (!jsonAngel.toString().equals("{}")) {
                         try {
                             try {
-                                if (jsonAngel.getString("typeAngel").equals("F")) {
-                                    snsObject.getEmailObject().postFacebookWallConfirmationAngel(jsonAngel, this.getUidPublic());
-                                } else {
+                                if (!jsonAngel.getString("typeAngel").equals("F")) {
                                     snsObject.getEmailObject().sendMailConfirmationAngel(jsonAngel, this.getUidPublic());
                                 }
                             } catch (UnsupportedEncodingException ex) {

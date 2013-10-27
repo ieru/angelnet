@@ -315,47 +315,6 @@ public final class SNSAngelGuardFBManager {
     }
 
     /**
-     * Realiza el login del usuario actual en Facebook.
-     *
-     * @param request HttpServletRequest de la sesi?n actual.
-     * @param response HttpServletResponse de la sesi?n actual.
-     * @throws IOException
-     */
-    public void getLoginFacebook(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Inicio getLoginFacebook...");
-        HttpSession session = request.getSession();
-
-        if (session.getAttribute("oauth_token") != null && session.getAttribute("user_id") != null) {
-            String userId = session.getAttribute("user_id").toString();
-            String accessToken = session.getAttribute("oauth_token").toString();
-
-            try {
-                getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Obteniendo acceso a Facebook...");
-                this.userSettingsDaoManager.getUserSettingsDAO().setUserSession(accessToken);
-                this.userSettingsDaoManager.getUserSettingsDAO().setUid(userId);
-                this.facebookRestClient = new DefaultLegacyFacebookClient(accessToken);
-                this.facebookQueryClient = new DefaultFacebookClient(accessToken);
-            } catch (FacebookOAuthException ex) {
-                try {
-                    getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Obteniendo acceso a Facebook -  Nueva Conexion por FacebookOAuthException...");
-                    facebookClient.login(request, response, this.configurationManager.getApiKey(), this.configurationManager.getApiSecretKey(), this.configurationManager.getPathApplicationFacebook());
-                } catch (JSONException ex1) {
-                    getLogger().error(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Excepcion capturada JSONException: " + ex1.getMessage());
-                }
-            }
-        } else {
-            try {
-                getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Obteniendo acceso a Facebook - Nuevo Usuario...");
-                facebookClient.login(request, response, this.configurationManager.getApiKey(), this.configurationManager.getApiSecretKey(), this.configurationManager.getPathApplicationFacebook());
-                return;
-            } catch (JSONException ex) {
-                getLogger().error(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        }
-        getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginFacebook: Fin getLoginFacebook...");
-    }
-
-    /**
      * Establece la sesion actual en Facebook para el usuario conectado.
      *
      * @param request HttpServletRequest de la sesi?n actual.
@@ -372,11 +331,7 @@ public final class SNSAngelGuardFBManager {
             getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - logSession: Guardando parametros de conexion obtenidos...");
             this.userSettingsDaoManager.getUserSettingsDAO().setUserSession((String) session.getAttribute("oauth_token"));
             this.userSettingsDaoManager.getUserSettingsDAO().setUid((String) session.getAttribute("user_id"));
-        } else {
-            getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - logSession: Obteniendo conexion a Facebook...");
-            facebookClient.login(request, response, this.configurationManager.getApiKey(), this.configurationManager.getApiSecretKey(), this.configurationManager.getPathApplicationFacebook());
-            getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - logSession: Conexion a Facebook obtenida!!");
-        }
+        } 
         getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - logSession: Fin logSession...");
     }
 
@@ -401,6 +356,9 @@ public final class SNSAngelGuardFBManager {
             getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginAppOffline: Obteniendo conexion Offline con Facebook...");
 
             facebookClient.loginOffline(request, response, this.configurationManager.getApiKey(), this.configurationManager.getApiSecretKey(), this.configurationManager.getPathApplicationFacebook());
+            
+            this.facebookRestClient = new DefaultLegacyFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
+            this.facebookQueryClient = new DefaultFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
             
             getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginAppOffline: Conexion Offline con Facebook obtenida!!");
         } catch (IOException ex) {

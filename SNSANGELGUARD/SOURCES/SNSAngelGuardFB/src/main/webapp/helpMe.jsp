@@ -16,8 +16,7 @@
         try {
             //Obtenemos la conexión a Facebook
             snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
-            snsObject.getLoginFacebook(request, response);
-
+            
             localeHelp = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getHelpMe());
         } catch (FileNotFoundException e) {
             String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e);

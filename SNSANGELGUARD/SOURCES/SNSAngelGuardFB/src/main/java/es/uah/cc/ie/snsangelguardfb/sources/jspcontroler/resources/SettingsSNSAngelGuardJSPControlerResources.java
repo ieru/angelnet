@@ -21,7 +21,7 @@ public class SettingsSNSAngelGuardJSPControlerResources {
     public final String DESTINY_JSP_INIT = "../SNSAngelGuardFB/settingsSNSAngelGuard_Angels.jsp";
     
     /** URL a la imagen de carga entre p?ginas */
-    public final String PATH_IMAGE_LOADING = "../resources/legalAccepted/load.gif";
+    public final String PATH_IMAGE_LOADING = "https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif";
 
     /** Clase manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;

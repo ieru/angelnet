@@ -87,17 +87,13 @@
                                 <tr>
                                     <td>
                                         <input type="button" class="boton" name="btnCancel" value="<%=jspControler.getJspResources().getTitleBtnCancel()%>"
-                                               onclick="removeApp();"/>
+                                               onclick="cerrarInfoError();"/>
                                     </td>
                                     <td>
                                         <input type="button" class="boton" id="btnIagree" name="btnIagree" value="<%= jspControler.getJspResources().getTitleBtnIAgree()%>"
-                                               onclick="muestraLoader('<%= jspControler.getJspResources().getLoaderSave()%>', '<%= jspControler.getJspResources().getLoaderWait()%>');
-                enviarFormularioLegalA('<%= jspControler.getJspResources().DESTINY_REDIRECT_JPS%>');"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10%">
-                                        <img src="<%= jspControler.getJspResources().PATH_IMAGE_LOADING%>" style="display: none" />
+                                               onclick="enviarFormularioLegalA('<%= jspControler.getJspResources().DESTINY_REDIRECT_JPS%>', 
+                                                   '<%= jspControler.getJspResources().getLoaderSave() %>',
+                                                   '<%= jspControler.getJspResources().getLoaderWait() %>');"/>
                                     </td>
                                 </tr>
                             </table>

@@ -152,7 +152,7 @@ public class GenericEmailObject {
     public String getStrBodyMailConfirmation(String uidPublic, String idAngel) throws UnsupportedEncodingException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStrBodyMailConfirmation: Inicio getStrBodyMailConfirmation al angel: " + idAngel);
 
-        String body = "<A href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/angelUser.jsp?par1=" + uidPublic + "\">" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + "</A> "
+        String body = "<A href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplicationSSL()+ "SNSAngelGuardFB/angelUser.jsp?par1=" + uidPublic + "\">" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + "</A> "
                 + this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getDesInfoAngConfirm();
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStrBodyMailConfirmation: Fin getStrBodyMailConfirmation al angel: " + idAngel);
         return body;

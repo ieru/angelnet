@@ -36,63 +36,32 @@ public class IndexJSPControler extends GenericJSPControler{
     /** Atributo response de la sesion */
     private HttpServletResponse response;
     
-    /** URL de destino de la pagina */
-    private String pathDestino;
-    
-    /** Mensaje loading de guardado */
-    private String loaderSave;
-    
-    /** Mensaje loading de espera */
-    private String loaderWait;
-
+    /**
+     * Obtiene el objeto de la peticion HTTP.
+     * 
+     * @return HttpServletRequest
+     */
     public HttpServletRequest getRequest() {
         return request;
     }
 
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-
+    /**
+     * Obtiene la respuesta a la peticion HTTP.
+     * 
+     * @return HttpServletResponse 
+     */
     public HttpServletResponse getResponse() {
         return response;
     }
 
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
-    }
-
+    /**
+     * Obtiene el objeto de sesion de la aplicacion.
+     * 
+     * @return SNSAngelGuardFBManager 
+     */
     public SNSAngelGuardFBManager getSnsObject() {
         return snsObject;
     }
-
-    public void setSnsObject(SNSAngelGuardFBManager snsObject) {
-        this.snsObject = snsObject;
-    }
-
-    public String getPathDestino() {
-        return pathDestino;
-    }
-
-    public void setPathDestino(String pathDestino) {
-        this.pathDestino = pathDestino;
-    }
-
-    public String getLoaderSave() {
-        return loaderSave;
-    }
-
-    public void setLoaderSave(String loaderSave) {
-        this.loaderSave = loaderSave;
-    }
-
-    public String getLoaderWait() {
-        return loaderWait;
-    }
-
-    public void setLoaderWait(String loaderWait) {
-        this.loaderWait = loaderWait;
-    }
-
 
     /**
      * Constructor de clase.
@@ -121,39 +90,6 @@ public class IndexJSPControler extends GenericJSPControler{
      * @throws InterProcessException
      * @throws InterEmailException 
      */
-    public void process() throws InterDataBaseException, InterProcessException, InterEmailException{
-        String destino = "";
-        
-        try {
-            this.snsObject.getLoginFacebook(request, response);
-            if (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession() != null) {
-                this.request.setAttribute("users_AppPermissionDisabled", "1");
-
-
-                this.snsObject.getUserSettingsDaoManager().loadSettings();
-
-                String[] strBtn = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings());
-                this.loaderSave = strBtn[3];
-                this.loaderWait = strBtn[4];
-
-                
-                
-                if (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() != null) {
-                    
-                    if (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().isLegalAccepted()) {
-                        // Actualizamos la user_token junto con la hora de entrada a la aplicaci?n.
-                        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().updateLastCheckUS();
-                        
-                        this.pathDestino = "/settingsSNSAngelGuard.jsp?newConection=1&ok=0";
-                    } else {
-                        
-                        this.pathDestino = "/legalAccepted.jsp";
-                    }
-                    response.sendRedirect(request.getContextPath() + this.pathDestino);
-                }
-            }
-        } catch (Exception ex) {
-            this.getSnsObject().getExceptionManager().initControlException(ex);
-        } 
-    }
+    @Override
+    public void process() throws InterDataBaseException, InterProcessException, InterEmailException{ }
 }

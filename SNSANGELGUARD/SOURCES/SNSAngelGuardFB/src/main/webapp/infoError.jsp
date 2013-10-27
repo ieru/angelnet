@@ -13,6 +13,7 @@
     String message = null;
     String btnAceptar = null;
     String e = null;
+    String uidPublic = null;
 
     try {
         //Obtenemos la conexión a Facebook
@@ -28,6 +29,7 @@
         title = warnings[7];
         mensError = warnings[8];
         details = warnings[9];
+        uidPublic = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic();
     } catch (Exception ex) {
         // Si se produce un error al obtener los parametros anteriores, mostramos un mensaje por defecto.
         title = "Error";
@@ -119,7 +121,7 @@
                                         <tr>
                                             <td align="right">
                                                 <input type="button" class="boton" name="btnAceptar" value="<%= btnAceptar%>"
-                                                       onclick="cerrarInfoError();" />
+                                                       onclick="cerrarInfoError('<%= uidPublic %>');" />
                                             </td>
                                         </tr>
                                     </table>

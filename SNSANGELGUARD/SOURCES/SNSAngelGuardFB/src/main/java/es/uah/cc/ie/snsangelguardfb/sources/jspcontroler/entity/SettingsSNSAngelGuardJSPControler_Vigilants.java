@@ -30,7 +30,7 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
     private static Logger logger = Logger.getLogger(SettingsSNSAngelGuardJSPControler.class);
     
     /** URL a la imagen de carga entre p?ginas */
-    public final String PATH_IMAGE_LOADING = "../SNSAngelGuardFB/resources/legalAccepted/load.gif";
+    public final String PATH_IMAGE_LOADING = "https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif";
     
     /** Manager principal de la aplicacion */
     private SNSAngelGuardFBManager snsObject;

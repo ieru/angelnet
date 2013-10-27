@@ -56,6 +56,7 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
             borrarItemVigilants(obj.find("[type=hidden]").val());
             obj.parents("li").removeAttr("addedid");
             o(obj);
+            deleteAngelAjax(obj.find("[type=hidden]").val());     
         }else{
             $("#view_selected_count").text(parseInt($("#view_selected_count").text(), 10) + 1);
             obj.parents("li").attr("addedid", "tester");

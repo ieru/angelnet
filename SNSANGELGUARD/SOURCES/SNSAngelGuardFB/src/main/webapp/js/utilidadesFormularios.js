@@ -24,7 +24,9 @@ function getDataLegalAccepted(){
     return paramSal;
 }
 
-function enviarFormularioLegalA(destino){
+function enviarFormularioLegalA(destino, menSave, menWait){
+    muestraLoader(menSave,menWait);
+    
     if(destino == "settingsSNSAngelGuard.jsp"){
         document.getElementById('frLegalAccepted').setAttribute("action", destino);
         document.getElementById('frLegalAccepted').setAttribute('method','post');
@@ -639,8 +641,11 @@ function cerrarInfoModal(){
     window.close();
 }
 
-function cerrarInfoError(){
-    window.location = "../SNSAngelGuardFB/index.jsp";
+function cerrarInfoError(uidPublic){
+    $(function(){
+        var url = '../SNSAngelGuardFB/presentationApp.jsp?par1=' + uidPublic;
+        $(location).attr('href', url);
+    });
 }
 
 function loadContactsEd(){
@@ -781,7 +786,6 @@ function loadCheckFiltro(desFiltro){
 }
 
 function loadAngelSelects(angels){
-    alert(angels);
     var arrayAngels = angels.split(';');
 
     for(var i=0;i<arrayAngels.length; i++){
@@ -1363,6 +1367,15 @@ function saveNewAngelSelected(menSave, menWait, idAngel){
     document.getElementById('frSNSAngels').submit();
 }
 
+function deleteAngelSelected(menSave, menWait, idAngel){
+    muestraLoader(menSave,menWait);
+    var data = '../SNSAngelGuardFB/deleteAngelSelected.jsp' + '?' + getDatesAngelFacebook(idAngel);
+    
+    document.getElementById('frSNSAngels').setAttribute('action', data);
+    document.getElementById('frSNSAngels').setAttribute('method','post');
+    document.getElementById('frSNSAngels').submit();
+}
+
 function saveSettings(menSave,menWait){
     muestraLoader(menSave,menWait);
     
@@ -1542,7 +1555,7 @@ function muestraLoader(menCarga, menWait){
             + "<h1 class=\"tituloMed\">" + menCarga + "</h1>"
             + "</td></tr>"
             + "<tr><td>"
-            + "<table width=\"100%\"><tr><td width=\"80%\">" + menWait + "</td><td width=\"20%\"><img src=\"../SNSAngelGuardFB/resources/legalAccepted/load.gif\" title=\"\">"
+            + "<table width=\"100%\"><tr><td width=\"80%\">" + menWait + "</td>"
             + "</td></tr></table></td></tr></table></div>"
         });
     });
@@ -1962,7 +1975,6 @@ function muestraDetalles(){
 }
 
 function loadForm(url, menTitle, menWait){
-    alert("dentro: " + url);
     $(document).ready(function() {
         window.location = url;
         $('#frIndex').submit(function() {
@@ -1988,7 +2000,7 @@ function loadFeedDialog(context, idFacebookAngel, uidAngel, uidPublic, title, su
                     method: 'feed',
                     name: title,
                     link: context + 'SNSAngelGuardFB/saveEmailFacebookContact.jsp?uidAngel=' + uidAngel + '&uidPublicUser=' + uidPublic,
-                    picture: 'http://fbrell.com/f8.jpg',
+                    picture: 'https://snsangelguard.com/SNSAngelGuardFB/resources/logo200.png',
                     caption: subtitle,
                     description: bodyPost
                 },
@@ -1996,7 +2008,7 @@ function loadFeedDialog(context, idFacebookAngel, uidAngel, uidPublic, title, su
             if (response && response.post_id) {
                 lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menSaveOk,700,300);
             } else {
-                return false;
+                deleteAngelAjax(idFacebookAngel);
             }
         }
         );
@@ -2023,7 +2035,6 @@ function validarEmail(msgEmptyEmail, msgNotValidEmail, menCarga, menWait) {
             {
                 // Cargamos los parametros para ser enviados en el formulario
                 $('#par3').val('1');
-                alert();
                 $('#par4').val('F');
                 $('#par5').val($("#txtEmailContact").val());
                 
@@ -2035,6 +2046,18 @@ function validarEmail(msgEmptyEmail, msgNotValidEmail, menCarga, menWait) {
             }
         });
     });
+}
+
+function deleteContactInEmailPage(menSave, menWait){
+    $(document).ready(function() {
+        $(function() {
+            // Cargamos los parametros para ser enviados en el formulario
+            $('#par3').val('0');
+
+            // Llamamos a la pagina de confirmacion del angel
+            enviarFormularioAngelConfirmation(menSave, menWait);
+        });
+    }); 
 }
 
 function enviarFormularioAngelConfirmation(menCarga, menWait){
@@ -2054,4 +2077,16 @@ function deleteNewContact(uidPublic, idAngel){
     document.getElementById('frSNSAngels').setAttribute('action', data);
     document.getElementById('frSNSAngels').setAttribute('method','post');
     document.getElementById('frSNSAngels').submit();
+}
+
+function redirectToScheduler(uid, accessToken){
+    $(function() {
+        $('#uid').val(uid);
+        $('#accessToken').val(accessToken);
+
+        $('#frIndex').attr('action', 'schedulerUserLoggedFacebook.jsp');
+        $('#frIndex').attr('method', 'post');
+        $('#frIndex').submit();
+
+    });
 }

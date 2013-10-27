@@ -18,11 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.openide.util.Exceptions;
 
 /**
  * Clase controladora de la pantalla de introduccion y aceptacion del angel de Facebook.
- * En ella, el angel debera introducir manualmente el email donde deseara recibir las
+ * En ella, el angel debera introducir manualmente el email donde desea recibir las
  * notificaciones de la aplicacion.
  * 
  * @author josejavierblecuadepedro1
@@ -52,6 +51,9 @@ public class SaveEmailFacebookContactJSPControler extends GenericJSPControler {
     
     /** Informacion en formato JSON del angel cargada de base de datos */
     private JSONObject jsonAngel;
+    
+    /** Nombre del angel que saldra por pantalla */
+    private String nameAngelValue;
     
     /** Mensaje de autorizacion para el envio de notificaciones */
     private String notificationMsg;
@@ -105,6 +107,15 @@ public class SaveEmailFacebookContactJSPControler extends GenericJSPControler {
         return jsonAngel;
     }
 
+    /**
+     * Obtiene el nombre del angel al que se hace referencia.
+     * 
+     * @return String 
+     */
+    public String getNameAngelValue() {
+        return nameAngelValue;
+    }
+    
     /**
      * Obtiene el mensaje para el envio de notificaciones.
      * 
@@ -161,6 +172,7 @@ public class SaveEmailFacebookContactJSPControler extends GenericJSPControler {
             this.snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
             this.request = request;
             this.response = response;
+            this.nameAngelValue = null;
             
             // Obtenemos el identificador del angel
             this.uidAngel = this.request.getParameter("uidAngel");
@@ -197,15 +209,22 @@ public class SaveEmailFacebookContactJSPControler extends GenericJSPControler {
             
             // Obtenemos la informacion del angel en base de datos
             JSONObject jsonAngelDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, this.uidAngel));
-            this.jsonAngel = jsonAngelDB.getJSONArray("settingsAngels").getJSONObject(0);
+            
+            if (jsonAngelDB.getJSONArray("settingsAngels") != null && jsonAngelDB.getJSONArray("settingsAngels").length() > 0) {
+                this.jsonAngel = jsonAngelDB.getJSONArray("settingsAngels").getJSONObject(0);
+                this.nameAngelValue = this.jsonAngel.getString("nameAngel");
 
-            // Obtenemos el mensaje de autorizacion para el envio de notificaciones
-            this.notificationMsg = this.snsObject.getEmailObject().getStrBodyMailConfirmation(this.uidPublicUser, this.uidAngel);
+                // Obtenemos el mensaje de autorizacion para el envio de notificaciones
+                this.notificationMsg = this.snsObject.getEmailObject().getStrBodyMailConfirmation(this.uidPublicUser, this.uidAngel);
 
-            if (!this.jsonAngel.toString().equals("{}")) {
-                if (this.jsonAngel.getString("confirmAngel").equals("1")) {
-                   // Mensaje de Aviso ("El usuario ya est? confirmado")
-                   response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=1&par2=" + this.uidPublicUser);
+                if (!this.jsonAngel.toString().equals("{}")) {
+                    if (this.jsonAngel.getString("confirmAngel").equals("1")) {
+                        // Mensaje de Aviso ("El usuario ya est? confirmado")
+                        response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=1&par2=" + this.uidPublicUser);
+                    }
+                } else {
+                    // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
+                    response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=2&par2=" + this.uidPublicUser);
                 }
             } else {
                 // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")

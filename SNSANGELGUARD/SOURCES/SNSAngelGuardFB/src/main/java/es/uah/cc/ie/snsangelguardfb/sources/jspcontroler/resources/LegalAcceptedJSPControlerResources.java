@@ -24,7 +24,7 @@ public class LegalAcceptedJSPControlerResources {
     public final String PATH_IMAGE_ICONO_RIGHT = "../SNSAngelGuardFB/resources/legalAccepted/iconoRight.gif";
     
     /** URL a la imagen de carga entre p?ginas */
-    public final String PATH_IMAGE_LOADING = "../SNSAngelGuardFB/resources/legalAccepted/load.gif";
+    public final String PATH_IMAGE_LOADING = "https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif";
 
     /** Clase manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;

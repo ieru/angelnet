@@ -142,7 +142,7 @@ public class UserSettingsDaoManager {
             jsonObject = this.snsObject.getClient().userSettings_getUserSettingsByUid(JSONObject.class, uidLong.toString());
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadSettings: Datos del usuario: " + jsonObject.toString());
             this.snsObject.setNewConnection(false);
-        } catch (Exception e) {
+        } catch (UniformInterfaceException e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadSettings: Este usuario no existe en la base de datos. Usuario nuevo");
             this.snsObject.setNewConnection(true);
         }
