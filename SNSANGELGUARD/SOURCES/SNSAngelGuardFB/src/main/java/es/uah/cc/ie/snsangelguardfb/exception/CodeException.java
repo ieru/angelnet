@@ -10,6 +10,7 @@ package es.uah.cc.ie.snsangelguardfb.exception;
  * @author josejavierblecuadepedro
  */
 public enum CodeException {
+    ERROR_NO_AUTH_ACCESSTOKEN,
     ERROR_CLIENT_DATABASE,
     ERROR_SERVER_DATABASE,
     USER_NOT_FOUND_UID_PUBLIC,

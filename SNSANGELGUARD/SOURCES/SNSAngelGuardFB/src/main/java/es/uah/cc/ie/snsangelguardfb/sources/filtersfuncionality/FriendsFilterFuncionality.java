@@ -259,8 +259,13 @@ public class FriendsFilterFuncionality {
                 jsonFriendFacebook.put("userBirthday", this.snsObject.getDateTimeUtilities().formatearFecha(friendsFacebookList.get(0).getBirthdayDate()));
                 
                 if (isNewInFriendsFacebook(jsonFriendFacebook)) {
-                    this.snsObject.getClient().userFacebook_setNewFriendFacebook(String.class, jsonFriendFacebook);
-                    updateRelationshipNewFriend(jsonFriendFacebook);
+                    try{
+                        this.snsObject.getClient().userFacebook_setNewFriendFacebook(String.class, jsonFriendFacebook);
+                        updateRelationshipNewFriend(jsonFriendFacebook);
+                    } catch (UniformInterfaceException e){
+                        logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewFriend: No se ha podido actualizar la informacion del usuario: " + jsonFriendFacebook.toString());
+                        logger.fatal(e);
+                    }
                 } else if(isNewFriend(jsonFriendFacebook)){
                     updateRelationshipNewFriend(jsonFriendFacebook);
                 } else

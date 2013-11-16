@@ -90,17 +90,27 @@ public class AngelsUtilities {
     public String[] getAngelDates(String angelUid) {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Inicio getAngelDates...");
 
-        String[] angelArray = new String[4];
+        String[] angelArray = new String[5];
 
         String query = "SELECT uid,email,name,pic_square FROM user WHERE uid=" + angelUid + ";";
         List<DatesAngelsFacebook> datesAngelsList = this.snsObject.getFacebookQueryClient().executeQuery(query, DatesAngelsFacebook.class);
 
         if(!datesAngelsList.isEmpty()){
-            System.out.println(datesAngelsList.get(0).toJson().toString());
+            
             angelArray[0] = datesAngelsList.get(0).getUid();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Id: " + angelArray[0]);
+            
             angelArray[1] = datesAngelsList.get(0).getName().replace("'", "");
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Nombre: " + angelArray[1]);
+            
             angelArray[2] = datesAngelsList.get(0).getPicSquare();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Pic: " + angelArray[2]);
+            
             angelArray[3] = "F";
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Tipo: " + angelArray[3]);
+            
+            angelArray[4] = datesAngelsList.get(0).getUid();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: IdFacebook: " + angelArray[4]);
         }else{
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDates: Fin getAngelDates con resultado nulo...");
             return null;
@@ -154,7 +164,7 @@ public class AngelsUtilities {
 
         if (!angelsSelected.equals("")) {
             arrayAnSel = angelsSelected.split(";");
-            newArray = new String[arrayAnSel.length][4];
+            newArray = new String[arrayAnSel.length][5];
 
             for (int i = 0; i < arrayAnSel.length; i++) {
                 for (int j = 0; j < arrayAng.length; j++) {
@@ -179,12 +189,13 @@ public class AngelsUtilities {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - copyAngel: Inicio copyAngel...");
         String[][] arrayHdAngels = new String[longArray][3];
         String[][] lstAngel = this.getArrayAngelsSelected();
-        String[] vacio = new String[4];
+        String[] vacio = new String[5];
 
         vacio[0] = "";
         vacio[1] = "";
         vacio[2] = "";
         vacio[3] = "";
+        vacio[4] = "";
 
         int longArrayAngels = lstAngel.length;
 
@@ -223,7 +234,7 @@ public class AngelsUtilities {
                 arrayHdAngels = copyAngel(longArray);
             } catch (Exception ex) {
                 longArray = arrayNewAngels.length;
-                arrayHdAngels = new String[longArray][4];
+                arrayHdAngels = new String[longArray][5];
             }
 
             JSONObject jsonAngel = null;
@@ -231,12 +242,13 @@ public class AngelsUtilities {
             for (int i = 0; i < arrayNewAngels.length; i++) {
 
                 jsonAngel = new JSONObject(arrayNewAngels[i]);
-                String[] datesArray = new String[4];
+                String[] datesArray = new String[5];
 
                 datesArray[0] = jsonAngel.getString("emailAngel" + des);
                 datesArray[1] = jsonAngel.getString("nameAngel" + des);
                 datesArray[2] = "../SNSAngelGuardFB/resources/perfilStandar.gif";
                 datesArray[3] = Type;
+                datesArray[4] = "";
 
                 arrayHdAngels[longInicio + i] = datesArray;
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - genericJoinListAngel: Datos del array en la posicion " + (longInicio + i) + ": " + arrayHdAngels[longInicio + i][0] + "," + arrayHdAngels[longInicio + i][1] + "," + arrayHdAngels[longInicio + i][2] + "," + arrayHdAngels[longInicio + i][3]);
@@ -283,13 +295,14 @@ public class AngelsUtilities {
         //lstFriends = this.snsObject.execFbInst(1);
         List<String> myFriends = this.snsObject.getFacebookRestClient().executeForList("friends.get", String.class);
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngels: Numero de amigos en Facebook: " + myFriends.size());
-        String[] datesArray = new String[4];
+        String[] datesArray = new String[5];
 
         if (myFriends != null) {
-            String[][] angelsDates = new String[myFriends.size()][4];
+            String[][] angelsDates = new String[myFriends.size()][5];
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngels: Numero de Angeles: " + myFriends.size());
 
             for (int i = 0; i < myFriends.size(); i++) {
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngels: Nuevo Angel - " + i);
                 datesArray = getAngelDates(myFriends.get(i));
                 if (datesArray != null) {
                     angelsDates[i] = datesArray;
@@ -314,7 +327,7 @@ public class AngelsUtilities {
      public String[] getAngelDatesDB(JSONObject jsonAngel) {
          logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDatesDB: Inicio getAngelDatesDB...");
 
-        String[] angelArray = new String[4];
+        String[] angelArray = new String[5];
 
         if(jsonAngel != null){
             try {
@@ -322,6 +335,7 @@ public class AngelsUtilities {
                 angelArray[1] = jsonAngel.getString("userName").replace("'", "");
                 angelArray[2] = jsonAngel.getString("userPic");
                 angelArray[3] = "F";
+                angelArray[4] = jsonAngel.getString("userUid");
             } catch (JSONException ex) {
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelDatesDB: Excepcion capturada JSONException: " + ex.getMessage());
                 logger.fatal(ex);
@@ -348,10 +362,10 @@ public class AngelsUtilities {
       */
     public String[][] getAngelsDB(JSONArray jsonFriendsFacebook) throws UniformInterfaceException, IOException, JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsDB: Inicio getAngelsDB...");
-        String[] datesArray = new String[4];
+        String[] datesArray = new String[5];
 
         if (jsonFriendsFacebook != null) {
-            String[][] angelsDates = new String[jsonFriendsFacebook.length()][4];
+            String[][] angelsDates = new String[jsonFriendsFacebook.length()][5];
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsDB: Numero de angeles: " + jsonFriendsFacebook.length());
 
             for (int i = 0; i < jsonFriendsFacebook.length(); i++) {

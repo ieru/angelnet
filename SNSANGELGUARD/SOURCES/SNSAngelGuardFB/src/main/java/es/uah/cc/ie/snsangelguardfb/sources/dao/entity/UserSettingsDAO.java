@@ -1200,7 +1200,7 @@ public class UserSettingsDAO {
                 // Angel en la BD
                 jsonAngel = angels.getJSONObject(j);
                 logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setToDelOlderAngels: Buscando para borrar " + jsonAngel.toString());
-                if (jsonAngel.getString("idAngel").equals(jsonAngelDB.getString("idAngel"))) {
+                if (jsonAngelDB.getString("typeAngel").equals("F") || jsonAngel.getString("idAngel").equals(jsonAngelDB.getString("idAngel"))) {
                     isNotSelected = false;
                     break;
                 }
@@ -1471,37 +1471,46 @@ public class UserSettingsDAO {
      * @throws JSONException
      */
     public String getAngelsUser(String desTypeAngel) throws JSONException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Inicio getAngelsUser...");
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Inicio getAngelsUser para el tipo: " + desTypeAngel);
         Long uidLong = (new Double(this.getUid())).longValue();
         String strListAngels = this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + uidLong + "\"");
         String angels = "";
 
         if (!strListAngels.equals("") && !strListAngels.equals("{}") && existAnyAngel(new JSONObject(strListAngels),"settingsAngels")) {
-            JSONObject jsonAngel = null;
+            
             JSONObject jsonAngels = new JSONObject(strListAngels);
             JSONArray jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonAngels.getString("settingsAngels"));
+            
+            switch (desTypeAngel) {
+                case "G":
+                    angels = formatJsonLstAngel(jsonArrayAngels, desTypeAngel, "GoogleSelected");
+                    logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Angeles del tipo " + desTypeAngel + ": " + angels);
+                    break;
+                case "O":
+                    angels = formatJsonLstAngel(jsonArrayAngels, desTypeAngel, "Ed");
+                    logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Angeles del tipo " + desTypeAngel + ": " + angels);
+                    break;
+                case "F":
+                    JSONObject jsonAngel;
+                    
+                    for (int i = 0; i < jsonArrayAngels.length(); i++) {
+                        jsonAngel = jsonArrayAngels.getJSONObject(i);
+                        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Angeles del tipo " + desTypeAngel + " obtenido: " + jsonAngel.toString());
 
-            if (desTypeAngel.equals("G")) {
-                angels = formatJsonLstAngel(jsonArrayAngels, desTypeAngel, "GoogleSelected");
-            } else if (desTypeAngel.equals("O")) {
-                angels = formatJsonLstAngel(jsonArrayAngels, desTypeAngel, "Ed");
-            } else {
-                for (int i = 0; i < jsonArrayAngels.length(); i++) {
-                    jsonAngel = jsonArrayAngels.getJSONObject(i);
-
-                    if (jsonAngel.getString("typeAngel").equals(desTypeAngel)) {
-                        if (i == 0) {
-                            angels = jsonAngel.getString("idFacebook") + ";";
-                        } else {
-                            angels += jsonAngel.getString("idFacebook") + ";";
+                        if (jsonAngel.getString("typeAngel").equals(desTypeAngel)) {
+                            if (i == 0) {
+                                angels = jsonAngel.getString("idFacebook") + ";";
+                            } else {
+                                angels += jsonAngel.getString("idFacebook") + ";";
+                            }
                         }
                     }
-                }
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Angeles definidos de Facebook: " + angels);
+                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Angeles definidos del tipo " + desTypeAngel + ": " + angels);
+                    break;
             }
         }
         
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Fin getAngelsUser...");
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsUser: Fin getAngelsUser para el tipo: " + desTypeAngel);
         return angels;
     }
 

@@ -643,7 +643,14 @@ function cerrarInfoModal(){
 
 function cerrarInfoError(uidPublic){
     $(function(){
-        var url = '../SNSAngelGuardFB/presentationApp.jsp?par1=' + uidPublic;
+        var url = '';
+        
+        if(uidPublic != null){
+            url = '../SNSAngelGuardFB/presentationApp.jsp?par1=' + uidPublic;
+        } else{
+            url = '../SNSAngelGuardFB/presentationApp.jsp';
+        }
+        
         $(location).attr('href', url);
     });
 }

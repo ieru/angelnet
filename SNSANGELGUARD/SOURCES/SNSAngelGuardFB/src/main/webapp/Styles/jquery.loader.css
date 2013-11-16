@@ -12,7 +12,7 @@ h1.tituloMed{
 	padding-top:35px;
 	background-color: white;
 	text-align: center;
-        background-image: url(http://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
+        background-image: url(https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
 	background-position: center bottom;
 	background-repeat: no-repeat;
         margin: 10px 10px 10px 10px;
@@ -23,7 +23,7 @@ h1.tituloMed{
 	padding-top:35px;
 	background-color: white;
 	text-align: center;
-	background-image: url(http://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
+	background-image: url(https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
 	background-position: center center;
 	background-repeat: no-repeat;
 }
@@ -32,8 +32,5 @@ h1.tituloMed{
 	padding-top:35px;
 	background-color: transparent;
 	text-align: center;
-	background-image: url(http://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
-	background-position: center center;
-	background-repeat: no-repeat;
 
 }

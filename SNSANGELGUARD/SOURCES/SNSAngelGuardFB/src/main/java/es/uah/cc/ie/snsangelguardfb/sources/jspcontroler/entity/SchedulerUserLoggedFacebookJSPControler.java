@@ -9,12 +9,19 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultLegacyFacebookClient;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
+import es.uah.cc.ie.snsangelguardfb.exception.CodeException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -104,6 +111,83 @@ public class SchedulerUserLoggedFacebookJSPControler extends GenericJSPControler
         return loaderWait;
     }
 
+    /**
+     * Lee la url que obtiene la accessToken ampliada.
+     * 
+     * @param url
+     * @return
+     * @throws IOException 
+     */
+    private String readURL(URL url) throws IOException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - readURL: Inicio readURL...");
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream is = url.openStream();
+        int r;
+        while ((r = is.read()) != -1) {
+            baos.write(r);
+        }
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - readURL: Fin readURL!!");
+        return new String(baos.toByteArray());
+    }
+    
+    /**
+     * Metodo privado que amplia la accessToken a un rango temporal mayor. Necesario para accesos offline.
+     * 
+     * @param accessToken
+     * @return
+     * @throws InterDataBaseException
+     * @throws InterProcessException
+     * @throws InterEmailException 
+     */
+    private String getExtendedTokenFacebook(String accessToken) throws InterDataBaseException, InterProcessException, InterEmailException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getExtendedTokenFacebook: Inicio getExtendedTokenFacebook...");
+        Integer expires = null;
+        String newAccessToken = null;
+            
+        try {
+            String urlBaseToken = "https://graph.facebook.com/oauth/access_token?";
+
+            urlBaseToken = urlBaseToken + "client_id=" + this.snsObject.getConfigurationManager().getApiKey() + "&"
+                    + "client_secret=" + this.snsObject.getConfigurationManager().getApiSecretKey() + "&"
+                    + "grant_type=fb_exchange_token" + "&"
+                    + "fb_exchange_token=" + accessToken;
+            URL urlFacebookExtendedToken = new URL(urlBaseToken);
+            String result = readURL(urlFacebookExtendedToken);
+
+            String[] pairs = result.split("&");
+            for (String pair : pairs) {
+                String[] kv = pair.split("=");
+                if (kv.length != 2) {
+                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - getExtendedTokenFacebook: Unexpected auth response");
+                    
+                    throw new InterProcessException(new Exception(), CodeException.ERROR_NO_AUTH_ACCESSTOKEN);
+                }
+                if (kv[0].equals("access_token")) {
+                    newAccessToken = kv[1];
+                    logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getExtendedTokenFacebook: Nueva accessToken obtenida: " + newAccessToken);
+                }
+                if (kv[0].equals("expires")) {
+                    expires = Integer.parseInt(kv[1]);
+                    Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
+                    calendar.add(Calendar.SECOND, expires);
+                    
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                    logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getExtendedTokenFacebook: La nueva accessToken expira el " + sdf.format(calendar.getTime()));  
+                }
+            }
+        } catch (MalformedURLException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - getExtendedTokenFacebook: Excepcion capturada " + ex.getClass().getName() + ": " + ex.getMessage());
+            this.snsObject.getExceptionManager().initControlException(ex);
+        } catch (IOException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - getExtendedTokenFacebook: Excepcion capturada " + ex.getClass().getName() + ": " + ex.getMessage());
+            this.snsObject.getExceptionManager().initControlException(ex);
+        } 
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getExtendedTokenFacebook: Fin getExtendedTokenFacebook!!");
+        
+        return newAccessToken;
+    }
 
     @Override
     public void process() throws InterDataBaseException, InterProcessException, InterEmailException {
@@ -116,6 +200,9 @@ public class SchedulerUserLoggedFacebookJSPControler extends GenericJSPControler
             // Obtenemos los datos de conexion del usuario
             String uid = this.request.getParameter("uid");
             String accessToken = this.request.getParameter("accessToken");
+            
+            // Obtenemos un nuevo AccessToken ampliado para conexiones offline
+            accessToken = getExtendedTokenFacebook(accessToken);
             
             // Establecemos los parametros del usuario en la sesion
             session.setAttribute("user_id", uid);

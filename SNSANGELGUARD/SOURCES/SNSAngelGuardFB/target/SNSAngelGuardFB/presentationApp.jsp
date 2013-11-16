@@ -12,29 +12,31 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-        SNSAngelGuardFBManager snsObject = null;
-        String nameUser = null;
-        String srcImg = null;
-        String appLink = null;
-        
-        try {
-            //Obtenemos la seson de la aplicacion
-            snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
+    SNSAngelGuardFBManager snsObject = null;
+    String nameUser = null;
+    String srcImg = null;
+    String appLink = null;
 
-            String uidPublic = request.getParameter("par1");
+    try {
+        //Obtenemos la seson de la aplicacion
+        snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
+
+        String uidPublic = request.getParameter("par1");
+
+        if (uidPublic != null) {
 
             // Obtener informaci√≥n de userSettings por su uidPublic
             JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
 
             snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
             snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
-            
+
             //Obtenemos la conexión a Facebook
             snsObject.getLoginAppOffline(request, response);
-
-            nameUser = "SNSAngelGuardFB";
-            srcImg = snsObject.getConfigurationManager().getConfigHostApplicationSSL() + "SNSAngelGuardFB/resources/logo75.gif";
-            appLink = "http://www.facebook.com/apps/application.php?id=179105958774916";
+        }
+        nameUser = "SNSAngelGuardFB";
+        srcImg = snsObject.getConfigurationManager().getConfigHostApplicationSSL() + "SNSAngelGuardFB/resources/logo75.gif";
+        appLink = "http://www.facebook.com/apps/application.php?id=179105958774916";
         } catch (InterDataBaseException e) {
             String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
 
