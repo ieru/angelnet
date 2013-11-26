@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
-import org.openide.util.Exceptions;
 
 /**
  * Controla la ejecucion de la pagina checkNow.jsp

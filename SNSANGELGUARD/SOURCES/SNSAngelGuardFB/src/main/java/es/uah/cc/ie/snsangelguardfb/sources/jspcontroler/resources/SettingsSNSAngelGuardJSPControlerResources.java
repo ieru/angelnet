@@ -38,6 +38,9 @@ public class SettingsSNSAngelGuardJSPControlerResources {
     /** Recursos de idioma para la pesta?a de vigilantes */
     private SettingsSNSAngelGuardJSPControlerResourcesVigilantsMenu jspResourcesVigilantsMenu;
     
+    /** Mensajes tipo Warnings en formato String separados por el caracter ; */
+    private String strMenLoader;
+    
     /** Mensajes de carga entre paginas */
     private String[] menLoader;
     
@@ -85,6 +88,10 @@ public class SettingsSNSAngelGuardJSPControlerResources {
 
     public String getBtnSaveSettings() {
         return btnSaveSettings;
+    }
+
+    public String getStrMenLoader() {
+        return strMenLoader;
     }
 
     public String[] getMenLoader() {
@@ -197,6 +204,7 @@ public class SettingsSNSAngelGuardJSPControlerResources {
         this.nameTutor = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTxtNameTutorSettAng();
         this.emailTutor = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTxtEmailTutorSettAng();
         this.btnSaveSettings = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnSaveCheckSettings();
+        this.strMenLoader = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings();
         this.menLoader = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings());
         this.mensaje = menLoader[1];
         this.menSave = menLoader[2];

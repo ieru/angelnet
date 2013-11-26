@@ -53,14 +53,13 @@
         <form id="frIndex" action="" method="">
             <input type="hidden" id="uid" name="uid" value="" />
             <input type="hidden" id="accessToken" name="accessToken" value="" />
-            
             <div id="fb-root">
                 <script>
                       window.fbAsyncInit = function() {
                         // init the FB JS SDK
                         FB.init({
-                           appId      : '<%= controler.getSnsObject().getConfigurationManager().getApiKey() %>',                        // App ID from the app dashboard
-                          channelUrl : '//' + '<%= controler.getSnsObject().getConfigurationManager().getConfigHostApplicationSSL() %>' + 'SNSAngelGuardFB/index.jsp', // Channel file for x-domain comms
+                           appId      : '<%= controler.getSnsObject().getConfigurationManager().getApiKey()%>',                        // App ID from the app dashboard
+                          channelUrl : '//' + '<%= controler.getSnsObject().getConfigurationManager().getConfigHostApplicationSSL()%>' + 'SNSAngelGuardFB/index.jsp', // Channel file for x-domain comms
                           status     : true,                                 // Check Facebook Login status
                           xfbml      : true                                  // Look for social plugins on the page
                         });

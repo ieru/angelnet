@@ -81,7 +81,7 @@
                                     <table width="100%">
                                         <tr>
                                             <td width="90%">
-                                                <h1 class="tituloMed"><%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleAngUser()%></h1>
+                                                <h1 class="tituloMed"><%= title %></h1>
                                             </td>
                                         </tr>
                                         <tr>

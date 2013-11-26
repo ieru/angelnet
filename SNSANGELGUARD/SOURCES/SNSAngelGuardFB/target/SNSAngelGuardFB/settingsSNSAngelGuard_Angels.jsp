@@ -63,6 +63,7 @@
     </head>
     <body>
         <form id="frSNSAngels" action="" method="">
+            <input type="hidden" id="typeOperationOtherContacts" name="typeOperationOtherContacts" value="0" />
             <input type="hidden" id="hdAngels" name="hdAngels" value="" />
             <input type="hidden" id="hdAngelsEd" name="hdAngelsEd" value="" />
             <input type="hidden" id="hdAngelsEdAux" name="hdAngelsEdAux" value="" />
@@ -134,7 +135,7 @@
                                 <tr>
                                     <td width="122px" align="right">
                                         <input type="button" class="boton" id="btnImport" name="btnImport" value="<%= controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnImportSettAng()%>"
-                                               onclick="setWinOpen();lanzarModal('../SNSAngelGuardFB/modalContacts.jsp',700,420);"/>
+                                               onclick="lanzarModalGoogleContacts('../SNSAngelGuardFB/modalContacts.jsp',700,420);"/>
                                     </td>
                                 </tr>
                                 <tr>

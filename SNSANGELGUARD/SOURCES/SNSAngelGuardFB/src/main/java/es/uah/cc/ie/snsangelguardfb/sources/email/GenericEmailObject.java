@@ -212,7 +212,7 @@ public class GenericEmailObject {
                 + "<div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:20px;color: #3b5998;margin:5px;\">" + title + "<A style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;color: #3b5998;cursor:pointer;\" href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/angelUser.jsp?par1=" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic() + "\">" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + "</A>"
                 + "<hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" />"
                 + "<table width=\"97%\">"
-                + "<tr><br><td width=\"95%\"><A style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;color: #3b5998;cursor:pointer;\" href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/helpMe.jsp" + "\">" + titleHelp[0] + "</A></td></tr>";
+                + "<tr><br><td width=\"95%\"><A style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;color: #3b5998;cursor:pointer;\" href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/helpMe.jsp?par1=" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic() + "\">" + titleHelp[0] + "</A></td></tr>";
 
         if (!resultFltWall.equals("")) {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificaci?n filtro Wall: " + resultFltWall);

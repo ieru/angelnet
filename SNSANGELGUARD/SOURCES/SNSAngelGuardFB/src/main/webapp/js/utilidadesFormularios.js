@@ -5,10 +5,6 @@
 
 var arrayAngelsVig = '';
 
-function alertRecibe(){
-    alert('ESCRIBE');
-}
-
 function enviarFormularioIndex(destino)
 {
     document.getElementById('frIndice').setAttribute("action", destino);
@@ -159,34 +155,30 @@ function cargarListaVig(strFbList){
 var vent = null;
 var miVentana;
 
+function showDialog(ancho, alto) {
+    $("#modalDialog").dialog({
+        height: alto,
+        width: ancho,
+        modal: true
+    });
+}
+
+
 function lanzarModal(url, ancho, alto) {
-    muestraLoaderSin();
-    if(navigator.userAgent.toLowerCase().indexOf('chrome') != -1){
-      alto = alto + 40;
-    }
+    $(function() {
 
-    var value = 'no';
-    var settings;
+        showDialog(ancho, alto);
+        $("#modalDialog").load(url);
+    });
+}
 
-    settings = "";
-    settings += "toolbar=" + value + ",";
-    settings += "scrollbars=" + value + ",";
-    settings += "location=" + value +  ",";
-    settings += "status=" + value + ",";
-    settings += "menubar=" + value + ",";
-    settings += "resizeable=" + value + ",";
-    settings += "width=" + ancho + ",";
-    settings += "height=" + alto;
-    settings += "modal=" + "yes";
-    var top = (screen.height - alto)/2;
-    var center = (screen.width - ancho)/2;
 
-    miVentana = window.open(url,"popup",settings);
+function lanzarModalGoogleContacts(url, ancho, alto) {
+    $(function() {
 
-    miVentana.moveTo(center,top);
-    miVentana.focus();
-
-    return miVentana;
+        showDialog(ancho, alto);
+        $("#modalDialog").load(url);
+    });
 }
 
 function lanzarModalAyuda(url, ancho, alto) {
@@ -242,6 +234,18 @@ function deshabilitarBoton(idBoton){
 
 function habilitarBoton(idBoton){
     document.getElementById(idBoton).className = "boton";
+}
+
+function deshabilitarBotonQuery(idBoton){
+    $(function(){
+        $(idBoton).attr("class", "botonDisabled");
+    });
+}
+
+function habilitarBotonQuery(idBoton){
+    $(function(){
+        $(idBoton).attr("class", "boton");
+    });
 }
 
 function limpiarLista(longitud){
@@ -301,49 +305,77 @@ function cargarInicioModal(){
 function getJsonIdValue(jsonObject,type){
     var jsonObjectArray = jsonObject.split(",");
     var jsonValue;
-
-    if(type=='name'){
+    
+    if(type=='id'){
         jsonValue = (jsonObjectArray[0]).split(":");
-    }else if(type=='email'){
+    } else if(type=='name'){
         jsonValue = (jsonObjectArray[1]).split(":");
-    }
+    } else if(type=='email'){
+        jsonValue = (jsonObjectArray[2]).split(":");
+    } 
 
     return formatName(jsonValue[1]);
 }
 
-function delToJsonAngels(nameAddress,des){
-    var angelsSelected = (document.getElementById('hdAngels' + des).value).split(";");
-    var auxAngelSelected = '';
-    var angel = '';
-    var nameAngel = '';
-    var auxName = '';
+function getJsonObject(idContact) {
+    var angelsEd = $('#hdAngelsEd').val();
 
-    for(var i=0;i<angelsSelected.length - 1;i++){
-        angel = angelsSelected[i].split(",");
-        nameAngel = angel[0].split(":");
+    if (angelsEd != '') {
+        var arrayContactsEd = angelsEd.split(";");
+        var longitud = parseInt(arrayContactsEd.length) - parseInt(1);
 
-        auxName = formatName(nameAngel[1]);
-        if(auxName.indexOf(nameAddress) == -1){
-            if(auxAngelSelected == ''){
-                auxAngelSelected = angelsSelected[i] + ';';
-            }else{
-                auxAngelSelected += angelsSelected[i] + ';';
+        if (longitud > 0) {
+            for (var i = 0; i < longitud; i++) {
+                if (getJsonIdValue(arrayContactsEd[i], 'id') == idContact) {
+                    return arrayContactsEd[i];
+                }
             }
         }
     }
-    document.getElementById('hdAngels' + des).value = auxAngelSelected;
+}
+
+function delToJsonAngels(nameAddress,des){
+    $(function() {
+        var angelsSelected = ($('#hdAngels' + des).val()).split(";");
+        var auxAngelSelected = '';
+        var angel = '';
+        var nameAngel = '';
+        var auxName = '';
+
+        for (var i = 0; i < angelsSelected.length - 1; i++) {
+            angel = angelsSelected[i].split(",");
+            nameAngel = angel[1].split(":");
+
+            auxName = formatName(nameAngel[1]);
+            if (auxName.indexOf(nameAddress) == -1) {
+                if (auxAngelSelected == '') {
+                    auxAngelSelected = angelsSelected[i] + ';';
+                } else {
+                    auxAngelSelected += angelsSelected[i] + ';';
+                }
+            }
+        }
+        $('#hdAngels' + des).val(auxAngelSelected);
+    });
 }
 
 function addToJsonAngels(nameAddress,emailAddress,des){
-    var angelsSelected = document.getElementById('hdAngels' + des).value;
-    var toJSONvalue = '{' +'\"nameAngel'+ des +'\":' + '\"'+ formatNameComa(nameAddress) +'\", ' + '\"emailAngel'+ des +'\":' + '\"'+ emailAddress +'\"' +'}';
-   
-    if(angelsSelected == ''){
-        angelsSelected = toJSONvalue + ';';
-    }else{
-        angelsSelected += toJSONvalue + ';';
-    }
-    document.getElementById('hdAngels'+ des).value = angelsSelected;
+    $(function() {
+        alert(des)
+        alert(nameAddress)
+        var angelsSelected = $('#hdAngels' + des).val();
+        alert(angelsSelected)
+        var toJSONvalue = '{' + '\"idContact' + des + '\":' + '\" + null + \",' + '\"nameAngel' + des + '\":' + '\"' + formatNameComa(nameAddress) + '\", ' + '\"emailAngel' + des + '\":' + '\"' + emailAddress + '\"' + '}';
+
+        if (angelsSelected == '') {
+            angelsSelected = toJSONvalue + ';';
+        } else {
+            angelsSelected += toJSONvalue + ';';
+        }
+        alert(angelsSelected)
+        $('#hdAngels' + des).val(angelsSelected);
+        alert($('#hdAngels' + des).val())
+    });
 }
 
 function delItemLstJsonAngels(){
@@ -454,19 +486,19 @@ function habilitarBorrar(){
 
 function seleccionarFilaGoogle(elemento,radio,nameAddress,emailAddress){
     // Test if the element is selected
-    if(document.getElementById(elemento).className == 'pijama1'){
-        document.getElementById('hdAngelsGoogleSelectedAux').value = document.getElementById('hdAngelsGoogleSelected').value;
+    
+    if($(elemento).attr("class").val() == 'pijama1'){
         delToJsonAngels(nameAddress,'GoogleSelected');
 
-        document.getElementById(radio).checked = true;
-        document.getElementById(elemento).className = 'pijama2';
+        $(radio).attr("checked", true);
+        $(elemento).attr("class", "pijama2");
 
         habilitarBorrar();
     }else{
         addToJsonAngels(nameAddress,emailAddress,'GoogleSelected');
 
-        document.getElementById(radio).checked = false;
-        document.getElementById(elemento).className = 'pijama1';
+        $(radio).attr("checked", false);
+        $(elemento).attr("class", "pijama1");
 
         habilitarBorrar();
     }
@@ -500,24 +532,24 @@ function comprobarAceptar(){
 }
 
 function seleccionarFila(elemento,radio,nameAddress,emailAddress){
-    // Test if the element is selected
-    if(document.getElementById(elemento).className == 'pijama2'){
-        delToJsonAngels(nameAddress,'GoogleSelected');
+    $(function() {
+        // Test if the element is selected
+        if ($(elemento).attr("class") == 'pijama1') {          
+            addToJsonAngels(nameAddress, emailAddress, 'GoogleSelected');
 
-        document.getElementById(radio).checked = false;
-        document.getElementById(elemento).className = 'pijama1';
+            $(radio).attr("checked", true);
+            $(elemento).attr("class", "pijama2");
 
-        if(document.getElementById('hdAngelsGoogleSelected').value == ''){
-            deshabilitarBoton('btnAceptar');
+            habilitarBotonQuery('#btnAceptarModal');
+        } else {
+            delToJsonAngels(nameAddress, emailAddress, 'GoogleSelected');
+
+            $(radio).attr("checked", false);
+            $(elemento).attr("class", "pijama1");
+
+            deshabilitarBotonQuery('#btnAceptarModal');
         }
-    }else{
-        addToJsonAngels(nameAddress,emailAddress,'GoogleSelected');
-
-        document.getElementById(radio).checked = true;
-        document.getElementById(elemento).className = 'pijama2';
-
-        habilitarBoton('btnAceptar');
-    }
+    });
 }
 
 function formatName(nameContact){
@@ -624,16 +656,20 @@ function pintarTablaConGoogle(jsonContacts,modo){
     }
 }
 
-function enviarFormularioContacts(aceptar){
-    if(aceptar != "1"){
+function enviarFormularioContacts(menSave, menWait, aceptar){
+    $(function(){
+        var $jQueryParent=window.parent.$; 
+    if (aceptar != "1") {
         document.getElementById('hdAngelsGoogleSelected').value = '';
-    }else{
+    } else {
         window.opener.document.getElementById('hdAngelsGoogleSelected').value = document.getElementById('hdAngelsGoogleSelected').value;
+
+        launchDoOperationWithGmailContact(menSave, menWait, "0", window.opener.document.getElementById('hdAngelsGoogleSelected').value);
     }
-    pintarTablaConGoogle(window.opener.document.getElementById('hdAngelsGoogleSelected').value,'modal');
 
     setLoader();
-    window.close();
+    window.close(); 
+    });
 }
 
 function cerrarInfoModal(){
@@ -655,7 +691,7 @@ function cerrarInfoError(uidPublic){
     });
 }
 
-function loadContactsEd(){
+function loadContactsEd(menSave, menWait){
     $(function(){
         var angelsEd = $('#hdAngelsEd').val();
         if(angelsEd != ''){
@@ -664,19 +700,19 @@ function loadContactsEd(){
 
             if(longitud > 0){
                 for(var i=0;i<longitud;i++){
-                    pintarNuevoContacto(i);
+                    pintarNuevoContacto(menSave, menWait, i, getJsonIdValue(arrayContactsEd[i],'id'));
                     $('#txtNameTutorEd' + i).attr("value",getJsonIdValue(arrayContactsEd[i],'name'));
                     $('#txtEmailTutorEd' + i).attr("value",getJsonIdValue(arrayContactsEd[i],'email'));
-                    habilitarBotonBorrarContacto(i);
+                    habilitarBotonBorrarContacto(menSave, menWait, i, getJsonIdValue(arrayContactsEd[i],'id'));
                 }
             }else{
-                pintarNuevoContacto(0);
+                pintarNuevoContacto(menSave, menWait, 0);
                 $('#txtNameTutorEd0').attr("value","");
                 $('#txtEmailTutorEd0').attr("value","");
             }
         }
         else{
-            pintarNuevoContacto(0);
+            pintarNuevoContacto(menSave, menWait, 0);
             $('#txtNameTutorEd0').attr("value","");
             $('#txtEmailTutorEd0').attr("value","");
         }
@@ -1487,15 +1523,16 @@ function isContactValid(numRow){
     var email = $('#txtEmailTutorEd' + numRow).val();
 
     if(isEmailValid(email)){
+        $('#txtEmailTutorEd' + numRow).attr('class','');
         return true;
     }else{
+        $('#txtEmailTutorEd' + numRow).attr('class','inputTextError');
         return false;
     }
 }
 
-function isDatesValid(idName,idEmail, numRow){
+function isDatesValid(menSave, menWait, idName, idEmail, numRow, idContact){
     $(function(){
-
         if($(idName).val() != '' && $(idEmail).val() != '' && isContactValid(numRow)){
             $('#guardar' + numRow).attr("class", "cabOtrosContactos");
             $('#guardar' + numRow).attr("title", $('#hdGuardarContacto').val());
@@ -1503,12 +1540,12 @@ function isDatesValid(idName,idEmail, numRow){
 
             if($('guardar' + numRow).attr('onclick')){
                 $('#guardar' + numRow).removeAttr('onclick').click(function(){
-                    saveDatesTutor(numRow);
+                    saveDatesTutor(menSave, menWait, numRow, idContact);
                 });
             }else{
                 $('#guardar' + numRow).unbind('click');
                 $('#guardar' + numRow).click(function(){
-                    saveDatesTutor(numRow);
+                    saveDatesTutor(menSave, menWait, numRow, idContact);
                 });
             }
         }else{
@@ -1526,19 +1563,21 @@ function isDatesValid(idName,idEmail, numRow){
     });
 }
 
-function saveDatesTutor(numRow){
+function saveDatesTutor(menSave, menWait, numRow, idContact){
     var email = $('#txtEmailTutorEd' + numRow).val();
     var name = $('#txtNameTutorEd' + numRow).val();
-
-    if(isDupEmail(email)){
+    var typeOperation = $('#typeOperationOtherContacts').val();
+    
+    if(idContact){
         // Remplazamos el nuevo nombre del angel por el antiguo
-        replaceNameIsDupEmail(email,name)
+        launchDoOperationWithOtherContact(menSave, menWait, typeOperation,name, email, idContact);
     }else{
         // Guardamos los datos del contacto
-        saveAngelEd(name,email);
+        launchDoOperationWithOtherContact(menSave, menWait, typeOperation,name, email);
+        //saveAngelEd(name,email);
     }
-    habilitarGuardar();
-    habilitarBotonBorrarContacto(numRow);
+    //habilitarGuardar();
+    //habilitarBotonBorrarContacto(numRow);
 }
 
 function quitarAcentos(id){
@@ -1548,10 +1587,12 @@ function quitarAcentos(id){
     $(nameTutor).attr("value",valueName);
 }
 
-function isDatesTutorValid(numAngel){
+function isDatesTutorValid(menSave, menWait, numAngel, idContact){
+    
     var nameTutor = '#txtNameTutorEd' + numAngel;
     var emailTutor = '#txtEmailTutorEd' + numAngel;
-    isDatesValid(nameTutor,emailTutor,numAngel);
+    
+    isDatesValid(menSave, menWait, nameTutor,emailTutor,numAngel, idContact);
 
 }
 
@@ -1615,7 +1656,32 @@ function loadTitles(titleName, titleEmail){
     emailTitle = titleEmail;
 }
 
-function pintarNuevoContacto(numNewRow){
+function launchDoOperationWithGmailContact(menSave, menWait, typeOperation, hdAngelsGoogleSelected){
+    $(function() {
+        // Mostramos el loader de la operacion
+        muestraLoader(menSave, menWait);
+
+        var data = 'doOperationWithGoogleContacts.jsp' + '?' + "typeOperation=" + typeOperation + "&hdAngelsGoogleSelected=" + hdAngelsGoogleSelected;
+
+        $('#frModalContacts').attr('action', data);
+        $('#frModalContacts').attr('method', 'post');
+        $('#frModalContacts').submit();
+    });
+}
+
+function launchDoOperationWithOtherContact(menSave, menWait, typeOperation, nameContact, emailContact, idContact){
+    // Mostramos el loader de la operacion
+    muestraLoader(menSave, menWait);
+    
+    var data = 'doOperationWithOtherContact.jsp' + '?' + "typeOperation=" + typeOperation + "&nameContact=" + nameContact + "&emailContact=" + emailContact + "&idContact=" + idContact;
+    
+    document.getElementById('frSNSAngels').setAttribute('action', data);
+    document.getElementById('frSNSAngels').setAttribute('method','post');
+    document.getElementById('frSNSAngels').submit();
+}
+
+function pintarNuevoContacto(menSave, menWait, numNewRow, idContact){
+    
     var tabla = document.getElementById('tabFriendsImport');
     var siguiente = parseInt(numNewRow) + parseInt(1);
 
@@ -1628,12 +1694,12 @@ function pintarNuevoContacto(numNewRow){
     tabla.rows[numNewRow].innerHTML = "<td width=\"32px\"><h1 class=\"tituloMedCabOtrosContactos\">" + siguiente + "</h1>"
     + "</td><td width=\"247px\" align=\"right\"><label for=\"txtNameTutorEd" + numNewRow + "\">" + $('#hdNameContact').val() + " </label>"
     + "<input type=\"text\" disabled=\"disabled\" name=\"txtNameTutorEd" + numNewRow + "\" id=\"txtNameTutorEd" + numNewRow + "\" size=\"25\" maxlength=\"70\""
-    + "onchange=\"isDatesTutorValid(" + numNewRow + ");\" value=\"\" /></td>"
+    + "onchange=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" onKeyUp=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" onblur=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" value=\"\" /></td>"
     + "<td width=\"248px\" align=\"right\"><label for=\"txtEmailTutorEd" + numNewRow + "\">" + $('#hdEmailContact').val() + " </label>"
     + "<input type=\"text\" disabled=\"disabled\" name=\"txtEmailTutorEd" + numNewRow + "\" id=\"txtEmailTutorEd" + numNewRow + "\" size=\"25\" maxlength=\"70\""
-    + "onchange=\"isDatesTutorValid(" + numNewRow + ");\" value=\"\" /></td>"
+    + "onchange=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" onKeyUp=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" onblur=\"isDatesTutorValid('" + menSave + "', '" + menWait + "'," + numNewRow + ", " + idContact + ");\" value=\"\" /></td>"
     + "<td width=\"130px\">"
-    + "<img title=\"" + $('#hdEditarContacto').val() + "\" id=\"editar" + numNewRow + "\" onclick=\"habilitarDatosContacto(" + numNewRow + ")\" src=\"../SNSAngelGuardFB/resources/editContact.gif\" class=\"cabOtrosContactos\" />"
+    + "<img title=\"" + $('#hdEditarContacto').val() + "\" id=\"editar" + numNewRow + "\" onclick=\"habilitarDatosContacto(" + numNewRow + ", " + idContact + ")\" src=\"../SNSAngelGuardFB/resources/editContact.gif\" class=\"cabOtrosContactos\" />"
     + "<img title=\"\" id=\"cancelar" + numNewRow + "\" onclick=\"\" src=\"../SNSAngelGuardFB/resources/desCancelarContact.gif\" class=\"cabOtrosContactos\" />"
     + "<img title=\"\" id=\"eliminar" + numNewRow + "\"  onclick=\"\" src=\"../SNSAngelGuardFB/resources/desDeleteContact.gif\" class=\"cabOtrosContactos\" />"
     + "<img title=\"\" id=\"guardar" + numNewRow + "\" onclick=\"\" src=\"../SNSAngelGuardFB/resources/desSaveContact.gif\" class=\"cabOtrosContactos\" /></td>";
@@ -1644,18 +1710,25 @@ function pintarNuevoContacto(numNewRow){
     + "</td><td width=\"247px\" align=\"right\"></td><td width=\"248px\" align=\"right\">"
     + "</td><td width=\"130px\" align=\"right\" >"
     + "<img title=\"" + $('#hdAnadirContacto').val() + "\" class=\"newAngel\" src=\"../SNSAngelGuardFB/resources/anadir.gif\""
-    + "onclick=\"pintarNuevoContacto('" + siguiente +"');\"></img>"
+    + "onclick=\"pintarNuevoContacto('" + menSave + "', '" + menWait + "','" + siguiente + "');\"></img>"
     + "</td>";
 
     despInfScroll('friendsImportContainer');
 }
 
-function habilitarDatosContacto(numRow){
+function habilitarDatosContacto(numRow, idContact){
     $(function(){
 
         // Habilitamos los cuadros de texto del contacto
         $('#txtNameTutorEd' + numRow).attr("disabled", "");
         $('#txtEmailTutorEd' + numRow).attr("disabled", "");
+        
+        
+        if(!idContact){
+            $('#typeOperationOtherContacts').val("0");
+        }else{
+            $('#typeOperationOtherContacts').val("1");
+        }
 
         // Deshabilitamos el bot?n de editar
         $('#editar' + numRow).attr("src", "../SNSAngelGuardFB/resources/desEditContact.gif");
@@ -1673,26 +1746,40 @@ function habilitarDatosContacto(numRow){
         $('#cancelar' + numRow).attr("class","cabOtrosContactos");
         if($('#cancelar' + numRow).attr('onclick')){
             $('#cancelar' + numRow).removeAttr('onclick').click(function(){
-                desHabilitarDatosContacto(numRow);
+                desHabilitarDatosContacto(numRow, idContact);
             });
         }else{
             $('#cancelar' + numRow).unbind('click');
             $('#cancelar' + numRow).click(function(){
-                desHabilitarDatosContacto(numRow);
+                desHabilitarDatosContacto(numRow, idContact);
             });
         }
     });
 }
 
-function desHabilitarDatosContacto(numRow){
+function desHabilitarDatosContacto(numRow, idContact){
     $(function(){
-        var nameAngel = $('#txtNameTutorEd' + numRow).val();
-        var emailAngel = $('#txtEmailTutorEd' + numRow).val();
-        var borrar = existAngelEd(nameAngel, emailAngel);
-        if(!borrar){
+        var angelsEd = $('#hdAngelsEd').val();
+        
+        if (angelsEd != '') {
+            var jsonAngelEd = getJsonObject(idContact);
+            var oldNameAngel = getJsonIdValue(jsonAngelEd, "name");
+            var oldEmailAngel = getJsonIdValue(jsonAngelEd, "email");
+
+            var borrar = existAngelEd(oldNameAngel, oldEmailAngel);
+            if (!borrar) {
+                // Limpiamos los cuadros de texto
+                $('#txtNameTutorEd' + numRow).attr("value", "");
+                $('#txtEmailTutorEd' + numRow).attr("value", "");
+            } else {
+                // Reemplazamos los valores anteriores a la modificacion
+                $('#txtNameTutorEd' + numRow).attr("value", oldNameAngel);
+                $('#txtEmailTutorEd' + numRow).attr("value", oldEmailAngel);
+            }
+        } else {
             // Limpiamos los cuadros de texto
-            $('#txtNameTutorEd' + numRow).attr("value","");
-            $('#txtEmailTutorEd' + numRow).attr("value","");
+            $('#txtNameTutorEd' + numRow).attr("value", "");
+            $('#txtEmailTutorEd' + numRow).attr("value", "");
         }
 
         // Deshabilitamos los cuadros de texto
@@ -1705,12 +1792,12 @@ function desHabilitarDatosContacto(numRow){
         $('#editar' + numRow).attr("class","cabOtrosContactos");
         if($('editar' + numRow).attr('onclick')){
             $('#editar' + numRow).removeAttr('onclick').click(function(){
-                habilitarDatosContacto(numRow);
+                habilitarDatosContacto(numRow, idContact);
             });
         }else{
             $('#editar' + numRow).unbind('click');
             $('#editar' + numRow).click(function(){
-                habilitarDatosContacto(numRow);
+                habilitarDatosContacto(numRow, idContact);
             });
         }
 
@@ -1727,8 +1814,9 @@ function desHabilitarDatosContacto(numRow){
     });
 }
 
-function habilitarBotonBorrarContacto(numRow){
+function habilitarBotonBorrarContacto(menSave, menWait, numRow, idContact){
     $(function(){
+        
         // Deshabilitamos los cuadros de texto
         $('#txtNameTutorEd' + numRow).attr("disabled","disabled");
         $('#txtEmailTutorEd' + numRow).attr("disabled","disabled");
@@ -1739,27 +1827,28 @@ function habilitarBotonBorrarContacto(numRow){
         $('#editar' + numRow).attr("class","cabOtrosContactos");
         if($('editar' + numRow).attr('onclick')){
             $('#editar' + numRow).removeAttr('onclick').click(function(){
-                habilitarDatosContacto(numRow);
+                habilitarDatosContacto(numRow, idContact);
             });
         }else{
             $('#editar' + numRow).unbind('click');
             $('#editar' + numRow).click(function(){
-                habilitarDatosContacto(numRow);
+                habilitarDatosContacto(numRow, idContact);
             });
         }
 
         // Habilitamos el bot?n de borrar
-        $('#eliminar' + numRow).attr("src","../SNSAngelGuardFB/resources/deleteContact.gif");
-        $('#eliminar' + numRow).attr("title", $('#hdEliminarContacto').val())
+        $('#eliminar' + numRow).attr("src","../SNSAngelGuardFB/resources/deleteContact.gif");       
+        $('#eliminar' + numRow).attr("title", $('#hdEliminarContacto').val());
         $('#eliminar' + numRow).attr("class","cabOtrosContactos");
+        
         if($('eliminar' + numRow).attr('onclick')){
             $('#eliminar' + numRow).removeAttr('onclick').click(function(){
-                borrarContacto(numRow);
+                borrarContacto(menSave, menWait, numRow, idContact);
             });
         }else{
             $('#eliminar' + numRow).unbind('click');
             $('#eliminar' + numRow).click(function(){
-                borrarContacto(numRow);
+                borrarContacto(menSave, menWait, numRow, idContact);
             });
         }
 
@@ -1773,9 +1862,6 @@ function habilitarBotonBorrarContacto(numRow){
             $('#cancelar' + numRow).unbind('click');
             $('#cancelar' + numRow).click(function(){});
         }
-
-
-        
 
         // Deshabilitamos el bot?n de guardar
         $('#guardar' + numRow).attr("src","../SNSAngelGuardFB/resources/desSaveContact.gif");
@@ -1790,30 +1876,39 @@ function habilitarBotonBorrarContacto(numRow){
     });
 }
 
-function borrarContacto(numRow){
+function borrarContacto(menSave, menWait, numRow, idContact){
     $(function(){
+        
+        // Preparamos la operacion de borrado 
+        $('#typeOperationOtherContacts').val("2");
+        
+        var typeOperation = $('#typeOperationOtherContacts').val();
+        
         // Guardamos el email del usuario borrado
         var emailBorrado = $('#txtEmailTutorEd' + numRow).attr("value");
+        var nameBorrado = $('#txtNameTutorEd' + numRow).attr("value");
+        
+        launchDoOperationWithOtherContact(menSave, menWait, typeOperation,nameBorrado, emailBorrado, idContact);
 
         // Limpiamos los cuadros de texto
-        $('#txtNameTutorEd' + numRow).attr("value","");
-        $('#txtEmailTutorEd' + numRow).attr("value","");
+//        $('#txtNameTutorEd' + numRow).attr("value","");
+//        $('#txtEmailTutorEd' + numRow).attr("value","");
 
-        delItemLstJsonAngels();
-        buscarBorrados('Ed');
+//        delItemLstJsonAngels();
+//        buscarBorrados('Ed');
         
-        borrarItemSelected(emailBorrado, "#hdAngels");
-        borrarItemSelected(emailBorrado, "#hdAngelsAux");
-        borrarItemSelected(emailBorrado, "#hdLstAngelsFltWall");
-        borrarItemSelected(emailBorrado, "#hdLstAngelsFltFriends");
-        borrarItemSelected(emailBorrado, "#hdLstAngelsFltPriv");
-        borrarItemSelected(emailBorrado, "#hdLstAngelsFltVist");
+//        borrarItemSelected(emailBorrado, "#hdAngels");
+//        borrarItemSelected(emailBorrado, "#hdAngelsAux");
+//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltWall");
+//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltFriends");
+//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltPriv");
+//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltVist");
 
         
-        loadContactsEd();
+//        loadContactsEd();
 
-        var menAviso = $("#hdTitleAngelDelete").val();
-        lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menAviso,700,300);
+//        var menAviso = $("#hdTitleAngelDelete").val();
+//        lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menAviso,700,300);
     });
 }
 
@@ -1940,12 +2035,11 @@ function clearWinOpen(){
 }
 
 function checkChangeForm(){
-    //alert("change: " + changeForm);
-    //alert("same: " + sameForm);
+    
     if((changeForm == false && sameForm == true) || 
         (changeForm == false && sameForm == false)||
         (changeForm == true && sameForm == true)){
-        //alert("LIMPIANDO VENTANA");
+        
         clearWinOpen();
     }else if(changeForm == true){
         sameForm = false;
@@ -1954,7 +2048,7 @@ function checkChangeForm(){
 }
 
 function iniciarModal(){
-    //alert("INICIANDO MODAL");
+    
     changeForm = false;
     sameForm = false;
 }

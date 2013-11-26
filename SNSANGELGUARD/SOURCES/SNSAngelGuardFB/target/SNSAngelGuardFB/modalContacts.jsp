@@ -10,6 +10,11 @@
             //Obtenemos la conexión a Facebookhttps://accounts.google.com/o/oauth2/auth?client_id=789909798690.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.google.com%2Fm8%2Ffeeds%2F&redirect_uri=postmessage&origin=http%3A%2F%2Flocalhost%3A8080&proxy=oauth2relay403468579&response_type=token&state=345579805&authuser=0
             SNSAngelGuardFBManager snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
             snsObject.logSession(request, response);
+            
+            // Obtenemos los mensajes de espera del loader
+            String[] arrayWarnings = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings().split(";");
+            String menSave = arrayWarnings[3];
+            String menWait = arrayWarnings[4];
 
             //String angelsSelected = request.getParameter("hdAngelsGoogleSelected");
 %>
@@ -45,6 +50,7 @@
             }
 
             function rellenarVaciosContactGoogle(longitud,codigo) {
+                $(function(){
                 var faltan = MAX - longitud;
                 var vacias = codigo;
 
@@ -58,24 +64,26 @@
                     longitud = longitud + 1;
                 }
 
-                document.getElementById('tabContacts').innerHTML = vacias;
-
+                    $("#tabContactsModal tbody").append(vacias);
+                });
             }
 
             function habilitarBoton(idBoton){
                 //document.getElementById(idBoton).type = 'botonDisabled';
-                document.getElementById(idBoton).disabled = false;
+                $(idBoton).removeAttr("disabled");
             }
 
             function deshabilitarBoton(idBoton){
                 //document.getElementById(idBoton).type = 'botonDisabled';
-                document.getElementById(idBoton).disabled = true;
+                $(idBoton).attr("disabled","disabled");
             }
 
             function getMyContacts(){
+                $(function(){
                 var contacts = '';
                 var cont = parseInt(0);
-
+                var hdAngelsGoogleSelected = $("#hdAngelsGoogleSelected").val().split(";");
+                
                 var authParams = gapi.auth.getToken() // from Google oAuth
 
                 authParams.alt = 'json';
@@ -96,36 +104,51 @@
                                 if(emailAddresses.length > 0){
                                     for (var j = 0; j < emailAddresses.length; j++) {
                                         var email = emailAddresses[j].address;
+                                        
+                                        var isSelectedContact = false;
+                                        
+                                        if(hdAngelsGoogleSelected != ''){
+                                            for(var i = 0; i < hdAngelsGoogleSelected.length; i++){
 
-                                        contacts = contacts + '<tr id="contact'+ cont +'" class="pijama1">'
+                                                if(hdAngelsGoogleSelected[i] != ''){
+                                                    var emailAngel = getJsonIdValue(hdAngelsGoogleSelected[i],'email');
+                                                    var nameAngel = getJsonIdValue(hdAngelsGoogleSelected[i],'name');
+                                                    if(email == emailAngel && name == nameAngel){
+                                                        isSelectedContact = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        if(isSelectedContact == false){
+                                            contacts = contacts + '<tr id="contactModal'+ cont +'" class="pijama1">'
                                             + '<td width="25px">'
-                                            + '<input type="radio" id="rdContact'+ cont +'" '
-                                            + 'onclick="seleccionarFila(\'contact' + cont + '\',\'rdContact' + cont + '\',\'' + name +'\',\''+ email +'\');" />'
+                                            + '<input type="radio" id="rdContactModal'+ cont +'" '
+                                            + 'onclick="seleccionarFila(\'#contactModal' + cont + '\',\'#rdContactModal' + cont + '\',\'' + name +'\',\''+ email +'\');" />'
                                             + '</td>'
                                             + '<td width="286px">' + name + '</td>'
                                             + '<td width="286px">' + email + '</td>'
                                             + '</tr>';
 
-                                        cont = parseInt(cont) + parseInt(1);
-
+                                            cont = parseInt(cont) + parseInt(1);
+                                        }
                                     }
                                 }
                             }
                         });
-
+                          
                         // Insert empty rows
                         if(xmlJson.length < MAX){
                             rellenarVaciosContactGoogle(emailAddresses.length,contacts);
                         }else{
-                            document.getElementById('tabContacts').innerHTML = contacts;
+                            $("#tabContactsModal tbody").html(contacts);
                         }
 
-                        deshabilitarBoton('btnLoginGoogle');
-                        deshabilitarBoton('btnAceptar');
-
-                        cargarInicioModal();
-                        comprobarAceptar();
+                        deshabilitarBoton("#btnLoginGoogle");
+                        deshabilitarBoton("#btnAceptar");
                     }
+                });
                 });
             }
 
@@ -160,7 +183,7 @@
                         </tr>
                     </table>
                     <div id="contactContent" class="contactContent" style="border:1px solid #CCC;">
-                        <table id="tabContacts">
+                        <table id="tabContactsModal">
                             <tr class="pijama1">
                                 <td width="25px"></td>
                                 <td width="286px"></td>
@@ -210,12 +233,12 @@
                         <!-- <tr height="25px" > -->
                         <tr>
                             <td>
-                                <input type="button" class="boton" id="btnAceptar" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnAceptGoogleCont()%>"
-                                       onclick="salirModal();enviarFormularioContacts('1')"/>
+                                <input type="button" class="boton" id="btnAceptarModal" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnAceptGoogleCont()%>"
+                                       onclick="salirModal();enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '1')"/>
                             </td>
                             <td>
                                 <input type="button" class="boton" id="btnCancelar" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnCancelGoogleCont()%>"
-                                       onclick="salirModal();enviarFormularioContacts('0')"/>
+                                       onclick="salirModal();enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '0')"/>
                             </td>
                             <td width="100%" align="right">
                                 <img src="../SNSAngelGuardFB/resources/gmail.gif" align="middle" alt="">

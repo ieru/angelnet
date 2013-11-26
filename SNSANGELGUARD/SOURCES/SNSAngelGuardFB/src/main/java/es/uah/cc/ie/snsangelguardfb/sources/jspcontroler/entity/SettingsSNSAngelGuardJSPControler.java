@@ -137,7 +137,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
             // Cargamos el log
             this.snsObject.logSession(request, response);
             this.newConection = request.getParameter("newConection");
-            this.resultSave = (request.getParameter("ok").equals("1") ? "1" : "0");
+            this.resultSave = request.getParameter("ok");
             this.angels = null;
             this.typeAngel = request.getParameter("typeAngel");
             this.idFacebookAngel = request.getParameter("idFacebookAngel");

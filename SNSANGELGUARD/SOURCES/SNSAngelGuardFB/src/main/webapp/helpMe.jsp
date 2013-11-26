@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="org.codehaus.jettison.json.JSONObject"%>
 <%@page import="java.io.FileNotFoundException"%>
 <%@page import="java.io.IOException"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager"%>
@@ -16,6 +17,18 @@
         try {
             //Obtenemos la conexión a Facebook
             snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
+            
+            String uidPublic = request.getParameter("par1");
+            
+            // Si estamos en una conexion offline, obtenemos el idioma del usuario a traves de su uid publico.
+            if (uidPublic != null) {
+                // Obtener informaci√≥n de userSettings por su uidPublic
+                JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
+                System.out.println("JSON USER ANGEL: " + jsonUser.toString());
+
+                snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
+                snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
+            }
             
             localeHelp = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getHelpMe());
         } catch (FileNotFoundException e) {

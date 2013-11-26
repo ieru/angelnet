@@ -68,6 +68,9 @@ public class HarvestedSNS extends HttpServlet {
 
                 /** Cargamos el usuario actual */
                 this.snsObject.getUserSettingsDaoManager().loadUserConnected(arrayUsers.getJSONObject(i));
+                
+                /** Obtenemos la conexi?n a Facebook offline */
+                this.snsObject.getLoginAppOffline(request, response);
 
                 /** Cargamos los recursos de idioma */
                 this.snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
@@ -194,7 +197,6 @@ public class HarvestedSNS extends HttpServlet {
         logger.info(formateador.format(new Date()) + " - doGet: Estableciendo sesion harvested...");
         this.snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
         try {
-            this.snsObject.getLoginAppOffline(request, response);
             this.updateUsers(request, response);
         } catch (Exception ex) {
             logger.error(formateador.format(new Date()) + " - doGet: Excepcion capturada Exception: " + ex.getMessage());

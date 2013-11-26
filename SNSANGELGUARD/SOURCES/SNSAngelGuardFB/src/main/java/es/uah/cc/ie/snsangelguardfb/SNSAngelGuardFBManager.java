@@ -357,8 +357,10 @@ public final class SNSAngelGuardFBManager {
 
             facebookClient.loginOffline(request, response, this.configurationManager.getApiKey(), this.configurationManager.getApiSecretKey(), this.configurationManager.getPathApplicationFacebook());
             
-            this.facebookRestClient = new DefaultLegacyFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
-            this.facebookQueryClient = new DefaultFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
+            if(this.getUserSettingsDaoManager().getUserSettingsDAO() != null){
+                this.facebookRestClient = new DefaultLegacyFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
+                this.facebookQueryClient = new DefaultFacebookClient(this.getUserSettingsDaoManager().getUserSettingsDAO().getUserSession());
+            }
             
             getLogger().info(this.userSettingsDaoManager.getUserSettingsDAO().getUid() + " - getLoginAppOffline: Conexion Offline con Facebook obtenida!!");
         } catch (IOException ex) {
