@@ -15,8 +15,9 @@
     
     try{
         request.getSession(false);
-        
         controler = new DoOperationWithGoogleContactsJSPControler(request, response);
+        
+        controler.process();
     } catch (InterDataBaseException e) {
             String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 

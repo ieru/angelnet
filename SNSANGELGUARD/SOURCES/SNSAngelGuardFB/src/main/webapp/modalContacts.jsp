@@ -82,7 +82,8 @@
                 $(function(){
                 var contacts = '';
                 var cont = parseInt(0);
-                var hdAngelsGoogleSelected = $("#hdAngelsGoogleSelected").val().split(";");
+                $("#hdAngelsGoogleSelectedModal").val(window.opener.$("#hdAngelsGoogleSelected").val());
+                var hdAngelsGoogleSelected = $("#hdAngelsGoogleSelectedModal").val().split(";");
                 
                 var authParams = gapi.auth.getToken() // from Google oAuth
 
@@ -156,8 +157,9 @@
 -->
         </script>
     </head>
-    <body onload="iniciarModal();" onbeforeunload="checkChangeForm();">
+    <body onload="iniciarModal();">
         <form id="frModalContacts" action="" method="GET">
+            <input type="hidden" id="hdAngelsGoogleSelectedModal" name="hdAngelsGoogleSelectedModal" value="" />
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />
 
             <div id='picker_container' style='width: 100%; margin: auto'>
@@ -234,11 +236,11 @@
                         <tr>
                             <td>
                                 <input type="button" class="boton" id="btnAceptarModal" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnAceptGoogleCont()%>"
-                                       onclick="salirModal();enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '1')"/>
+                                       onclick="enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '1')"/>
                             </td>
                             <td>
                                 <input type="button" class="boton" id="btnCancelar" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnCancelGoogleCont()%>"
-                                       onclick="salirModal();enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '0')"/>
+                                       onclick="salirModal();"/>
                             </td>
                             <td width="100%" align="right">
                                 <img src="../SNSAngelGuardFB/resources/gmail.gif" align="middle" alt="">

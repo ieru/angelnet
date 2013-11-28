@@ -40,6 +40,12 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
     
     /** Mensaje de borrado de un angel */
     private String delete;
+    
+    /** Mensaje de guardado */
+    private final String menSave;
+    
+    /** Mensaje de espera */
+    private final String menWait;
 
     public SNSAngelGuardFBManager getSnsObject() {
         return snsObject;
@@ -104,6 +110,16 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
     public void setDelete(String delete) {
         this.delete = delete;
     }
+
+    public String getMenSave() {
+        return menSave;
+    }
+
+    public String getMenWait() {
+        return menWait;
+    }
+    
+    
     
     /**
      * Constructor de clase.
@@ -121,5 +137,7 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
         this.warnings = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings());
         this.confirm = this.warnings[6];
         this.delete = this.warnings[5];
+        this.menSave = this.warnings[2];
+        this.menWait = this.warnings[4];
     }
 }

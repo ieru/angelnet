@@ -43,7 +43,7 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
     private static final String KEY_EMAIL_ANGEL_GOOGLE = "emailAngelGoogleSelected";
     
     /** Key para el acceso al id del angel */
-    private static final String KEY_ID_ANGEL_GOOGLE = "idContactGoogleSelected";
+    private static final String KEY_ID_ANGEL_GOOGLE_DEL = "idContactGoogleSelectedDel";
     
     /** Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -207,7 +207,7 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
                         JSONObject jsonAngelToDelete = this.jsonGoogleAngels.getJSONObject(i);
 
                         // Obtenemos la informacion del angel en base de datos
-                        JSONObject jsonAngelDeleteSettingsDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, jsonAngelToDelete.getString(KEY_ID_ANGEL_GOOGLE)));
+                        JSONObject jsonAngelDeleteSettingsDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, jsonAngelToDelete.getString(KEY_ID_ANGEL_GOOGLE_DEL)));
                         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos de base de datos: " + jsonAngelDeleteSettingsDB.toString());
 
                         // Obtenemos el angel del objeto JSON de consulta

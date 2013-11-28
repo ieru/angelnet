@@ -60,12 +60,14 @@
         <!--import jquery lib -->
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.corner.js"></script>
+        <script type="text/javascript" src="js/jquery.loader.js"></script>
         <script type="text/javascript" src="js/AjaxFlagMenu-1.0.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js" </script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
         <script type="text/javascript" src="js/fcbklistselection.js"></script>
         <script type="text/javascript" src="js/utilidadesFormularios.js"></script>
-        <script type="text/javascript" src="js/jquery.loader.js"></script>
+        
 
         <script type="text/javascript">
             //jQuery.noConflict();
@@ -185,7 +187,6 @@
             <input type="hidden" id="h15" name="h15" value="" />
             <input type="hidden" id="h16" name="h16" value="" />
 
-            <div id="modalDialog"></div>
             <div id="fb-root"></div>
             <script>
               window.fbAsyncInit = function() {
@@ -248,6 +249,9 @@
                         </table>
                     </div>
                 </center>
+            </div>
+            <div id="modalContainer">
+               <div id="modalDialog"></div>
             </div>
         </form>
     </body>

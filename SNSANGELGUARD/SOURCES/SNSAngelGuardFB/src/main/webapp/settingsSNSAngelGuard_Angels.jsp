@@ -69,6 +69,7 @@
             <input type="hidden" id="hdAngelsEdAux" name="hdAngelsEdAux" value="" />
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />
             <input type="hidden" id="hdAngelsGoogleSelectedAux" name="hdAngelsGoogleSelectedAux" value="" />
+            <input type="hidden" id="hdAngelsGoogleSelectedDel" name="hdAngelsGoogleSelectedDel" value="" />
             <input type="hidden" id="hdLstAngelsFltWall" name="hdLstAngelsFltWall" value="" />
             <input type="hidden" id="hdLstAngelsFltFriends" name="hdLstAngelsFltFriends" value="" />
             <input type="hidden" id="hdLstAngelsFltPriv" name="hdLstAngelsFltPriv" value="" />
@@ -135,13 +136,13 @@
                                 <tr>
                                     <td width="122px" align="right">
                                         <input type="button" class="boton" id="btnImport" name="btnImport" value="<%= controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnImportSettAng()%>"
-                                               onclick="lanzarModalGoogleContacts('../SNSAngelGuardFB/modalContacts.jsp',700,420);"/>
+                                               onclick="lanzarModalGoogleContacts('../SNSAngelGuardFB/modalContacts.jsp',700,450);"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td width="122px" align="right">
                                         <input type="button" class="botonDisabled" id="btnDelContact" name="btnDelContact" value="Borrar"
-                                               onclick="borrarContactGoogle();"/>
+                                               onclick="enviarFormularioBorrarContacts('<%= controler.getJspResources().getMenSave() %>','<%= controler.getJspResources().getMenWait() %>');"/>
                                     </td>
                                 </tr>
                             </table>
