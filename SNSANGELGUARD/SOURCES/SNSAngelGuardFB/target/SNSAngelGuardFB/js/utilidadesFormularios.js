@@ -190,6 +190,9 @@ function lanzarModal(url, ancho, alto) {
 
 function lanzarModalGoogleContacts(url, ancho, alto) {
     $(function() {
+        var par = "hdAngelsGoogleSelected=" + encodeURIComponent($("#hdAngelsGoogleSelected").val());
+        url = url + '?' + par;
+        
         showDialog(url, ancho, alto);
     });
 }
@@ -569,7 +572,6 @@ function comprobarAceptar(){
 
 function seleccionarFila(elemento,radio,nameAddress,emailAddress){
     $(function() {
-        alert($(elemento).attr("class"));
         // Test if the element is selected
         if ($(elemento).attr("class") == 'pijama1') {          
             addToJsonAngels(null, nameAddress, emailAddress, 'GoogleSelected');
@@ -1639,8 +1641,8 @@ function isDatesValid(menSave, menWait, idName, idEmail, numRow, idContact){
 }
 
 function saveDatesTutor(menSave, menWait, numRow, idContact){
-    var email = $('#txtEmailTutorEd' + numRow).val();
-    var name = $('#txtNameTutorEd' + numRow).val();
+    var email = escape($('#txtEmailTutorEd' + numRow).val());
+    var name = escape($('#txtNameTutorEd' + numRow).val());
     var typeOperation = $('#typeOperationOtherContacts').val();
     
     if(idContact){
@@ -1962,8 +1964,8 @@ function borrarContacto(menSave, menWait, numRow, idContact){
         var typeOperation = $('#typeOperationOtherContacts').val();
         
         // Guardamos el email del usuario borrado
-        var emailBorrado = $('#txtEmailTutorEd' + numRow).attr("value");
-        var nameBorrado = $('#txtNameTutorEd' + numRow).attr("value");
+        var emailBorrado = escape($('#txtEmailTutorEd' + numRow).attr("value"));
+        var nameBorrado = escape($('#txtNameTutorEd' + numRow).attr("value"));
         
         launchDoOperationWithOtherContact(menSave, menWait, typeOperation,nameBorrado, emailBorrado, idContact);
 
@@ -2124,8 +2126,21 @@ function checkChangeForm(){
 
 }
 
-function iniciarModal(){
 
+function getURLvar(var_name){
+  var re = new RegExp(var_name + "(?:=([^&]*))?", "i");
+  var pm = re.exec(decodeURIComponent(location.search));
+  if(pm === null) return undefined;
+  return pm[1] || "";
+}
+
+function iniciarModal(){
+    $(function(){
+        var decodeURLAngels = getURLvar('hdAngelsGoogleSelected');
+        var decodeAngels = decodeURIComponent(decodeURLAngels);
+        
+        $("#hdAngelsGoogleSelectedModal").val(decodeAngels); 
+    });
 }
 
 function salirModalDesdePadre(){

@@ -5,9 +5,14 @@
 --%>
 
 
+<%@page import="java.net.URLDecoder"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager"%>
+<%@page import="java.net.URLDecoder"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-            //Obtenemos la conexión a Facebookhttps://accounts.google.com/o/oauth2/auth?client_id=789909798690.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.google.com%2Fm8%2Ffeeds%2F&redirect_uri=postmessage&origin=http%3A%2F%2Flocalhost%3A8080&proxy=oauth2relay403468579&response_type=token&state=345579805&authuser=0
+            request.setCharacterEncoding("utf-8");
+    
+            //Obtenemos la conexiÃ³n a Facebook
             SNSAngelGuardFBManager snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
             snsObject.logSession(request, response);
             
@@ -15,14 +20,12 @@
             String[] arrayWarnings = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings().split(";");
             String menSave = arrayWarnings[3];
             String menWait = arrayWarnings[4];
-
-            //String angelsSelected = request.getParameter("hdAngelsGoogleSelected");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title><%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleGoogleCont()%></title>
 
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
@@ -82,7 +85,6 @@
                 $(function(){
                 var contacts = '';
                 var cont = parseInt(0);
-                $("#hdAngelsGoogleSelectedModal").val(window.opener.$("#hdAngelsGoogleSelected").val());
                 var hdAngelsGoogleSelected = $("#hdAngelsGoogleSelectedModal").val().split(";");
                 
                 var authParams = gapi.auth.getToken() // from Google oAuth

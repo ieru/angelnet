@@ -80,6 +80,8 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
      */
     public DoOperationWithGoogleContactsJSPControler(HttpServletRequest request, HttpServletResponse response) throws InterDataBaseException, InterProcessException, InterEmailException {
         try {
+            request.setCharacterEncoding("utf-8");
+            
             this.snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
             this.request = request;
             this.response = response;
