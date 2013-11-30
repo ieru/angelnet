@@ -233,7 +233,7 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
             }
 
             // Volvemos a la pagina de configuracion
-            response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=" + resultOperation);
+            response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&modal=1&ok=" + resultOperation);
             
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Fin process!!");
         } catch (JSONException | IOException | NoSuchProviderException | MessagingException | UniformInterfaceException ex) {

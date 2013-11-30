@@ -106,63 +106,63 @@
             }
             
             function cargaMenu(){
-                jQuery(document).ready(function(){
+                    jQuery(document).ready(function(){
 
                     var Menu = jQuery("#Menu").AjaxFlagMenu({
-                        Caption:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().getTitle() %>',
-                        CaptionClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().CAPTION_CLASS %>',
-                        onOutClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_OUT_CLASS %>',
-                        onOverClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_OVER_CLASS %>',
-                        onClickClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_CLICK_CLASS %>',
-                        hscOutClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().HS_OUT_CLASS %>',
-                        hscClickClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().HS_CLICK_CLASS %>',
-                        Loading_gif:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().PATH_IMAGE_LOADING_MENU %>',
-                        ajaxContent:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().AJAX_CONTENT %>'
+                        Caption:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().getTitle()%>',
+                        CaptionClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().CAPTION_CLASS%>',
+                        onOutClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_OUT_CLASS%>',
+                        onOverClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_OVER_CLASS%>',
+                        onClickClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().ON_CLICK_CLASS%>',
+                        hscOutClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().HS_OUT_CLASS%>',
+                        hscClickClass:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().HS_CLICK_CLASS%>',
+                        Loading_gif:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().PATH_IMAGE_LOADING_MENU%>',
+                        ajaxContent:'<%= jspControler.getJspResources().getJspResourcesJQueryMenu().AJAX_CONTENT%>'
                     });
                     //Angels
                     var Angels = Menu.add({
-                        Title:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().getTitle() %>',
-                        onOutIcon:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().ON_OUT_ICON %>',
-                        onClickIcon:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().ON_CLICK_ICON %>',
-                        HtmlSatusContent:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().HTML_STATUS_CONTENT %>',
-                        url:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().DESTINY_URL_JSP %>',
-                        data:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().getDataAngels() %>'
+                        Title:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().getTitle()%>',
+                        onOutIcon:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().ON_OUT_ICON%>',
+                        onClickIcon:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().ON_CLICK_ICON%>',
+                        HtmlSatusContent:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().HTML_STATUS_CONTENT%>',
+                        url:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().DESTINY_URL_JSP%>',
+                        data:'<%= jspControler.getJspResources().getJspResourcesAngelsMenu().getDataAngels()%>'
                     });
                     Angels.sethscCorner();
                     //Vigilants
                     var Vigilants = Menu.add({
-                        Title:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().getTitle() %>',
-                        onOutIcon:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().ON_OUT_ICON %>',
-                        onClickIcon:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().ON_CLICK_ICON %>',
-                        HtmlSatusContent:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().HTML_STATUS_CONTENT %>',
-                        url:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().DESTINY_URL_JSP %>',
-                        data:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().DATA %>'
+                        Title:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().getTitle()%>',
+                        onOutIcon:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().ON_OUT_ICON%>',
+                        onClickIcon:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().ON_CLICK_ICON%>',
+                        HtmlSatusContent:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().HTML_STATUS_CONTENT%>',
+                        url:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().DESTINY_URL_JSP%>',
+                        data:'<%= jspControler.getJspResources().getJspResourcesVigilantsMenu().DATA%>'
                     });
                     Vigilants.sethscCorner();
                     jQuery("#Menu").corner("4px");
                     jQuery("#ajaxContent").corner("4px");
 
                     Angels.cargaInicio(
-                    '<%= jspControler.getSnsObject().getConfigurationManager().getConfigHostApplicationSSL() %>',
+                    '<%= jspControler.getSnsObject().getConfigurationManager().getConfigHostApplicationSSL()%>',
                     '<%= jspControler.getJspResources().DESTINY_JSP_INIT%>',
                     '<%= jspControler.getJspResources().getTitleFbList()%>',
                     '<%= jspControler.getJspResources().getTitleAngelSettAng()%>',
                     '<%= jspControler.getJspResources().getNameTutor()%>',
                     '<%= jspControler.getJspResources().getEmailTutor()%>',
-                    '<%= jspControler.getJspResources().getStrMenLoader() %>',
+                    '<%= jspControler.getJspResources().getStrMenLoader()%>',
                     '<%= jspControler.getJspResources().getMenLoader()[3]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[4]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[0]%>',
                     '<%= jspControler.getJspResources().getMenLoader()[1]%>',
                     '<%= jspControler.getResultSave()%>',
-                    '<%= jspControler.getJspResources().getMensaje()%>',
+                    '<%= jspControler.getModal()%>',
                     '<%= jspControler.getTypeAngel()%>',
                     '<%= jspControler.getIdFacebookAngel()%>',
                     '<%= jspControler.getUidAngel()%>',
                     '<%= jspControler.getUidPublic()%>',
-                    '<%= jspControler.getJspResources().getTitlePostFacebook() %>',
-                    '<%= jspControler.getJspResources().getSubtitlePostFacebook() %>',
-                    '<%= jspControler.getJspResources().getBodyPostFacebook() %>');
+                    '<%= jspControler.getJspResources().getTitlePostFacebook()%>',
+                    '<%= jspControler.getJspResources().getSubtitlePostFacebook()%>',
+                    '<%= jspControler.getJspResources().getBodyPostFacebook()%>');
                 });
             }
             

@@ -124,11 +124,12 @@ function cargarListaAngels(arrayAngels,strSubAng){
             if((strAngels.substring(0,1) == "[") &&
                 (strAngels.substring(strAngels.length - 1,strAngels.length) == "]")) {
                 var auxAngels = strAngels.substring(1,strAngels.length - 1);
+                //alert("VALOR ANGEL: " +  auxAngels);
                 var angelDates = auxAngels.split(',');
 
                 var li = document.createElement("li");
                 li.className = "";
-
+                
                 strLista =
                 '<table><tr><td width="30%" style="vertical-align:top;"><img src="' + angelDates[2] + '" \/></td>' +
                 '<td width="70%" style="vertical-align:top;"><strong>' + angelDates[1] +' </strong><br \/>'+
@@ -323,34 +324,32 @@ function getJsonObject(idContact) {
     }
 }
 
-function delToJsonAngelsNameEmail(nameAddress, emailAddress, des){
-    $(function() {
-        var angelsSelected = ($('#hdAngels' + des).val()).split(";");
-        var auxAngelSelected = '';
-        var angel = '';
-        var nameAngel = '';
-        var auxName = '';
-        var emailAngel = '';
-        var auxEmail = '';
+function delToJsonAngelsNameEmail(nameAddress, emailAddress, des) {
+    var angelsSelected = ($('#hdAngels' + des).val()).split(";");
+    var auxAngelSelected = '';
+    var angel = '';
+    var nameAngel = '';
+    var auxName = '';
+    var emailAngel = '';
+    var auxEmail = '';
 
-        for (var i = 0; i < angelsSelected.length - 1; i++) {
-            angel = angelsSelected[i].split(",");
-            nameAngel = angel[1].split(":");
-            auxName = formatName(nameAngel[1]);
-            
-            emailAngel = angel[2].split(":");
-            auxEmail = formatName(emailAngel[1]);
-            
-            if (auxName.indexOf(nameAddress) == -1 && auxEmail.indexOf(emailAddress) == -1) {
-                if (auxAngelSelected == '') {
-                    auxAngelSelected = angelsSelected[i] + ';';
-                } else {
-                    auxAngelSelected += angelsSelected[i] + ';';
-                }
+    for (var i = 0; i < angelsSelected.length - 1; i++) {
+        angel = angelsSelected[i].split(",");
+        nameAngel = angel[1].split(":");
+        auxName = formatName(nameAngel[1]);
+
+        emailAngel = angel[2].split(":");
+        auxEmail = formatName(emailAngel[1]);
+
+        if (auxName.indexOf(nameAddress) == -1 && auxEmail.indexOf(emailAddress) == -1) {
+            if (auxAngelSelected == '') {
+                auxAngelSelected = angelsSelected[i] + ';';
+            } else {
+                auxAngelSelected += angelsSelected[i] + ';';
             }
         }
-        $('#hdAngels' + des).val(auxAngelSelected);
-    });
+    }
+    $('#hdAngels' + des).val(auxAngelSelected);
 }
 
 function delToJsonAngels(nameAddress,des){
@@ -403,18 +402,16 @@ function delToJsonAngelsById(idAngelDel,des){
     });
 }
 
-function addToJsonAngels(idAngel, nameAddress,emailAddress,des){
-    $(function() {
-        var angelsSelected = $('#hdAngels' + des).val();
-        var toJSONvalue = '{' + '\"idContact' + des + '\":' + '\"' + idAngel + '\",' + '\"nameAngel' + des + '\":' + '\"' + formatNameComa(nameAddress) + '\", ' + '\"emailAngel' + des + '\":' + '\"' + emailAddress + '\"' + '}';
+function addToJsonAngels(idAngel, nameAddress, emailAddress, des) {
+    var angelsSelected = $('#hdAngels' + des).val();
+    var toJSONvalue = '{' + '\"idContact' + des + '\":' + '\"' + idAngel + '\",' + '\"nameAngel' + des + '\":' + '\"' + formatNameComa(nameAddress) + '\", ' + '\"emailAngel' + des + '\":' + '\"' + emailAddress + '\"' + '}';
 
-        if (angelsSelected == '') {
-            angelsSelected = toJSONvalue + ';';
-        } else {
-            angelsSelected += toJSONvalue + ';';
-        }
-        $('#hdAngels' + des).val(angelsSelected);
-    });
+    if (angelsSelected == '') {
+        angelsSelected = toJSONvalue + ';';
+    } else {
+        angelsSelected += toJSONvalue + ';';
+    }
+    $('#hdAngels' + des).val(angelsSelected);
 }
 
 function delItemLstJsonAngels(){
@@ -571,7 +568,6 @@ function comprobarAceptar(){
 }
 
 function seleccionarFila(elemento,radio,nameAddress,emailAddress){
-    $(function() {
         // Test if the element is selected
         if ($(elemento).attr("class") == 'pijama1') {          
             addToJsonAngels(null, nameAddress, emailAddress, 'GoogleSelected');
@@ -585,10 +581,11 @@ function seleccionarFila(elemento,radio,nameAddress,emailAddress){
 
             $(radio).attr("checked", false);
             $(elemento).attr("class", "pijama1");
-
-            deshabilitarBotonQuery('#btnAceptarModal');
-        }
-    });
+            
+            if($('#hdAngelsGoogleSelected').val() === '' || $('#hdAngelsGoogleSelected').val() === null){
+                deshabilitarBotonQuery('#btnAceptarModal');
+            }
+}
 }
 
 function formatName(nameContact){
@@ -699,28 +696,50 @@ function pintarTablaConGoogle(jsonContacts,modo){
     }
 }
 
+function loadAngelSelects(angels){
+                if (typeof angels === "undefined") {
+                    return;
+                }
+                
+                var arrayAngels = angels.split(';');
+
+                for(var i=0;i<arrayAngels.length; i++){
+                    $.each($("#fcbklist").children("li").children(".fcbklist_item"),function(index,object){
+                        object=$(object);
+                        if(object.find("[type=hidden]").val() == arrayAngels[i]){
+                            $("#view_selected_count").text(parseInt($("#view_selected_count").text(),10)+1);
+                            object.parents("li").attr("addedid","tester");
+                            object.toggleClass("itemselected");
+                            object.parents("li").toggleClass("liselected");
+                        }
+                    });
+                }
+            }
+
 function enviarFormularioContacts(menSave, menWait, aceptar){
     $(function(){
-        var angelsGoogleSelected = $('#hdAngelsGoogleSelected').val();
+        var angelsGoogleSelected = escape($('#hdAngelsGoogleSelected').val());
         
-        salirModal();
-        launchDoOperationWithGmailContact(menSave, menWait, "0", angelsGoogleSelected, '#frModalContacts');
+        salirModal(menSave, menWait);
+        launchDoOperationWithGmailContact("0", angelsGoogleSelected, "true");
     });
 
 }
 
 function enviarFormularioBorrarContacts(menSave, menWait){
     $(function(){
-        var angelsGoogleSelected = $('#hdAngelsGoogleSelectedDel').val();
+        var angelsGoogleSelected = escape($('#hdAngelsGoogleSelectedDel').val());
         
-        launchDoOperationWithGmailContact(menSave, menWait, "2", angelsGoogleSelected, '#frSNSAngels');
+        muestraLoader(menSave, menWait);
+        
+        launchDoOperationWithGmailContact("2", angelsGoogleSelected, "false");
     });
 
 }
 
 
 function cerrarInfoModal(){
-    salirModal();
+    window.parent.salirModalSinDatos();
 }
 
 function cerrarInfoError(uidPublic){
@@ -1040,7 +1059,7 @@ function deshabilitarCheck(idCheck){
 }
 
 function seleccionVig(idVigilante){
-    saveSelectionAngels();
+    //saveSelectionAngels();
 
     limpiarListaVigilantes();
 
@@ -1218,13 +1237,13 @@ function cerrarVentana(){
 
 function habilitarBtnGuardar(){
     $(function(){
-        $("#btnSave").attr('disabled',false);
+        $("#btnSave").attr('class','boton');
     });
 }
 
 function deshabilitarBtnGuardar(){
     $(function(){
-        $("#btnSave").attr('disabled',true);
+        $("#btnSave").attr('class','botonDisabled');
     });
 }
 
@@ -1347,15 +1366,30 @@ function isDupEmail(emailTutor){
     return repetido;
 }
 
-function isAnyFiltroActivo(){
-    if((document.getElementById('hdActiveFltWall').value == '0') &&
-        (document.getElementById('hdActiveFltFriends').value == '0') &&
-        (document.getElementById('hdActiveFltPriv').value == '0') &&
-        (document.getElementById('hdActiveFltVist').value == '0')){
-        return false;
-    }else{
+function isFilterActive(idFilter, idAngelsSelected){;
+    if ($(idFilter).val() == '1' && (($(idAngelsSelected).val() != '') && ($(idAngelsSelected).val() != 'null') && ($(idAngelsSelected).val() != 'undefined'))) {
         return true;
+    } else {
+        return false;
     }
+}
+
+function isAnyFiltroActivo() {
+
+    var result = false;
+
+    if (isFilterActive('#hdActiveFltWall', '#hdLstAngelsFltWall')) {
+        result = true;
+    } else if (isFilterActive('#hdActiveFltFriends', '#hdLstAngelsFltFriends')) {
+        result = true;
+    } else if (isFilterActive('#hdActiveFltPriv', '#hdLstAngelsFltPriv')) {
+        result = true;
+    } else if (isFilterActive('#hdActiveFltVist', '#hdLstAngelsFltVist')) {
+        result = true;
+    }
+
+    return result;
+
 }
 
 function isActiveFilter(idFiltro){
@@ -1468,7 +1502,7 @@ function isAnyError(){
 
 function habilitarGuardar(){
     var valido = true;
-    if(isAnyFiltroActivo() && isAnyAngelSelected() && !isAnyError()){
+    if(isAnyFiltroActivo()){
         habilitarBtnGuardar();
     }else{
         deshabilitarBtnGuardar();
@@ -1651,10 +1685,7 @@ function saveDatesTutor(menSave, menWait, numRow, idContact){
     }else{
         // Guardamos los datos del contacto
         launchDoOperationWithOtherContact(menSave, menWait, typeOperation,name, email);
-        //saveAngelEd(name,email);
     }
-    //habilitarGuardar();
-    //habilitarBotonBorrarContacto(numRow);
 }
 
 function quitarAcentos(id){
@@ -1675,7 +1706,6 @@ function isDatesTutorValid(menSave, menWait, numAngel, idContact){
 
 function muestraLoader(menCarga, menWait){   
     $(function() {
-        $.getScript("js/jquery.loader.js", function() {
             $.loader({
                 content: "<div><table width=\"100%\"><tr><td width=\"100%\">"
                         + "<h1 class=\"tituloMed\">" + menCarga + "</h1>"
@@ -1684,7 +1714,6 @@ function muestraLoader(menCarga, menWait){
                         + "<table width=\"100%\"><tr><td width=\"80%\">" + menWait + "</td>"
                         + "</td></tr></table></td></tr></table></div>"
             });
-        });
     });
 }
 
@@ -1735,16 +1764,25 @@ function loadTitles(titleName, titleEmail){
     emailTitle = titleEmail;
 }
 
-function launchDoOperationWithGmailContact(menSave, menWait, typeOperation, hdAngelsGoogleSelected, idFormDest){
+function launchDoOperationWithGmailContact(typeOperation, hdAngelsGoogleSelected, modal){
     $(function() {
-        // Mostramos el loader de la operacion
-        muestraLoader(menSave, menWait);
-
         var data = 'doOperationWithGoogleContacts.jsp' + '?' + "typeOperation=" + typeOperation + "&hdAngelsGoogleSelected=" + hdAngelsGoogleSelected;
-
-        $(idFormDest).attr('action', data);
-        $(idFormDest).attr('method', 'post');
-        $(idFormDest).submit();
+        var formParent = $('#frSNSAngels');
+        
+        if(modal == "true"){
+            var formParent = window.parent.document.getElementById('frSNSAngels');
+            
+            formParent.setAttribute('action', data);
+            formParent.setAttribute('method','post');
+            formParent.submit();
+        } else{
+           var mainForm = $('#frSNSAngels');
+            
+            mainForm.attr('action', data);
+            mainForm.attr('method','post');
+            mainForm.submit(); 
+        }
+        
     });
 }
 
@@ -2105,9 +2143,9 @@ function setWinOpen(){
 
 function clearWinOpen(){
     $(function(){
-        if(window.opener.$('jquery-loader')){
-            window.opener.$("#jquery-loader").remove();
-            window.opener.$("#jquery-loader-background").remove();
+        if($('jquery-loader')){
+            $("#jquery-loader").remove();
+            $("#jquery-loader-background").remove();
         
         }
     });
@@ -2143,7 +2181,7 @@ function iniciarModal(){
     });
 }
 
-function salirModalDesdePadre(){
+function salirModalSinDatos(){
     $(function(){
         var dialogDiv = $("#modalDialog");
         
@@ -2153,8 +2191,21 @@ function salirModalDesdePadre(){
    }); 
 }
 
-function salirModal(){
-   window.parent.salirModalDesdePadre();
+function salirModalDesdePadre(menSave, menWait){
+    $(function(){
+        var dialogDiv = $("#modalDialog");
+        
+        dialogDiv.dialog("close");
+        dialogDiv = $('<div id=\"modalDialog\"></div>').appendTo('#modalContainer');
+        $("#modalDialog").dialog("destroy").remove();
+        
+        muestraLoader(menSave, menWait);
+   }); 
+}
+
+function salirModal(menSave, menWait){
+   window.parent.salirModalDesdePadre(menSave, menWait);
+   
 }
 
 function initRender(){

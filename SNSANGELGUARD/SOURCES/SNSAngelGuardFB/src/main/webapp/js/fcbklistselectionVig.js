@@ -66,9 +66,19 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
     },
 
     p=function(b){
-        var lstAngeles = $("#hdAngelsAux");
-        var a=b.find("[type=hidden]").val();
-        lstAngeles.attr("value", lstAngeles.val() + a +";");
+        var lstAngeles;
+        
+        if ($('#hdFiltroActual').val() == '0') {
+            lstAngeles = $('#hdLstAngelsFltWall');
+        } else if ($('#hdFiltroActual').val() == '1') {
+            lstAngeles = $('#hdLstAngelsFltFriends');
+        } else if ($('#hdFiltroActual').val() == '2') {
+            lstAngeles = $('#hdLstAngelsFltPriv');
+        } else if ($('#hdFiltroActual').val() == '3') {
+            lstAngeles = $('#hdLstAngelsFltVist');
+        }
+        var a = b.find("[type=hidden]").val();
+        lstAngeles.attr("value", lstAngeles.val() + a + ";");
         return lstAngeles;
     },
 

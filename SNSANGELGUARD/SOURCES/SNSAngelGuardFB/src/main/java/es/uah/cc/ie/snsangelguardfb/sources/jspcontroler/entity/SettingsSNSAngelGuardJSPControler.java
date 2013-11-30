@@ -46,6 +46,9 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
     
     /** Resultado de la operacion */
     private String resultSave;
+    
+    /** Indicador de retorno para la ventana modal */
+    private String modal;
 
     /** En el caso del guardado de informacion de un angel */
     private String typeAngel;
@@ -76,6 +79,10 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
 
     public String getResultSave() {
         return resultSave;
+    }
+
+    public String getModal() {
+        return modal;
     }
 
     public String[][] getAngels() {
@@ -138,6 +145,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
             this.snsObject.logSession(request, response);
             this.newConection = request.getParameter("newConection");
             this.resultSave = request.getParameter("ok");
+            this.modal = request.getParameter("modal");
             this.angels = null;
             this.typeAngel = request.getParameter("typeAngel");
             this.idFacebookAngel = request.getParameter("idFacebookAngel");

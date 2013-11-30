@@ -29,7 +29,10 @@
         <title><%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleGoogleCont()%></title>
 
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
+        <link rel="stylesheet" type="text/css" href="Styles/jquery.loader.css" />
+        
         <script type="text/javascript" src="js/jQuery-1.8.2.js"></script>
+        <script type="text/javascript" src="js/jquery.loader.js"></script>
         <script type='text/javascript' src='js/utilidadesFormularios.js'></script>
         <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 
@@ -69,16 +72,6 @@
 
                     $("#tabContactsModal tbody").append(vacias);
                 });
-            }
-
-            function habilitarBoton(idBoton){
-                //document.getElementById(idBoton).type = 'botonDisabled';
-                $(idBoton).removeAttr("disabled");
-            }
-
-            function deshabilitarBoton(idBoton){
-                //document.getElementById(idBoton).type = 'botonDisabled';
-                $(idBoton).attr("disabled","disabled");
             }
 
             function getMyContacts(){
@@ -148,8 +141,8 @@
                             $("#tabContactsModal tbody").html(contacts);
                         }
 
-                        deshabilitarBoton("#btnLoginGoogle");
-                        deshabilitarBoton("#btnAceptar");
+                        deshabilitarBotonQuery("#btnLoginGoogle");
+                        deshabilitarBotonQuery("#btnAceptarModal");
                     }
                 });
                 });
@@ -159,7 +152,7 @@
 -->
         </script>
     </head>
-    <body onload="iniciarModal();">
+    <body onload="iniciarModal();deshabilitarBotonQuery('#btnAceptarModal');">
         <form id="frModalContacts" action="" method="GET">
             <input type="hidden" id="hdAngelsGoogleSelectedModal" name="hdAngelsGoogleSelectedModal" value="" />
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />

@@ -17,7 +17,7 @@ h1.tituloMed{
 	background-repeat: no-repeat;
         margin: 10px 10px 10px 10px;
 }
-#jquery-loader-background{background-color: black}
+#jquery-loader-background{background-color: #aaaaaa}
 #jquery-loader.blue-with-image{
 	border:2px #008587 solid;
 	padding-top:35px;
