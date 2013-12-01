@@ -2118,12 +2118,16 @@ function borrarItemSelected(idItem, idLista){
 }
 
 function borrarItemVigilants(idItem){
-    borrarItemSelected(idItem, "#hdAngels");
-    borrarItemSelected(idItem, "#hdAngelsAux");
-    borrarItemSelected(idItem, "#hdLstAngelsFltWall");
-    borrarItemSelected(idItem, "#hdLstAngelsFltFriends");
-    borrarItemSelected(idItem, "#hdLstAngelsFltPriv");
-    borrarItemSelected(idItem, "#hdLstAngelsFltVist");
+    
+    if($('#hdFiltroActual').val() === '0'){
+        borrarItemSelected(idItem, "#hdLstAngelsFltWall");
+    }else if($('#hdFiltroActual').val() === '1'){
+        borrarItemSelected(idItem, "#hdLstAngelsFltFriends");
+    }else if($('#hdFiltroActual').val() === '2'){
+        borrarItemSelected(idItem, "#hdLstAngelsFltPriv");
+    }else if($('#hdFiltroActual').val() === '3'){
+        borrarItemSelected(idItem, "#hdLstAngelsFltVist");
+    }
 
     habilitarGuardar();
 }
