@@ -959,6 +959,7 @@ function habilitarAngelesFiltro(desFiltro){
 }
 
 function deshabilitarAngelesFiltro(desFiltro){
+    $('#hdActive' + desFiltro).val('0');
     document.getElementById('slcFrecuency').disabled = "disabled";
     if(!document.getElementById('vigilantAngelsDisabled')){
         $(function(){
@@ -971,6 +972,7 @@ function deshabilitarAngelesFiltro(desFiltro){
             $('#vigilantAngels').css('position','relative');
         });
     }
+    
     document.getElementById('hdLstAngels' + desFiltro).value = '';
     document.getElementById('hdAngelsAux').value = '';
     loadAngelSelects(document.getElementById('hdAngelsAux').value);
@@ -986,22 +988,31 @@ function habilitarCheck(idCheck,desFiltro){
     disableAllChecks();
 
     document.getElementById(idCheck).disabled = "";
-    document.getElementById(idCheck).onclick = function(){
+    document.getElementById(idCheck).onclick = function() {
         checkAllFilters();
-        habilitarEdicion(idCheck,desFiltro);
+        habilitarEdicion(idCheck, desFiltro);
         activarFiltro(idCheck);
         habilitarGuardar();
+
+        if (document.getElementById(idCheck).checked) {
+            activarFiltro(idCheck);
+            habilitarAngelesFiltro(desFiltro);
+            loadEstadoFiltro(desFiltro);
+            //desactivarFiltro(idCheck);
+        } else {
+            deshabilitarAngelesFiltro(desFiltro);
+            setCheckActual(idCheck);
+        }
     }
 
-    if(document.getElementById(idCheck).checked){
+    if (document.getElementById(idCheck).checked) {
         activarFiltro(idCheck);
         habilitarAngelesFiltro(desFiltro);
         loadEstadoFiltro(desFiltro);
-    //desactivarFiltro(idCheck);
-    }else{
+        //desactivarFiltro(idCheck);
+    } else {
         deshabilitarAngelesFiltro(desFiltro);
         setCheckActual(idCheck);
-        desactivarFltr(desFiltro)
     }
 }
 

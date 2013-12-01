@@ -136,7 +136,7 @@
                                         </td>
                                     </tr>
                                     <tr id="vigilant2" class="pijama1">
-                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant2');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[3]%>','FltPriv');habilitarCheck('chkVig2','FltPriv');"><%= controler.getJspResources().getArrayVig()[2]%></td>
+                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant2');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[3]%>','FltPriv');"><%= controler.getJspResources().getArrayVig()[2]%></td>
                                         <td width="20px">
                                             <input type="checkbox" style="cursor:pointer;" id="chkVig2" name="chkVig2" value="chkVig2"
                                                    disabled="disabled" onclick="" />
