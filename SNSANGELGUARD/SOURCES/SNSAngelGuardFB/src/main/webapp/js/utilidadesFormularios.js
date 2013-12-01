@@ -160,8 +160,6 @@ function showDialog(url, ancho, alto) {
 
     var dialogDiv = $('#modalDialog');
     
-    dialogDiv.attr("Title", "Please select your chosen delivery service.");
-
     dialogDiv.html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
             .dialog({
         height: alto,
@@ -183,7 +181,6 @@ function showDialog(url, ancho, alto) {
 
 function lanzarModal(url, ancho, alto) {
     $(function() {
-
         showDialog(url, ancho, alto);
     });
 }
@@ -2017,26 +2014,6 @@ function borrarContacto(menSave, menWait, numRow, idContact){
         var nameBorrado = escape($('#txtNameTutorEd' + numRow).attr("value"));
         
         launchDoOperationWithOtherContact(menSave, menWait, typeOperation,nameBorrado, emailBorrado, idContact);
-
-        // Limpiamos los cuadros de texto
-//        $('#txtNameTutorEd' + numRow).attr("value","");
-//        $('#txtEmailTutorEd' + numRow).attr("value","");
-
-//        delItemLstJsonAngels();
-//        buscarBorrados('Ed');
-        
-//        borrarItemSelected(emailBorrado, "#hdAngels");
-//        borrarItemSelected(emailBorrado, "#hdAngelsAux");
-//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltWall");
-//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltFriends");
-//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltPriv");
-//        borrarItemSelected(emailBorrado, "#hdLstAngelsFltVist");
-
-        
-//        loadContactsEd();
-
-//        var menAviso = $("#hdTitleAngelDelete").val();
-//        lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menAviso,750,350);
     });
 }
 
