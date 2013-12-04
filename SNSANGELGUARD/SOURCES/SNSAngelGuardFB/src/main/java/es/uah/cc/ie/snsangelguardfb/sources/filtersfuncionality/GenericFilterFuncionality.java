@@ -124,7 +124,7 @@ public class GenericFilterFuncionality {
      * @param request: Sesion web
      * @param desFilter: Tipo de filtro
      * @param uidAngel: Identificador del angel a comprobar.
-     * @param mode: Angel activo
+     * @param isTimeToCheckToday: Indica si se pasa o no el filtro
      * @param firstCheck: Indica si es la primera comprobacion
      * @return Resultado del paso del filtro
      *
@@ -136,14 +136,12 @@ public class GenericFilterFuncionality {
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public String checkFilter(HttpServletRequest request, String desFilter, String mode, boolean firstCheck, JSONObject jsonAngel) throws Exception{
+    public String checkFilter(HttpServletRequest request, String desFilter, boolean isTimeToCheckToday, boolean firstCheck, JSONObject jsonAngel) throws Exception{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilter: Inicio checkFilter para el filtro " + desFilter + "...");
         JSONObject jsonFilter = null;
         boolean angelFound = false;
         boolean isActiveFilter = false;
-        boolean isTimeToCheck = true;
         String result = "";
-        String angels = "";
 
         this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().loadFilter(desFilter);
         try {
@@ -159,11 +157,7 @@ public class GenericFilterFuncionality {
             angelFound = isActiveFilterForAngel(desFilter, jsonAngel.getString("idAngel"));
         }
 
-        if (mode.equals("1")) {
-            isTimeToCheck = checkFilterToday(desFilter);
-        }
-
-        if (angelFound && isActiveFilter && isTimeToCheck) {
+        if (angelFound && isActiveFilter && isTimeToCheckToday) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilter: Ejecutamos el filtro " + desFilter + " para obtener la informaci?n...");
             jsonFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().updateFilter(desFilter);
             result = getResultCheckFilter(request, desFilter, firstCheck, jsonFilter);
@@ -229,10 +223,10 @@ public class GenericFilterFuncionality {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Inicio firstCheckAngelConfirmation...");
 
         try {
-            String resultFltWall = this.checkFilter(request, "fltWall", "0", true, jsonAngel);
-            String resultFltFriends = this.checkFilter(request, "fltFriends", "0", true, jsonAngel);
-            String resultFltPriv = this.checkFilter(request, "fltPriv", "0", true, jsonAngel);
-            String resultFltVist = this.checkFilter(request, "fltVist", "0", true, jsonAngel);
+            String resultFltWall = this.checkFilter(request, "fltWall", true, true, jsonAngel);
+            String resultFltFriends = this.checkFilter(request, "fltFriends", true, true, jsonAngel);
+            String resultFltPriv = this.checkFilter(request, "fltPriv", true, true, jsonAngel);
+            String resultFltVist = this.checkFilter(request, "fltVist", true, true, jsonAngel);
 
             // Mandamos email de confirmacion
             this.snsObject.getEmailObject().sendEmailCheck(resultFltWall, resultFltFriends, resultFltPriv, resultFltVist, jsonAngel);
@@ -241,6 +235,21 @@ public class GenericFilterFuncionality {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Excepcion capturada Exception: " + ex.getMessage());
             this.snsObject.getExceptionManager().initControlException(ex);
         }
+    }
+    
+    private boolean isTimeToCheck(String desFilter){
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isTimeToCheck: Inicio isTimeToCheck con resultado para el filtro " + desFilter);
+        
+        boolean isTimeToCheck = false;
+        try {
+            isTimeToCheck = checkFilterToday(desFilter);
+        } catch (Exception ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isTimeToCheck: Excepcion capturada Exception: " + ex.getMessage());
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isTimeToCheck: No se ejecutara el filtro: " + desFilter);
+        }
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isTimeToCheck: Fin isTimeToCheck con resultado " + isTimeToCheck + " para el filtro " + desFilter);
+        return isTimeToCheck;
     }
 
     /**
@@ -262,6 +271,11 @@ public class GenericFilterFuncionality {
     public void checkUserSettingsOffLine(HttpServletRequest request, JSONArray angelsUser) throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Inicio checkUserSettingsOffLine...");
         
+        boolean isTimeToCheckFltWall = isTimeToCheck("fltWall");
+        boolean isTimeToCheckFltFriends = isTimeToCheck("fltFriends");
+        boolean isTimeToCheckFltPriv = isTimeToCheck("fltPriv");
+        boolean isTimeToCheckFltVist = isTimeToCheck("fltVist");
+        
         // Para cada angel definido por el usuario realizamos el envio de la informacion
         for (int j = 0; j < angelsUser.length(); j++) {
 
@@ -269,10 +283,10 @@ public class GenericFilterFuncionality {
                 JSONObject jsonAngel = angelsUser.getJSONObject(j);
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Iniciando chequeo para: " + jsonAngel.getString("idAngel"));
 
-                String resultFltWall = this.checkFilter(request, "fltWall", "1", false, jsonAngel);
-                String resultFltFriends = this.checkFilter(request, "fltFriends", "1", false, jsonAngel);
-                String resultFltPriv = this.checkFilter(request, "fltPriv", "1", false, jsonAngel);
-                String resultFltVist = this.checkFilter(request, "fltVist", "1", false, jsonAngel);
+                String resultFltWall = this.checkFilter(request, "fltWall", isTimeToCheckFltWall, false, jsonAngel);
+                String resultFltFriends = this.checkFilter(request, "fltFriends", isTimeToCheckFltFriends, false, jsonAngel);
+                String resultFltPriv = this.checkFilter(request, "fltPriv", isTimeToCheckFltPriv, false, jsonAngel);
+                String resultFltVist = this.checkFilter(request, "fltVist", isTimeToCheckFltVist, false, jsonAngel);
 
 
                 if (jsonAngel.getString("acceptAngel").equals("1")) {
@@ -327,5 +341,47 @@ public class GenericFilterFuncionality {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Fin checkFilterToday. Se realizar? el chequeo para el filtro " + desFilter);
             return true;
         }
+    }
+     private String getAngelsFilterUpdated(String idNewAngel, String idOlderAngel, String olderAngels) {
+        String newAngels = "";
+
+        if (olderAngels != null) {
+            if (!olderAngels.equals("")) {
+                String[] arrayAngels = olderAngels.split(";");
+
+                for (String angel : arrayAngels) {
+                    String auxAngel = angel;
+
+                    if (!angel.equals("") && !angel.equals("null")) {
+                        if (angel.equals(idOlderAngel)) {
+                            auxAngel = idNewAngel;
+                        }
+
+                        if (newAngels.equals("")) {
+                            newAngels = auxAngel + ";";
+                        } else {
+                            newAngels = newAngels + auxAngel + ";";
+                        }
+                    }
+                }
+            }
+        }
+
+        return newAngels;
+    }
+    
+    public void updateAngelForFilter(String idOlderAngel, String idNewAngel){
+        
+        // Borramos el angel del filtro de control del lenguaje
+        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getAngels()));
+    
+        // Borramos el angel del filtro de control de amigos
+        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getAngels()));
+        
+        // Borramos el angel del filtro de control de privacidad
+        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getAngels()));
+        
+        // Borramos el angel del filtro de control de visitas
+        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getAngels()));
     }
 }

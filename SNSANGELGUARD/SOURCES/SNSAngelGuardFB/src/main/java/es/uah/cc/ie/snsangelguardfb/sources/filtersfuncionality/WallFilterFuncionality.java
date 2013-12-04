@@ -8,35 +8,20 @@ import es.uah.cc.ie.snsangelguardfb.facebookclient.data.StreamCommentsFacebook;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.mail.MessagingException;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.openide.util.Exceptions;
 
 /**
  * Controla la ejecucion del filtro de control del lenguaje.
@@ -257,20 +242,6 @@ public class WallFilterFuncionality {
         return path;
     }
     
-//    static {
-//        //for localhost testing only
-//        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-//                new javax.net.ssl.HostnameVerifier() {
-//            public boolean verify(String hostname,
-//                    javax.net.ssl.SSLSession sslSession) {
-//                if (hostname.equals("localhost")) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//    }
-    
     /**
      * Carga el fichero badWords correspondiente al idioma configurado del usuario.
      * 
@@ -280,63 +251,13 @@ public class WallFilterFuncionality {
      * @throws JSONException 
      */
     private JSONArray loadFileBadWords() throws MalformedURLException, IOException, JSONException{
- //       BufferedReader buffer = null;
-//        try {
-//            InputStream fileCertificadosConfianza = new FileInputStream(new File(
-//                    this.snsObject.getConfigurationManager().getPathKeyStoreSSL()));
-//            KeyStore ksCertificadosConfianza = KeyStore.getInstance(KeyStore
-//                    .getDefaultType());
-//            ksCertificadosConfianza.load(fileCertificadosConfianza,
-//                    this.snsObject.getConfigurationManager().getPasswordKeyStoreSSL().toCharArray());
-//            fileCertificadosConfianza.close();
-//
-//            // Ponemos el contenido en nuestro manager de certificados de
-//            // confianza.
-//            TrustManagerFactory tmf = TrustManagerFactory
-//                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-//            tmf.init(ksCertificadosConfianza);
-//
-//            // Creamos un contexto SSL con nuestro manager de certificados en los
-//            // que confiamos.
-//            SSLContext context = SSLContext.getInstance("SSL");
-//            context.init(null, tmf.getTrustManagers(), null);
-//            SSLSocketFactory sslSocketFactory = context.getSocketFactory();
+        String path = this.getPathFileBadWords(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getLocaleSettings());
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFileBadWords: Path a lexicalFile: " + path);
 
-            String path = this.getPathFileBadWords(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getLocaleSettings());
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFileBadWords: Path a lexicalFile: " + path);
-            //URL badWords = new URL(path);
-            
-            //URLConnection conexion = badWords.openConnection();
-            //((HttpsURLConnection) conexion).setSSLSocketFactory(sslSocketFactory);
+        File lexicalFile = new File(path);
+        FileReader lexicalFileReader = new FileReader(lexicalFile);
+        BufferedReader buffer = new BufferedReader(lexicalFileReader);
 
-            // Ya podemos conectar y leer
-            //conexion.connect();
-            //InputStream is = conexion.getInputStream();
-            //buffer = new BufferedReader(new InputStreamReader(badWords.openStream()));
-            
-            // Se abre la conexi?n
-         //URL url = new URL(path);
-         //URLConnection conexion = url.openConnection();
-         //conexion.connect();
-         
-         // Lectura
-         //InputStream is = conexion.getInputStream();
-         //BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
-         
-         File lexicalFile = new File(path);
-         FileReader lexicalFileReader = new FileReader(lexicalFile);
-         BufferedReader buffer = new BufferedReader(lexicalFileReader);
-
-
-//        } catch (KeyStoreException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } catch (NoSuchAlgorithmException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } catch (CertificateException ex) {
-//            Exceptions.printStackTrace(ex);
-//        } catch (KeyManagementException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
         return cargarFichero(buffer);
     }
     
@@ -373,7 +294,7 @@ public class WallFilterFuncionality {
             comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUid(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"");
         } else {
             SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            System.out.println("Nueva fecha: " + jsonFilter.getString("lastCheck"));
+            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Nueva fecha: " + jsonFilter.getString("lastCheck"));
             comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'");
         }
 
@@ -528,11 +449,6 @@ public class WallFilterFuncionality {
         for (int i = 0; i < buffer.length(); i++) {
             wordFile = buffer.getString(i);
             
-//            if(comentario.toLowerCase().contains(wordFile.toLowerCase())){
-//                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
-//                aux = true;
-//                break;
-//            }
             String[] arrayComm = comentario.split("\\ ");
             for(int j = 0; j < arrayComm.length; j++){
                 if (arrayComm[j].toLowerCase().equals(wordFile.toLowerCase())) {
