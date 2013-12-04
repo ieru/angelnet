@@ -1337,7 +1337,11 @@ public class UserSettingsDAO {
         for (int j = 0; j < angelsFilter.length(); j++) {
             for (int i = 0; i < jsonArrayAngels.length(); i++) {
                 jsonAngel = jsonArrayAngels.getJSONObject(i);
-                if (angelsFilter.getJSONObject(j).getString("idAngel").equals(jsonAngel.getString("idAngel"))) {
+                if(jsonAngel.getString("typeAngel").equals("F")){
+                    if (angelsFilter.getJSONObject(j).getString("idAngel").equals(jsonAngel.getString("idFacebook"))) {
+                        setCollectionAngels(jsonAngel, 2, des);
+                    }
+                }else if (angelsFilter.getJSONObject(j).getString("idAngel").equals(jsonAngel.getString("idAngel"))) {
                     setCollectionAngels(jsonAngel, 2, des);
                 }
             }
