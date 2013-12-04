@@ -91,6 +91,18 @@ public class DeleteAngelSelectedJSPControler extends GenericJSPControler {
             this.snsObject.logSession(request, response);
 
             if (this.typeAngel.equals("F")) {
+                // Borramos el angel del filtro de control del lenguaje
+                this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(request.getParameter("hdLstAngelsFltWall"));
+
+                // Borramos el angel del filtro de control de amigos
+                this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(request.getParameter("hdLstAngelsFltFriends"));
+
+                // Borramos el angel del filtro de control de privacidad
+                this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(request.getParameter("hdLstAngelsFltPriv"));
+
+                // Borramos el angel del filtro de control de visitas
+                this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(request.getParameter("hdLstAngelsFltVist"));
+                    
                 // Obtenemos la informacion del angel en base de datos
                 JSONObject jsonAngelDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUidFacebook(String.class, this.idAngel));
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos de base de datos: " + jsonAngelDB.toString());

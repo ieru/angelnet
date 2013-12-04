@@ -15,14 +15,16 @@
     String message = "";
     String pathImg = "";
     String title = "";
+    String modal = "";
     try {
         //Obtenemos la conexión a Facebook
         snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
         //snsObject.logSession(request, response);
 
-        int type = Integer.parseInt(request.getParameter("typeInfo").toString());
-        message = request.getParameter("infoMessage").toString();
-
+        int type = Integer.parseInt(request.getParameter("typeInfo"));
+        message = request.getParameter("infoMessage");
+        modal = request.getParameter("isModal");
+        
         pathImg = "";
         title = "";
 
@@ -73,6 +75,7 @@
     <body >
         <form id="frInformationMessage" action="" method="">
             <div id="divAngelUserContainer">
+                <input type="hidden" id="hdIsModal" name="hdIsModal" value='<%= modal %>' />
                 <center>
                     <table width="95%">
                         <tr>

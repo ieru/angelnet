@@ -45,6 +45,9 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
     /** Key para el acceso al id del angel */
     private static final String KEY_ID_ANGEL_GOOGLE_DEL = "idContactGoogleSelectedDel";
     
+    /** Key para el acceso al email del angel a borrar */
+    private static final String KEY_EMAIL_ANGEL_GOOGLE_DEL = "emailAngelGoogleSelectedDel";
+    
     /** Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
     
@@ -193,9 +196,6 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
 
                         // Actualizo la coleccion de angeles del usuario
                         this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngel, 1, "");
-
-                        // Enviamos un mail de confirmacion al angel
-                        this.snsObject.getEmailObject().sendMailConfirmationAngel(jsonNewAngel, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic());    
                     }
                     
                     // Establecemos el tipo de mensaje a mostrar en la vuelta
@@ -204,10 +204,26 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
                     break;
                 case DELETE_CONTACT:
                     
+                    // Borramos el angel del filtro de control del lenguaje
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(request.getParameter("hdLstAngelsFltWall"));
+
+                    // Borramos el angel del filtro de control de amigos
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(request.getParameter("hdLstAngelsFltFriends"));
+
+                    // Borramos el angel del filtro de control de privacidad
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(request.getParameter("hdLstAngelsFltPriv"));
+
+                    // Borramos el angel del filtro de control de visitas
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(request.getParameter("hdLstAngelsFltVist"));
+    
+                    
                     for (int i = 0; i < this.jsonGoogleAngels.length(); i++) {
                         // Obtenemos el objeto actual
                         JSONObject jsonAngelToDelete = this.jsonGoogleAngels.getJSONObject(i);
 
+                        // Borramos el angel de todos los filtros en ejecucion
+                        //this.snsObject.getGenericFilter().deleteAngelForFilter(jsonAngelToDelete.getString(KEY_EMAIL_ANGEL_GOOGLE_DEL));
+                        
                         // Obtenemos la informacion del angel en base de datos
                         JSONObject jsonAngelDeleteSettingsDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, jsonAngelToDelete.getString(KEY_ID_ANGEL_GOOGLE_DEL)));
                         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos de base de datos: " + jsonAngelDeleteSettingsDB.toString());

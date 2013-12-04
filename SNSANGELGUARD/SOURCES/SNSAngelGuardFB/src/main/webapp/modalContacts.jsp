@@ -235,7 +235,7 @@
                             </td>
                             <td>
                                 <input type="button" class="boton" id="btnCancelar" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnCancelGoogleCont()%>"
-                                       onclick="salirModal();"/>
+                                       onclick="salirModalCancelar();"/>
                             </td>
                             <td width="100%" align="right">
                                 <img src="../SNSAngelGuardFB/resources/gmail.gif" align="middle" alt="">

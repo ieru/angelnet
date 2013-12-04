@@ -5,7 +5,6 @@
 package es.uah.cc.ie.snsangelguardfb.sources.dao.entity;
 
 import bsh.ParseException;
-import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import es.uah.cc.ie.snsangelguardfb.sources.dao.UserSettingsDaoManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -180,14 +180,12 @@ public class DoOperationWithOtherContactJSPControler extends GenericJSPControler
                     // Actualizo la coleccion de angeles del usuario
                     this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngel, 1, "");
                     
-                    // Enviamos un mail de confirmacion al angel
-                    this.snsObject.getEmailObject().sendMailConfirmationAngel(jsonNewAngel, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic());
-                    
                     // Establecemos el tipo de mensaje a mostrar en la vuelta
                     resultOperation = 6;
                     
                     break;
                 case UPDATE_CONTACT:
+          
                     // Obtenemos la informacion del angel en base de datos
                     JSONObject jsonAngelUpdateSettingsDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, this.idContact));
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos de base de datos: " + jsonAngelUpdateSettingsDB.toString());
@@ -196,6 +194,8 @@ public class DoOperationWithOtherContactJSPControler extends GenericJSPControler
                     JSONObject jsonUpdateAngel = jsonAngelUpdateSettingsDB.getJSONArray("settingsAngels").getJSONObject(0);
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos del angel sacados del array: " + jsonUpdateAngel.toString());
                 
+                    String olderEmail = jsonUpdateAngel.getString("idAngel");
+                    
                     // Introducimos en el angel la nueva informacion
                     jsonUpdateAngel.put("nameAngel", this.nameContact);
                     jsonUpdateAngel.put("idAngel", this.emailContact);
@@ -213,6 +213,9 @@ public class DoOperationWithOtherContactJSPControler extends GenericJSPControler
                             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Angel actualizado...");
                             
                             resultOperation = 6;
+                            
+                            // Actualizamos la lista de angeles de todos los filtros
+                            this.snsObject.getGenericFilter().updateAngelForFilter(olderEmail, this.emailContact);
                         } else{
                             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Excepcion capturada UniformInterfaceException: " + e.getMessage());
                             
@@ -222,6 +225,18 @@ public class DoOperationWithOtherContactJSPControler extends GenericJSPControler
                     }
                     break;
                 case DELETE_CONTACT:    
+                    // Borramos el angel del filtro de control del lenguaje
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(request.getParameter("hdLstAngelsFltWall"));
+
+                    // Borramos el angel del filtro de control de amigos
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(request.getParameter("hdLstAngelsFltFriends"));
+
+                    // Borramos el angel del filtro de control de privacidad
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(request.getParameter("hdLstAngelsFltPriv"));
+
+                    // Borramos el angel del filtro de control de visitas
+                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(request.getParameter("hdLstAngelsFltVist"));
+                    
                     // Obtenemos la informacion del angel en base de datos
                     JSONObject jsonAngelDeleteSettingsDB = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByUid(String.class, this.idContact));
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Datos de base de datos: " + jsonAngelDeleteSettingsDB.toString());

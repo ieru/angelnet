@@ -53,7 +53,9 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
     i=function(obj){
         if(obj.hasClass("itemselected")){
             $("#view_selected_count").text(parseInt($("#view_selected_count").text(),10)-1);
-            borrarItemVigilants(obj.find("[type=hidden]").val());
+            // Borramos el angel de todos los filtros de la aplicacion
+            deleteAngelOfAllFilters(obj.find("[type=hidden]").val());
+            //borrarItemVigilants(obj.find("[type=hidden]").val());
             obj.parents("li").removeAttr("addedid");
             o(obj);
             deleteAngelAjax(obj.find("[type=hidden]").val());     

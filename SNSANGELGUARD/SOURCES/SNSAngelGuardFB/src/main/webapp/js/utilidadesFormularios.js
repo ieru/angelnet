@@ -181,6 +181,7 @@ function showDialog(url, ancho, alto) {
 
 function lanzarModal(url, ancho, alto) {
     $(function() {
+        url = url + "&isModal=1";
         showDialog(url, ancho, alto);
     });
 }
@@ -196,7 +197,9 @@ function lanzarModalGoogleContacts(url, ancho, alto) {
 }
 
 function lanzarModalAyuda(url, ancho, alto) {
-    lanzarModal(url, ancho, alto);
+    $(function() {
+        showDialog(url, ancho, alto);
+    });
 }
 
 function controlModal()
@@ -723,12 +726,33 @@ function enviarFormularioContacts(menSave, menWait, aceptar){
 
 }
 
+function deleteOfFilterAngelGoogleSelected(angelsGoogleSelected){
+    var arrayAngels = angelsGoogleSelected.split(";");
+    
+    for(var i = 0; i< arrayAngels.length; i++){
+        var angel = arrayAngels[i].split(",");
+        
+        if(angel[0] != ''){
+            var emailItem = angel[2].split(":");
+            emailItem = formatName(emailItem[1]);
+            
+            deleteAngelOfAllFilters(emailItem);
+        }
+    }
+}
+
 function enviarFormularioBorrarContacts(menSave, menWait){
     $(function(){
+        // Borramos los angeles seleccionados de todos los filtros
+        deleteOfFilterAngelGoogleSelected($('#hdAngelsGoogleSelectedDel').val());
+        
+        // Codificamos la variable para ser enviada via HTTP
         var angelsGoogleSelected = escape($('#hdAngelsGoogleSelectedDel').val());
         
+        // Mostramos el loader de carga
         muestraLoader(menSave, menWait);
         
+        // Lanzamos la operacion de servidor
         launchDoOperationWithGmailContact("2", angelsGoogleSelected, "false");
     });
 
@@ -736,7 +760,11 @@ function enviarFormularioBorrarContacts(menSave, menWait){
 
 
 function cerrarInfoModal(){
-    window.parent.salirModalSinDatos();
+    if($('#hdIsModal').val() === '1'){
+        window.parent.salirModalSinDatos();
+    }else{
+        window.close();
+    }
 }
 
 function cerrarInfoError(uidPublic){
@@ -1550,7 +1578,7 @@ function saveSettings(menSave,menWait){
     document.getElementById('h3').value = encodeURIComponent(document.getElementById('hdAngelsEd').value);
     document.getElementById('h4').value = encodeURIComponent(document.getElementById('hdLstAngelsFltWall').value);
     document.getElementById('h5').value = encodeURIComponent(document.getElementById('hdLstAngelsFltFriends').value);
-    document.getElementById('h6').value = encodeURIComponent(document.getElementById('hdLstAngelsFltPriv').value);
+    //document.getElementById('h6').value = encodeURIComponent(document.getElementById('hdLstAngelsFltPriv').value);
     document.getElementById('h7').value = encodeURIComponent(document.getElementById('hdLstAngelsFltVist').value);
     document.getElementById('h8').value = encodeURIComponent(document.getElementById('hdActiveFltWall').value);
     document.getElementById('h9').value = encodeURIComponent(document.getElementById('hdActiveFltFriends').value);
@@ -2013,6 +2041,10 @@ function borrarContacto(menSave, menWait, numRow, idContact){
         var emailBorrado = escape($('#txtEmailTutorEd' + numRow).attr("value"));
         var nameBorrado = escape($('#txtNameTutorEd' + numRow).attr("value"));
         
+        // Borramos el angel de todos los filtros de la aplicacion
+        deleteAngelOfAllFilters(emailBorrado);
+        
+        // Lanzamos la operacion de borrado en servidor
         launchDoOperationWithOtherContact(menSave, menWait, typeOperation,nameBorrado, emailBorrado, idContact);
     });
 }
@@ -2045,25 +2077,21 @@ function saveSelectionAngels(){
         if(actualFilter == '0'){
             if(isActiveFilter('hdActiveFltWall')){
                 document.getElementById('hdFrecFltWall').value = document.getElementById('slcFrecuency').value;
-                document.getElementById('hdLstAngelsFltWall').value = document.getElementById('hdAngelsAux').value;
             }
         }
         else if(actualFilter == '1'){
             if(isActiveFilter('hdActiveFltFriends')){
                 document.getElementById('hdFrecFltFriends').value = document.getElementById('slcFrecuency').value;
-                document.getElementById('hdLstAngelsFltFriends').value = document.getElementById('hdAngelsAux').value;
             }
         }
         else if(actualFilter == '2'){
             if(isActiveFilter('hdActiveFltPriv')){
                 document.getElementById('hdFrecFltPriv').value = document.getElementById('slcFrecuency').value;
-                document.getElementById('hdLstAngelsFltPriv').value = document.getElementById('hdAngelsAux').value;
             }
         }
         else if(actualFilter == '3'){
             if(isActiveFilter('hdActiveFltVist')){
                 document.getElementById('hdFrecFltVist').value = document.getElementById('slcFrecuency').value;
-                document.getElementById('hdLstAngelsFltVist').value = document.getElementById('hdAngelsAux').value;
             }
         }
     }
@@ -2079,7 +2107,6 @@ function borrarItems(desFiltro){
 }
 
 function borrarItemSelected(idItem, idLista){
-    $(function(){
     var lstAux = '';
     var arrayLstAngels = '';
     
@@ -2100,10 +2127,18 @@ function borrarItemSelected(idItem, idLista){
     }else{
         lstAux = '';
     }
-
+    
     $(idLista).attr("value",lstAux);
-    });
+
 }
+
+function deleteAngelOfAllFilters(idItem){
+    borrarItemSelected(idItem, "#hdLstAngelsFltWall");
+    borrarItemSelected(idItem, "#hdLstAngelsFltFriends");
+    borrarItemSelected(idItem, "#hdLstAngelsFltPriv");
+    borrarItemSelected(idItem, "#hdLstAngelsFltVist");
+}
+
 
 function borrarItemVigilants(idItem){
     
@@ -2181,6 +2216,10 @@ function salirModalSinDatos(){
         dialogDiv = $('<div id=\"modalDialog\"></div>').appendTo('#modalContainer');
         $("#modalDialog").dialog("destroy").remove();
    }); 
+}
+
+function salirModalCancelar(){
+    window.parent.salirModalSinDatos();
 }
 
 function salirModalDesdePadre(menSave, menWait){
