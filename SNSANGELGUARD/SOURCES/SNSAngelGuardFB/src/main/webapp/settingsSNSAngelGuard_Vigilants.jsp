@@ -42,7 +42,6 @@
         <title><%=controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleSettVig()%></title>
 
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
-        <link type="text/css" rel="stylesheet" href="Styles/smoothness/jquery-ui-1.8.12.custom.css" />
         <link type="text/css" rel="stylesheet" href="Styles/jquery.loader.css" />
         <link type="text/css" rel="stylesheet" href="Styles/fcbklistselection.css" />
 
