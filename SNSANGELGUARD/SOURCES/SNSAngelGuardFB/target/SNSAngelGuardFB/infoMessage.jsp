@@ -26,28 +26,24 @@
         modal = request.getParameter("isModal");
         
         pathImg = "";
-        title = "";
-
+        title = "SNSAngelGuardFB...";
 
         switch (type) {
             // Mensaje OK
             case 0:
                 pathImg = "../SNSAngelGuardFB/resources/iconoOk.jpg";
-                title = "Mensaje de confirmación";
                 break;
 
             // Mensaje Alerta
             case 1:
                 pathImg = "";
                 pathImg = "../SNSAngelGuardFB/resources/iconoAlerta.jpg";
-                title = "Alerta";
                 break;
 
             // Mensaje Error
             case 2:
                 pathImg = "";
                 pathImg = "../SNSAngelGuardFB/resources/iconoError.jpg";
-                title = "Error";
                 break;
         }
 
