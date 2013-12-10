@@ -45,6 +45,9 @@ public class DeleteAngelSelectedJSPControler extends GenericJSPControler {
     
     /** Identificador del angel(ID de Facebook o su correo electronico) */
     private String idAngel;
+    
+    /** Indica si se borrar el angel por haberse cometido un error al escribir en el muro del usuario */
+    private String errorPostingWallAngel;
 
     /**
      * Constructor de clase.
@@ -89,6 +92,11 @@ public class DeleteAngelSelectedJSPControler extends GenericJSPControler {
 
             // Obtenemos la sesion de la aplicacion
             this.snsObject.logSession(request, response);
+            
+            // Obtenemos el modo de operacion. Si este parametro es igual a 1, indicara
+            // que se ha producido un error a la hora de escribir en el muro de un angel.
+            // Si no viene informado, indicara que el angel se borra voluntariamente.
+            this.errorPostingWallAngel = request.getParameter("deleteByErrorPosting");
 
             if (this.typeAngel.equals("F")) {
                 // Borramos el angel del filtro de control del lenguaje
@@ -119,8 +127,16 @@ public class DeleteAngelSelectedJSPControler extends GenericJSPControler {
                     this.snsObject.getEmailObject().sendMailDeleteAngel(jsonAngelFacebook, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic());
                 }
                 
+                String typeReturn = "1";
+                
+                if(this.errorPostingWallAngel != null){
+                    if(this.errorPostingWallAngel.equals("1")){
+                        typeReturn = "12";
+                    }
+                }
+                
                 // Volvemos a la pagina de configuracion
-                response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=1");
+                response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=" + typeReturn);
             }
             
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Fin process...");

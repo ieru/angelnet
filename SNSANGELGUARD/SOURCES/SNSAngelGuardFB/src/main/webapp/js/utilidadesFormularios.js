@@ -1566,6 +1566,15 @@ function deleteAngelSelected(menSave, menWait, idAngel){
     document.getElementById('frSNSAngels').submit();
 }
 
+function deleteAngelSelectedByErrorPostingWall(menSave, menWait, idAngel){
+    muestraLoader(menSave,menWait);
+    var data = '../SNSAngelGuardFB/deleteAngelSelected.jsp' + '?' + "deleteByErrorPosting=1" + "&" + getDatesAngelFacebook(idAngel);
+    
+    document.getElementById('frSNSAngels').setAttribute('action', data);
+    document.getElementById('frSNSAngels').setAttribute('method','post');
+    document.getElementById('frSNSAngels').submit();
+}
+
 function saveSettings(menSave,menWait){
     muestraLoader(menSave,menWait);
     
@@ -2290,7 +2299,7 @@ function loadFeedDialog(context, idFacebookAngel, uidAngel, uidPublic, title, su
             if (response && response.post_id) {
                 lanzarModal('../SNSAngelGuardFB/infoMessage.jsp?typeInfo=0&infoMessage=' + menSaveOk,750,350);
             } else {
-                deleteAngelAjax(idFacebookAngel);
+                deleteAngelAjaxByErrorPostingWall(idFacebookAngel);
             }
         }
         );

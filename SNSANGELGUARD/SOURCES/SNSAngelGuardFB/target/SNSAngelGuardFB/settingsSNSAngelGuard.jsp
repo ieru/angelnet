@@ -77,6 +77,12 @@
                                      idAngel);
             }
             
+            function deleteAngelAjaxByErrorPostingWall(idAngel){
+                deleteAngelSelectedByErrorPostingWall('<%= jspControler.getJspResources().getMenSave() %>',
+                                     '<%= jspControler.getJspResources().getMenWait() %>', 
+                                     idAngel);
+            }
+            
             function deleteAngelAjax(idAngel){
                 deleteAngelSelected('<%= jspControler.getJspResources().getMenSave() %>',
                                      '<%= jspControler.getJspResources().getMenWait() %>', 
@@ -212,43 +218,42 @@
             </script>
             
             <div id="settings" style="width:1100px;">
-                <center>
-                    <div id="container">
-                        <table style="width:950px;height: 620px;">
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td width="210px" style="vertical-align:top;">
-                                    <div id="Menu">
-                                    </div>
-                                    <A class="linkHelp" onclick="lanzarModalAyuda('<%= jspControler.getJspResources().DESTINY_JSP_HELP %>',700,420);">
-                                        <h1 class="letraNorm"><%= jspControler.getJspResources().getTitleHelp()[0] %></h1>
-                                    </A>
-                                </td>
-                                <td width="740px" style="vertical-align:top;">
-                                    <div id="ajaxContent">
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div id="botoneraInferior" style="width:950px;height: 48px;" align="left" margin="15px">
-                        <hr class="linea" />
-                        <table>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input type="button" class="boton" id="btnSave" name="btnSave" value="<%= jspControler.getJspResources().getBtnSaveSettings() %>"
-                                           onclick="saveSettings('<%= jspControler.getJspResources().getMenSave() %>',
-                                               '<%= jspControler.getJspResources().getMenWait() %>');"/>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </center>
+
+                <div id="container">
+                    <table style="width:950px;height: 620px;">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td width="210px" style="vertical-align:top;">
+                                <div id="Menu">
+                                </div>
+                                <A class="linkHelp" onclick="lanzarModalAyuda('<%= jspControler.getJspResources().DESTINY_JSP_HELP%>',700,420);">
+                                    <h1 class="letraNorm"><%= jspControler.getJspResources().getTitleHelp()[0]%></h1>
+                                </A>
+                            </td>
+                            <td width="740px" style="vertical-align:top;">
+                                <div id="ajaxContent">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="botoneraInferior" style="width:98%;height: 48px;" align="left" margin="15px">
+                    <hr class="linea" />
+                    <table>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="button" class="boton" id="btnSave" name="btnSave" value="<%= jspControler.getJspResources().getBtnSaveSettings()%>"
+                                       onclick="saveSettings('<%= jspControler.getJspResources().getMenSave()%>',
+                                               '<%= jspControler.getJspResources().getMenWait()%>');"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <div id="modalContainer">
                <div id="modalDialog"></div>
