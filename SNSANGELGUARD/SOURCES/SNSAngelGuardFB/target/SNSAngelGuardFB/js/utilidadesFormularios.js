@@ -124,7 +124,6 @@ function cargarListaAngels(arrayAngels,strSubAng){
             if((strAngels.substring(0,1) == "[") &&
                 (strAngels.substring(strAngels.length - 1,strAngels.length) == "]")) {
                 var auxAngels = strAngels.substring(1,strAngels.length - 1);
-                //alert("VALOR ANGEL: " +  auxAngels);
                 var angelDates = auxAngels.split(',');
 
                 var li = document.createElement("li");
@@ -229,6 +228,12 @@ function habilitarBoton(idBoton){
 function deshabilitarBotonQuery(idBoton){
     $(function(){
         $(idBoton).attr("class", "botonDisabled");
+        if($(idBoton).attr('onclick')){
+            $(idBoton).removeAttr('onclick').click(function(){});
+        }else{
+            $(idBoton).unbind('click');
+            $(idBoton).click(function(){});
+        }
     });
 }
 
@@ -513,9 +518,19 @@ function habilitarBorrar(){
     }
     
     if(deshabilitar){
-        deshabilitarBoton('btnDelContact');
+        deshabilitarBotonQuery('#btnDelContact');
     }else{
-        habilitarBoton('btnDelContact');
+        if ($('#btnDelContact').attr('onclick')) {
+            $('#btnDelContact').removeAttr('onclick').click(function() {
+                enviarFormularioBorrarContacts($('#hdMenSave').val(), $('#hdMenWait').val());
+            });
+        } else {
+            $('#btnDelContact').unbind('click');
+            $('#btnDelContact').click(function() {
+                enviarFormularioBorrarContacts($('#hdMenSave').val(), $('#hdMenWait').val());
+            });
+        }
+        habilitarBotonQuery('#btnDelContact');
     }
 
 }
@@ -528,6 +543,8 @@ function seleccionarFilaGoogle(idAngel, elemento, radio, nameAddress, emailAddre
 
             $(radio).attr("checked", false);
             $(elemento).attr("class", "pijama1");
+            
+            
         } else {
             addToJsonAngels(idAngel, nameAddress, emailAddress, 'GoogleSelectedDel');
             $(radio).attr("checked", true);
@@ -567,25 +584,35 @@ function comprobarAceptar(){
     }
 }
 
-function seleccionarFila(elemento,radio,nameAddress,emailAddress){
-        // Test if the element is selected
-        if ($(elemento).attr("class") == 'pijama1') {          
-            addToJsonAngels(null, nameAddress, emailAddress, 'GoogleSelected');
+function seleccionarFila(elemento, radio, nameAddress, emailAddress) {
+    // Test if the element is selected
+    if ($(elemento).attr("class") == 'pijama1') {
+        addToJsonAngels(null, nameAddress, emailAddress, 'GoogleSelected');
 
-            $(radio).attr("checked", true);
-            $(elemento).attr("class", "pijama2");
+        $(radio).attr("checked", true);
+        $(elemento).attr("class", "pijama2");
 
-            habilitarBotonQuery('#btnAceptarModal');
+        if ($('#btnAceptarModal').attr('onclick')) {
+            $('#btnAceptarModal').removeAttr('onclick').click(function() {
+                enviarFormularioContacts($('#hdMenSave').val(), $('#hdMenWait').val(), '1');
+            });
         } else {
-            delToJsonAngelsNameEmail(nameAddress, emailAddress, 'GoogleSelected');
+            $('#btnAceptarModal').unbind('click');
+            $('#btnAceptarModal').click(function() {
+                enviarFormularioContacts($('#hdMenSave').val(), $('#hdMenWait').val(), '1');
+            });
+        }
+        habilitarBotonQuery('#btnAceptarModal');
+    } else {
+        delToJsonAngelsNameEmail(nameAddress, emailAddress, 'GoogleSelected');
 
-            $(radio).attr("checked", false);
-            $(elemento).attr("class", "pijama1");
-            
-            if($('#hdAngelsGoogleSelected').val() === '' || $('#hdAngelsGoogleSelected').val() === null){
-                deshabilitarBotonQuery('#btnAceptarModal');
-            }
-}
+        $(radio).attr("checked", false);
+        $(elemento).attr("class", "pijama1");
+
+        if ($('#hdAngelsGoogleSelected').val() === '' || $('#hdAngelsGoogleSelected').val() === null) {
+            deshabilitarBotonQuery('#btnAceptarModal');
+        }
+    }
 }
 
 function formatName(nameContact){
@@ -1273,13 +1300,23 @@ function cerrarVentana(){
 
 function habilitarBtnGuardar(){
     $(function(){
-        $("#btnSave").attr('class','boton');
+        if ($('#btnSave').attr('onclick')) {
+            $('#btnSave').removeAttr('onclick').click(function() {
+                saveSettings($('#hdMenSave').val(), $('#hdMenWait').val());
+            });
+        } else {
+            $('#btnSave').unbind('click');
+            $('#btnSave').click(function() {
+                saveSettings($('#hdMenSave').val(), $('#hdMenWait').val());
+            });
+        }
+        habilitarBotonQuery('#btnSave');
     });
 }
 
 function deshabilitarBtnGuardar(){
     $(function(){
-        $("#btnSave").attr('class','botonDisabled');
+        deshabilitarBotonQuery('#btnSave');
     });
 }
 
@@ -1541,7 +1578,7 @@ function habilitarGuardar(){
     if(isAnyFiltroActivo()){
         habilitarBtnGuardar();
     }else{
-        deshabilitarBtnGuardar();
+        deshabilitarBotonQuery('#btnSave');
         valido = false;
     }
 
@@ -1776,10 +1813,19 @@ function cerrarLoaderMod(){
     });
 }
 
-function muestraLoaderSin(){
+function muestraLoaderWithoutMsg(){
     $(function(){
         $.loader({
             className:"blue-with-image-2",
+            content:''
+        });
+    });
+}
+
+function muestraLoaderWithoutMsgBlue(){
+    $(function(){
+        $.loader({
+            className:"grey-with-image-blue",
             content:''
         });
     });
@@ -2380,4 +2426,21 @@ function redirectToScheduler(uid, accessToken){
         $('#frIndex').submit();
 
     });
+}
+
+function isCompatibleNavigator(){
+    var isOpera = (navigator.userAgent.indexOf("Opera") != -1);
+    var isChrome = (navigator.userAgent.indexOf("Chrome") != -1);
+    var isFirefox = (navigator.userAgent.indexOf("Firefox") != -1);
+    var isMIE = (navigator.userAgent.indexOf("MSIE") != -1);
+    var isSafari = (navigator.userAgent.indexOf("Safari") != -1);
+    
+    if(isChrome){
+        return true;
+    }else if(isFirefox && navigator.appVersion.indexOf("5.0") != -1){
+        return true;
+    }
+    
+    return false;
+    
 }

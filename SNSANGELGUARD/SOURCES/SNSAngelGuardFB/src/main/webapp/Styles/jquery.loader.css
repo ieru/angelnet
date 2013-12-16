@@ -32,5 +32,15 @@ h1.tituloMed{
 	padding-top:35px;
 	background-color: transparent;
 	text-align: center;
+        background-image: url(https://snsangelguard.com/SNSAngelGuardFB/resources/bigLoader.gif);
+
+}
+
+#jquery-loader.grey-with-image-blue{
+	border:none;
+	padding-top:35px;
+	background-color: transparent;
+	text-align: center;
+        background-image: url(https://snsangelguard.com/SNSAngelGuardFB/resources/bigLoaderBlue.gif);
 
 }

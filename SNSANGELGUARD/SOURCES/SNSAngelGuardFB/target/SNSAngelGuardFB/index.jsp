@@ -42,20 +42,16 @@
         <title>SNSAngelGuard</title>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
         
+         <link rel="stylesheet" type="text/css" href="Styles/jquery.loader.css" />
+        
         <!--import jquery lib -->
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+         <script type="text/javascript" src="js/jquery.loader.js"></script>
         <script type="text/javascript" charset="ISO-8859-1" src="js/utilidadesFormularios.js"></script>
-        
-        
-    </head>
-    <body>
-        <form id="frIndex" action="" method="">
-            <input type="hidden" id="uid" name="uid" value="" />
-            <input type="hidden" id="accessToken" name="accessToken" value="" />
-            <div id="fb-root">
-                <script>
-                      window.fbAsyncInit = function() {
+        <script type="text/javascript">
+             muestraLoaderWithoutMsg();
+             window.fbAsyncInit = function() {
                         // init the FB JS SDK
                         FB.init({
                            appId      : '<%= controler.getSnsObject().getConfigurationManager().getApiKey()%>',                        // App ID from the app dashboard
@@ -83,7 +79,16 @@
                          js.src = "//connect.facebook.net/en_US/all.js";
                          fjs.parentNode.insertBefore(js, fjs);
                        }(document, 'script', 'facebook-jssdk'));
-                </script>
+            
+        </script>
+        
+        
+    </head>
+    <body background="https://snsangelguard.com/SNSAngelGuardFB/resources/fondoBienvenida.png">
+        <form id="frIndex" action="" method="">
+            <input type="hidden" id="uid" name="uid" value="" />
+            <input type="hidden" id="accessToken" name="accessToken" value="" />
+            <div id="fb-root">
             </div>
         </form>
     </body>

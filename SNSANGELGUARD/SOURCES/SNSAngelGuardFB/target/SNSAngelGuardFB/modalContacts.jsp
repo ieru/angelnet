@@ -11,6 +11,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
             request.setCharacterEncoding("utf-8");
+            
     
             //Obtenemos la conexión a Facebook
             SNSAngelGuardFBManager snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
@@ -31,9 +32,10 @@
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
         <link rel="stylesheet" type="text/css" href="Styles/jquery.loader.css" />
         
-        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jQuery-1.8.2.js"></script>
         <script type="text/javascript" src="js/jquery.loader.js"></script>
         <script type='text/javascript' src='js/utilidadesFormularios.js'></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js"></script>
         <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
         <script type='text/javascript' src="js/googleContactsFunctionality.js"></script>
         
@@ -42,6 +44,8 @@
         <form id="frModalContacts" action="" method="GET">
             <input type="hidden" id="hdAngelsGoogleSelectedModal" name="hdAngelsGoogleSelectedModal" value="" />
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />
+            <input type="hidden" id="hdMenSave" name="hdMenSave" value="<%= menSave %>" />
+            <input type="hidden" id="hdMenWait" name="hdMenWait" value="<%= menWait %>" />
 
             <div id='picker_container' style='width: 100%; margin: auto'>
                 <table width="100%">
@@ -116,8 +120,7 @@
                         <!-- <tr height="25px" > -->
                         <tr>
                             <td>
-                                <input type="button" class="boton" id="btnAceptarModal" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnAceptGoogleCont()%>"
-                                       onclick="enviarFormularioContacts('<%= menSave %>','<%= menWait %>', '1')"/>
+                                <input type="button" class="boton" id="btnAceptarModal" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnAceptGoogleCont()%>" />
                             </td>
                             <td>
                                 <input type="button" class="boton" id="btnCancelar" value="<%=snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getBtnCancelGoogleCont()%>"

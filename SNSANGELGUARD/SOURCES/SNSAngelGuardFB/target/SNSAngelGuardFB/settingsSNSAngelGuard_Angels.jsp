@@ -92,6 +92,8 @@
             <input type="hidden" id="hdEmailContact" name="hdEmailContact" value="" />
             <input type="hidden" id="hdTitleAngelConfirm" name="hdTitleAngelConfirm" value="" />
             <input type="hidden" id="hdTitleAngelDelete" name="hdTitleAngelDelete" value="" />
+            <input type="hidden" id="hdMenSave" name="hdMenSave" value="<%= controler.getJspResources().getMenSave() %>" />
+            <input type="hidden" id="hdMenWait" name="hdMenWait" value="<%= controler.getJspResources().getMenWait() %>" />
 
             <div id="friendsContent" class="friendsContent">
                 <h1 class="tituloMed"><%= controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFriendsContentSettAng()%></h1>
@@ -141,8 +143,7 @@
                                 </tr>
                                 <tr>
                                     <td width="122px" align="right">
-                                        <input type="button" class="botonDisabled" id="btnDelContact" name="btnDelContact" value="Borrar"
-                                               onclick="enviarFormularioBorrarContacts('<%= controler.getJspResources().getMenSave() %>','<%= controler.getJspResources().getMenWait() %>');"/>
+                                        <input type="button" class="botonDisabled" id="btnDelContact" name="btnDelContact" value="Borrar" />
                                     </td>
                                 </tr>
                             </table>

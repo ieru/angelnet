@@ -139,6 +139,17 @@
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
         </dependency>
+<dependency>
+        <groupId>org.jvnet.hudson.jackson</groupId>
+        <artifactId>jackson</artifactId>
+        <version>0.7</version>
+      </dependency>
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>gdata-contacts-3.0</artifactId>
+            <version>1.41.1</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -154,11 +165,6 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>gdata-core-1.0</artifactId>
-            <version>1.36.0</version>
         </dependency>
         <dependency>
             <groupId>bsh</groupId>

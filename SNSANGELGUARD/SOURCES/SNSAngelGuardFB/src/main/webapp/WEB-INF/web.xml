@@ -22,6 +22,10 @@
         <servlet-name>HarvestedSNS</servlet-name>
         <servlet-class>es.uah.cc.ie.snsangelguardfb.sources.offline.HarvestedSNS</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GoogleContactsServlet</servlet-name>
+        <servlet-class>es.uah.cc.ie.snsangelguardfb.googleclient.GoogleContactsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>FacebookClientLocal$FacebookLoginServlet</servlet-name>
         <url-pattern>/FacebookLoginServlet/</url-pattern>
@@ -37,6 +41,10 @@
     <servlet-mapping>
         <servlet-name>HarvestedSNS</servlet-name>
         <url-pattern>/harvestedSNS</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GoogleContactsServlet</servlet-name>
+        <url-pattern>/GoogleContactsServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

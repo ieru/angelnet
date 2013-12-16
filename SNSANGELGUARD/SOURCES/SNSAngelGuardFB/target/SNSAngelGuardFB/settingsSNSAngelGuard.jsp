@@ -55,15 +55,14 @@
         <link rel="stylesheet" type="text/css" href="Styles/fcbklistselection.css" />
         <link rel="stylesheet" type="text/css" href="Styles/jquery.loader.css" />
         <link rel="stylesheet" type="text/css" href="Styles/jquery.fancybox.css" />
-        <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.8.23/themes/base/jquery.ui.all.css"
+        <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.8.23/themes/base/jquery.ui.all.css" />
 
         <!--import jquery lib -->
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.corner.js"></script>
         <script type="text/javascript" src="js/jquery.loader.js"></script>
         <script type="text/javascript" src="js/AjaxFlagMenu-1.0.2.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js" </script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js"></script>
 
         <script type="text/javascript" src="js/fcbklistselection.js"></script>
         <script type="text/javascript" src="js/utilidadesFormularios.js"></script>
@@ -192,6 +191,8 @@
             <input type="hidden" id="h14" name="h14" value="" />
             <input type="hidden" id="h15" name="h15" value="" />
             <input type="hidden" id="h16" name="h16" value="" />
+            <input type="hidden" id="hdMenSave" name="hdMenSave" value="<%= jspControler.getJspResources().getMenSave() %>" />
+            <input type="hidden" id="hdMenWait" name="hdMenWait" value="<%= jspControler.getJspResources().getMenWait() %>" />
 
             <div id="fb-root"></div>
             <script>
@@ -247,9 +248,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="button" class="boton" id="btnSave" name="btnSave" value="<%= jspControler.getJspResources().getBtnSaveSettings()%>"
-                                       onclick="saveSettings('<%= jspControler.getJspResources().getMenSave()%>',
-                                               '<%= jspControler.getJspResources().getMenWait()%>');"/>
+                                <input type="button" class="boton" id="btnSave" name="btnSave" value="<%= jspControler.getJspResources().getBtnSaveSettings()%>" />
                             </td>
                         </tr>
                     </table>
