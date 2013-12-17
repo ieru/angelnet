@@ -260,11 +260,19 @@ public class GoogleContactsServlet extends HttpServlet {
             
             for(String angel: arrayAngelsSelected){
                 if(!angel.equals("")){
-                    if(angel.equals(email)){
-                        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isSelectedAngel: El contacto " + email + " ya esta seleccionado "
-                                + "en la aplicacion, por lo tanto, no sera pintado...");
-                        isActiveContact = true;
-                        break;
+                    try {
+                        JSONObject jsonAngel = new JSONObject(angel);
+                        
+                        if (jsonAngel.getString("emailAngelGoogleSelected") != null) {
+                            if (jsonAngel.getString("emailAngelGoogleSelected").equals(email)) {
+                                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isSelectedAngel: El contacto " + email + " ya esta seleccionado "
+                                        + "en la aplicacion, por lo tanto, no sera pintado...");
+                                isActiveContact = true;
+                                break;
+                            }
+                        }
+                    } catch (JSONException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
                 }
             }
