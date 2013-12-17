@@ -100,68 +100,99 @@ public class FriendsFilterFuncionality {
     }
 
     /**
+     * Obtiene un array con todas las relacciones de un usuario de Facebook con
+     * los usuarios de la aplicacion. Devolvera un array con todas las URIs de 
+     * los usuarios de la aplicacion ya preparadas para ser insertadas en la base
+     * de datos.
+     * 
+     * @param jsonFriend
+     * @return JSONArray
+     */
+    private JSONArray getRelationshipFriendsFacebook(JSONObject jsonFriend) {
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRelationshipFriendsFacebook: Inicio getRelationshipFriendsFacebook...");
+
+        JSONArray jsonArrayRelationship = new JSONArray();
+
+        try {
+            String collection = this.snsObject.getClient().userFacebook_isNewFriendsFacebookByUid(String.class, jsonFriend.getString("userUid"));
+            JSONObject jsonAux = new JSONObject(collection);
+            JSONObject jsonCollection = jsonAux.getJSONObject("userFacebookCollection");
+
+            try {
+                //Si es un array
+                jsonArrayRelationship = jsonCollection.getJSONArray("userFacebook");
+
+                // Convertimos todas las URI del array al formato permitido
+                jsonArrayRelationship = convertURIServerToURIUserFacebook(jsonArrayRelationship, jsonFriend.getString("userUid"));
+
+            } catch (JSONException ex) {
+                if (jsonCollection.length() == 1) {
+                    // Si unicamente hay un usuario enlazado con este friendFacebook              
+                    JSONObject jsonUserFacebook = jsonCollection.getJSONObject("userFacebook");
+                    jsonArrayRelationship.put(jsonUserFacebook);
+
+                    // Convertimos todas las URI del array al formato permitido
+                    jsonArrayRelationship = convertURIServerToURIUserFacebook(jsonArrayRelationship, jsonFriend.getString("userUid"));
+                }
+            }
+        } catch (JSONException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRelationshipFriendsFacebook: Excepcion capturada JSONException: " + ex.getMessage());
+        }
+
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRelationshipFriendsFacebook: Fin getRelationshipFriendsFacebook...");
+        return jsonArrayRelationship;
+    }
+    
+    /**
      * Incluye a un amigo en la relacion con un usuario de Facebook.
      *
      * @param jsonFriend Datos de un amigo de Facebook.
      */
-    public void setCollectionFriendsFacebook(JSONObject jsonFriend){
+    public void setCollectionFriendsFacebook(JSONObject jsonFriend) {
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setCollectionFriendsFacebook: Inicio setCollectionFriendsFacebook...");
-        JSONObject jsonUri = null;
-        JSONObject jsonUserFacebook = null;
-        JSONObject jsonAux = null;
-        JSONObject jsonCollection = new JSONObject();
+
         Long uidLong = (new Double(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid())).longValue();
 
-     try {
-            String collection = this.snsObject.getClient().userFacebook_isNewFriendsFacebookByUid(String.class, jsonFriend.getString("userUid"));
-            jsonAux = new JSONObject(collection);
-            JSONArray aux = new JSONArray();
-            jsonCollection = jsonAux.getJSONObject("userFacebookCollection");
-            try {
-                //Si es un array
-                aux = jsonCollection.getJSONArray("userFacebook");
-
-                // Convertimos todas las URI del array al formato permitido
-                aux = convertURIServerToURIUserFacebook(aux, jsonFriend.getString("userUid"));
-
-                jsonUri = new JSONObject();
-                jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/friendsFacebooks/" + jsonFriend.getString("userUid") + "/userFacebookCollection/" + uidLong + "/");
-                aux.put(jsonUri);
-                jsonCollection.put("userFacebook", aux);
-                jsonFriend.put("userFacebookCollection", jsonCollection);
-            } catch (JSONException ex) {
-                if(jsonCollection.length() > 1){
-                    // Si unicamente hay un usuario enlazado con este friendFacebook
-                    jsonUserFacebook = jsonCollection.getJSONObject("userFacebook");
-                    aux.put(jsonUserFacebook);
-                    
-                    // Convertimos todas las URI del array al formato permitido
-                    aux = convertURIServerToURIUserFacebook(aux, jsonFriend.getString("userUid"));
-
-                    // Introducimos la nueva URI del friendFacebook que no estaba relacionado con el usuario de Facebook
-                    jsonUri = new JSONObject();
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/friendsFacebooks/" + jsonFriend.getString("userUid") + "/userFacebookCollection/" + uidLong + "/");
-                    aux.put(jsonUri);
-
-                    jsonCollection.put("userFacebook", aux);
-                    jsonFriend.put("userFacebookCollection", jsonCollection);
-                }else{
-                    // Si no tiene usuarios enlazados con el friendFacebook
-                    jsonUri = new JSONObject();
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/friendsFacebooks/" + jsonFriend.getString("userUid") + "/userFacebookCollection/" + uidLong + "/");
-                    JSONObject jsonUriUserFacebook = new JSONObject();
-                    jsonUriUserFacebook.put("userFacebook", jsonUri);
-                    jsonFriend.put("userFacebookCollection", jsonUriUserFacebook);
-                }
-            }
-
-        } catch (JSONException ex) {}
         try {
+            JSONArray jsonArrayRelationship = getRelationshipFriendsFacebook(jsonFriend);
+            JSONObject jsonUri = new JSONObject();
+            JSONObject jsonCollection = new JSONObject();
+
+            // Introducimos la nueva URI del friendFacebook que no estaba relacionado con el usuario de Facebook
+            jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/friendsFacebooks/" + jsonFriend.getString("userUid") + "/userFacebookCollection/" + uidLong + "/");
+            jsonArrayRelationship.put(jsonUri);
+
+            jsonCollection.put("userFacebook", jsonArrayRelationship);
+            jsonFriend.put("userFacebookCollection", jsonCollection);
+
             this.snsObject.getClient().userFacebook_setFriendsFacebookByUid(String.class, jsonFriend, jsonFriend.getString("userUid"));
         } catch (JSONException ex) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setCollectionFriendsFacebook: Excepcion capturada JSONException: " + ex.getMessage());
         }
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setCollectionFriendsFacebook: Fin setCollectionFriendsFacebook...");
+    }
+    
+    /**
+     * Establece las relaciones con otros usuarios de la aplicacion de un contacto de 
+     * Facebook.
+     * 
+     * @param jsonFriend
+     * @param jsonArrayRelationship 
+     */
+    public void updateCollectionFriendsFacebook(JSONObject jsonFriend, JSONArray jsonArrayRelationship) {
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateCollectionFriendsFacebook: Inicio updateCollectionFriendsFacebook...");
+
+        try {
+            JSONObject jsonUriUserFacebook = new JSONObject();
+            jsonUriUserFacebook.put("userFacebook", jsonArrayRelationship);
+            jsonFriend.put("userFacebookCollection", jsonUriUserFacebook);
+
+            this.snsObject.getClient().userFacebook_setFriendsFacebookByUid(String.class, jsonFriend, jsonFriend.getString("userUid"));
+
+        } catch (JSONException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateCollectionFriendsFacebook: Excepcion capturada JSONException: " + ex.getMessage());
+        }
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateCollectionFriendsFacebook: Fin updateCollectionFriendsFacebook...");
     }
 
     /**
@@ -221,9 +252,14 @@ public class FriendsFilterFuncionality {
     public void updateDatesFriend(JSONObject jsonFriend) throws JSONException, InterDataBaseException, InterProcessException, InterEmailException{
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Inicio updateDatesFriend...");
 
+        // Recuperamos las relaciones con los usuarios de la aplicacion
+        JSONArray jsonArrayRelationship = getRelationshipFriendsFacebook(jsonFriend);
+        
+        // Actualizamos el usuario de Facebook en la base de datos
         this.updateFriend(jsonFriend);
-        try {
-            this.setCollectionFriendsFacebook(jsonFriend);
+        try {     
+            // Reestablecemos las relaciones del usuario de Facebook
+            updateCollectionFriendsFacebook(jsonFriend, jsonArrayRelationship);
         } catch (UniformInterfaceException ex) {
             if (ex.getResponse().getStatus() >= 200 && ex.getResponse().getStatus() < 300) {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateDatesFriend: Las relaciones con el amigo " + jsonFriend.getString("userUid") + " han sido actualizadas!!");
