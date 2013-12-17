@@ -15,10 +15,14 @@
 
 <%
         SettingsSNSAngelGuardJSPControler_Angels controler = null;
+        String delContact = "";
     
         try {
             controler = new SettingsSNSAngelGuardJSPControler_Angels(request, response);
             controler.process();
+            
+            String[] arrayAltContacts = controler.getJspResources().getArrayAltAngels().split(";");
+            delContact = arrayAltContacts[3];
         } catch (InterDataBaseException e) {
             String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
@@ -143,7 +147,7 @@
                                 </tr>
                                 <tr>
                                     <td width="122px" align="right">
-                                        <input type="button" class="botonDisabled" id="btnDelContact" name="btnDelContact" value="Borrar" />
+                                        <input type="button" class="botonDisabled" id="btnDelContact" name="btnDelContact" value="<%= delContact %>" />
                                     </td>
                                 </tr>
                             </table>
