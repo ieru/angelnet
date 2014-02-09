@@ -68,7 +68,7 @@
                                     <img src="<%= jspControler.getJspResources().PATH_IMAGE_ICONO_LEFT%>" WIDTH="83" HEIGHT="111" alt="" />
                                 </td>
                                 <td width="80%">
-                                    <h1 class="aceptinTerms"><%= jspControler.getJspResources().getAcceptingTerms()%></h1>
+                                    <h1 class="aceptinTermsWhitoutFormat"><%= jspControler.getJspResources().getAcceptingTerms()%></h1>
                                 </td>
                                 <td width="10%">
                                     <img src="<%= jspControler.getJspResources().PATH_IMAGE_ICONO_RIGHT%>" WIDTH="83" HEIGHT="111" alt="" />
@@ -87,7 +87,7 @@
                                 <tr>
                                     <td>
                                         <input type="button" class="boton" name="btnCancel" value="<%=jspControler.getJspResources().getTitleBtnCancel()%>"
-                                               onclick="cerrarInfoError();"/>
+                                               onclick="backToFacebok();"/>
                                     </td>
                                     <td>
                                         <input type="button" class="boton" id="btnIagree" name="btnIagree" value="<%= jspControler.getJspResources().getTitleBtnIAgree()%>"
