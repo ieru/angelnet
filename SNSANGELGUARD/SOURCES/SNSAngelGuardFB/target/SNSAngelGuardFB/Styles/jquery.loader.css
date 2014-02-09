@@ -8,14 +8,14 @@ h1.tituloMed{
 }
 
 #jquery-loader{
-	border:2px black solid;
+	border:2px grey solid;
 	padding-top:35px;
 	background-color: white;
 	text-align: center;
         background-image: url(https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif);
 	background-position: center bottom;
 	background-repeat: no-repeat;
-        margin: 10px 10px 10px 10px;
+        margin: 5px 5px 5px 5px;
 }
 #jquery-loader-background{background-color: #aaaaaa}
 #jquery-loader.blue-with-image{

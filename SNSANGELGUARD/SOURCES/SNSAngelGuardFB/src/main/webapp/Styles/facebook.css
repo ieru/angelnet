@@ -82,6 +82,13 @@ h1.aceptinTerms{
     padding:10px 10px 10px 10px;
 }
 
+h1.aceptinTermsWhitoutFormat{
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size:15px;
+    text-align:justify;
+    padding:10px 10px 10px 10px;
+}
+
 h1.acuerdoLegal{
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
     font-size:12px;

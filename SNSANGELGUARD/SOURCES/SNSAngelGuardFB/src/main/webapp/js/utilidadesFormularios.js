@@ -808,6 +808,10 @@ function cerrarInfoError(uidPublic){
     });
 }
 
+function backToFacebok(){
+    top.location.href = 'https://www.facebook.com';
+}
+
 function loadContactsEd(menSave, menWait){
     $(function(){
         var angelsEd = $('#hdAngelsEd').val();

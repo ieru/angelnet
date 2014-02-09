@@ -45,8 +45,8 @@ var jQueryLoaderOptions = null;
 					content:"Loading ...",
 					className:'loader',
 					id:'jquery-loader',
-					height:80,
-					width:200,
+					height:100,
+					width:230,
 					zIndex:30000,
 					background:{
 						opacity:0.4,
