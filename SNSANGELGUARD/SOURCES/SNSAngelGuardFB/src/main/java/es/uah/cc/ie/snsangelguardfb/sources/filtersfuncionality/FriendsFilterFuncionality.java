@@ -414,7 +414,8 @@ public class FriendsFilterFuncionality {
         for (int i = 0; i < jsonFriendsFacebook.length(); i++) {
             JSONObject jsonFriend = jsonFriendsFacebook.getJSONObject(i);
 
-            if (jsonFriend.get("userBirthday").toString().contains("00-00-")) {
+            if (jsonFriend.get("userBirthday").toString().contains("00-00-") ||
+                    jsonFriend.getString("userBirthday").substring(6, jsonFriend.getString("userBirthday").length()).equals("0000")) {
                 informe += jsonFriend.getString("userName") + menDB[6] + " <br>";
             } else if (isAgeLimit(intFecUser, jsonFriend.getString("userBirthday").substring(6, jsonFriend.getString("userBirthday").length()))) {
                 informe += jsonFriend.getString("userName") + menDB[7] + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + ". <br>";
@@ -431,7 +432,7 @@ public class FriendsFilterFuncionality {
 
     /**
      * Comprueba si la edad de un amigo de Facebook tiene una diferencia mayor de cinco anios
-     * a la del usuario o no ha especificado su edad. Podr? lanzar excepciones del tipo UniformInterfaceException, IOException o JSONException.
+     * a la del usuario o no ha especificado su edad. Podra lanzar excepciones del tipo UniformInterfaceException, IOException o JSONException.
      *
      * @param birthdayUser Fecha de nacimiento del usuario.
      * @param anio A?o de nacimiento del amigo de Facebook.
@@ -441,11 +442,23 @@ public class FriendsFilterFuncionality {
      * @throws JSONException
      */
     public boolean isAgeLimit(int birthdayUser, String anio) throws UniformInterfaceException, IOException, JSONException {
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isAgeLimit: Usuario nacido en fecha: " + birthdayUser);
-            int intFecFriend = Integer.parseInt(anio);
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isAgeLimit: Amigo  nacido en el a?o: " + intFecFriend);
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isAgeLimit: Usuario nacido en fecha: " + birthdayUser);
+        boolean result = false;
 
-            return ((intFecFriend < birthdayUser) && (intFecFriend < birthdayUser - MAX_AGE_LIMITED));
+        int birthdayFriend = Integer.parseInt(anio);
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isAgeLimit: Amigo  nacido en el a?o: " + birthdayFriend);
 
+        // Si el anio de naciemiento del amigo es anterior que el del usuario, pasamos a comparar
+        if (birthdayUser > birthdayFriend) {
+            // Obtenemos la diferencia de edad
+            int diff = birthdayUser - birthdayFriend;
+
+            // Si es mayor que la edad l?mite
+            if (diff >= MAX_AGE_LIMITED) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 }

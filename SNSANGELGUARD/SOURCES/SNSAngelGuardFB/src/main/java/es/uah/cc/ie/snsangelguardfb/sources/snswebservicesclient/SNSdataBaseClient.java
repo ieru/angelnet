@@ -264,9 +264,9 @@ public class SNSdataBaseClient {
         return webResource.path("streamFacebooks").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T userFacebook_getStreamFacebookByUpdatedTime(Class<T> responseType, String uid, String updatedTime) throws UniformInterfaceException {
+    public <T> T userFacebook_getStreamFacebookByUpdatedTime(Class<T> responseType, String uid, String updatedTime, String strLastCheck) throws UniformInterfaceException {
         String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
-        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT s FROM StreamFacebook s WHERE s.sourceId = " + uid + " AND s.updatedTime > " + updatedTime};
+        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT s FROM StreamFacebook s WHERE s.sourceId = " + uid + " AND s.updatedTime >= " + strLastCheck + " AND s.updatedTime <= " + updatedTime};
         return webResource.path("streamFacebooks").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

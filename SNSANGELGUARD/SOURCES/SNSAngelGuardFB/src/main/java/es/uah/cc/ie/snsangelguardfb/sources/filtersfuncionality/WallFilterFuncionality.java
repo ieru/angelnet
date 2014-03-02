@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -279,7 +280,7 @@ public class WallFilterFuncionality {
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public String checkPostWall(HttpServletRequest request, boolean firstCheck, JSONObject jsonFilter) throws FileNotFoundException, IOException, JSONException, NoSuchProviderException, MessagingException, ParseException, bsh.ParseException {
+    public String checkPostWall(HttpServletRequest request, boolean firstCheck, JSONObject jsonFilter, Date lastCheck) throws FileNotFoundException, IOException, JSONException, NoSuchProviderException, MessagingException, ParseException, bsh.ParseException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Inicio checkPostWall...");
         String informe = "";
         String comentarios = "";
@@ -294,8 +295,9 @@ public class WallFilterFuncionality {
             comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUid(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"");
         } else {
             SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String strLastCheck = formateador.format(this.snsObject.getDateTimeUtilities().formatTime(String.valueOf(lastCheck.getTime())));
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Nueva fecha: " + jsonFilter.getString("lastCheck"));
-            comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'");
+            comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'", "'" + strLastCheck + "'");
         }
 
         if (!comentarios.equals("{}") && !comentarios.contains("error_code")) {
@@ -444,22 +446,35 @@ public class WallFilterFuncionality {
      */
     public boolean isBadWords(String comentario, JSONArray buffer) throws IOException, JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Inicio isBadWords para el comentario: " + comentario);
-        Boolean aux = false;
-        String wordFile = "";
-        for (int i = 0; i < buffer.length(); i++) {
+        Boolean isBadWordFound = false;
+        String wordFile;
+        int i = 0;
+        
+        // Recorremos todas las palabras del diccionario del fichero cargado
+        while(i < buffer.length() && !isBadWordFound){
             wordFile = buffer.getString(i);
             
+            // Obtenemos las palabras del comentario y las comparamos con las palabras del fichero cargado
             String[] arrayComm = comentario.split("\\ ");
-            for(int j = 0; j < arrayComm.length; j++){
+            
+            int j = 0;
+            while(j < arrayComm.length && !isBadWordFound){
+                
+                // Si alguna palabra del diccionario es encontrada en el comentario, salimos indicando que hay vocabulario ofensivo en ?l
                 if (arrayComm[j].toLowerCase().equals(wordFile.toLowerCase())) {
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
-                    aux = true;
-                    break;
+                    isBadWordFound = true;
                 }
+                
+                // Incrementamos el contador de palabras del comentario
+                j++;
             }
+            
+            // Incrementamos el contador de palabras recorridas
+            i++;
         }
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Fin isBadWords para el comentario: " + comentario);
-        return aux;
+        return isBadWordFound;
     }
 }

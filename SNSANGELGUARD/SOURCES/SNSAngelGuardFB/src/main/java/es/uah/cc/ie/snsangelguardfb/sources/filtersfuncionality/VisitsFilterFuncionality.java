@@ -1,5 +1,6 @@
 package es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality;
 
+import bsh.ParseException;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FacebookUrlStadistics;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FriendsFacebook;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
@@ -77,11 +78,11 @@ public class VisitsFilterFuncionality {
      * @return Informe en formato HTML que ser? incluido en el email de notificaci?n
      * a los ?ngeles que hayan sido configurados por el usuario de la aplicaci?n.
      */
-    public String checkVisitFilter(boolean firstCheck) throws JSONException{
+    public String checkVisitFilter(boolean firstCheck, Date lastCheck) throws JSONException, ParseException{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkVisitFilter: Inicio checkVisitFilter...");
         this.titleOptions = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVisitsFilterOptions());
         
-        String result = getMutualFriends() + getNotMutualFriends() + getRankingPostFriends(firstCheck);
+        String result = getMutualFriends() + getNotMutualFriends() + getRankingPostFriends(firstCheck, lastCheck);
         
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkVisitFilter: Fin checkVisitFilter...");
         return result;
@@ -275,7 +276,7 @@ public class VisitsFilterFuncionality {
      * @param firstCheck Indica si es el primer chequeo en el filtro que se realiza.
      * @return Lista en formato HTML del ranking de amigos con mas interacciones en el muro del usuario.
      */
-    private String getRankingPostFriends(boolean firstCheck) throws JSONException{
+    private String getRankingPostFriends(boolean firstCheck, Date lastCheckFilter) throws JSONException, ParseException{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRankingPostFriends: Inicio getRankingPostFriends...");
         String resultado = "";
         Long uidLong = (new Double(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid().toString())).longValue();
@@ -286,8 +287,9 @@ public class VisitsFilterFuncionality {
         } else {
             Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
             SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String strLastCheck = formateador.format(this.snsObject.getDateTimeUtilities().formatTime(String.valueOf(lastCheckFilter.getTime())));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRankingPostFriends: Buscando entradas en el muro de Facebook hasta la fecha de actualizaci?n: " + formateador.format(lastCheck));
-            userFacebook = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(lastCheck) + "'");
+            userFacebook = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(lastCheck) + "'", "'" + strLastCheck + "'");
         }
 
         if (userFacebook != null) {
