@@ -8,7 +8,6 @@ package es.uah.cc.ie.snsangelguardfb;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultLegacyFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.exception.FacebookOAuthException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.exception.ExceptionManager;
 import es.uah.cc.ie.snsangelguardfb.sources.email.GenericEmailObject;

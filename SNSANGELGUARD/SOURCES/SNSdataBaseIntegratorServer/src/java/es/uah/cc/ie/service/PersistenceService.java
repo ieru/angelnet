@@ -5,8 +5,6 @@
 
 package es.uah.cc.ie.service;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -18,7 +16,8 @@ import javax.persistence.EntityTransaction;
  * @author tote
  */
 public class PersistenceService {
-    private static String DEFAULT_PU = "SNSdataBaseIntegratorServerPU";
+    
+    private static final String DEFAULT_PU = "SNSdataBaseIntegratorServerPU";
     
     private static EntityManagerFactory pmf;
     
@@ -26,12 +25,7 @@ public class PersistenceService {
     
     static {
         configManager = new ConfigurationManagerService();
-        pmf = Persistence.createEntityManagerFactory(DEFAULT_PU, configManager.getDbPool());
-//        try {
-//            pmf = (EntityManagerFactory) new InitialContext().lookup("java:comp/env/persistence/" + DEFAULT_PU);
-//        } catch (NamingException ex) {
-//            pmf = Persistence.createEntityManagerFactory(DEFAULT_PU);
-//        }  
+        pmf = Persistence.createEntityManagerFactory(DEFAULT_PU, configManager.getDbPool()); 
     }
     
     private static ThreadLocal<PersistenceService> instance = new ThreadLocal<PersistenceService>() {
