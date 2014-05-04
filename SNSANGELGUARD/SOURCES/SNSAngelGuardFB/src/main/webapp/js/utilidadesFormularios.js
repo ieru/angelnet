@@ -1451,6 +1451,16 @@ function isFilterActive(idFilter, idAngelsSelected){;
     }
 }
 
+function isAnyAngelSave(){
+    if(($('#hdAngelsEd').val() != null && $('#hdAngelsEd').val() != '' && $('#hdAngelsEd').val() != 'null' && $('#hdAngelsEd').val() != 'undefined') ||
+       ($('#hdAngelsGoogleSelected').val() != null && $('#hdAngelsGoogleSelected').val() != '' && $('#hdAngelsGoogleSelected').val() != 'null' && $('#hdAngelsGoogleSelected').val() != 'undefined') ||
+       ($('#hdAngels').val() != null && $('#hdAngels').val() != '' && $('#hdAngels').val() != 'null' && $('#hdAngels').val() != 'undefined') ){
+            return true;
+       } else{
+           return false;
+       }
+}
+
 function isAnyFiltroActivo() {
 
     var result = false;
@@ -1579,7 +1589,8 @@ function isAnyError(){
 
 function habilitarGuardar(){
     var valido = true;
-    if(isAnyFiltroActivo()){
+    
+    if(isAnyFiltroActivo() || isAnyAngelSave()){
         habilitarBtnGuardar();
     }else{
         deshabilitarBotonQuery('#btnSave');
