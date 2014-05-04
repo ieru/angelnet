@@ -554,7 +554,7 @@ CREATE TABLE `friends_facebook` (
   `USER_UID` varchar(45) NOT NULL,
   `USER_NAME` varchar(45) DEFAULT NULL,
   `USER_BIRTHDAY` varchar(45) DEFAULT NULL,
-  `USER_PIC` varchar(200) DEFAULT NULL,
+  `USER_PIC` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`USER_UID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
