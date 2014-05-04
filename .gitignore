@@ -4,3 +4,8 @@
 .DS_Store
 .DS_Store?
 .svn
+*.properties
+
+*.properties
+
+SNSANGELGUARD/SOURCES/SNSAngelGuardFB/target/maven-archiver/pom.properties
