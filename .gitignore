@@ -9,3 +9,7 @@
 *.properties
 
 SNSANGELGUARD/SOURCES/SNSAngelGuardFB/target/maven-archiver/pom.properties
+
+*.dpf
+
+*.properties
