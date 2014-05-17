@@ -294,7 +294,7 @@ public class WallFilterFuncionality {
         if (!this.snsObject.isNewConnection() && firstCheck) {
             comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUid(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"");
         } else {
-            SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String strLastCheck = formateador.format(this.snsObject.getDateTimeUtilities().formatTime(String.valueOf(lastCheck.getTime())));
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Nueva fecha: " + jsonFilter.getString("lastCheck"));
             comentarios = this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'", "'" + strLastCheck + "'");
@@ -450,27 +450,31 @@ public class WallFilterFuncionality {
         String wordFile;
         int i = 0;
         
-        // Recorremos todas las palabras del diccionario del fichero cargado
-        while(i < buffer.length() && !isBadWordFound){
-            wordFile = buffer.getString(i);
+        // Obtenemos las palabras del comentario y las comparamos con las palabras del fichero cargado
+        String[] arrayComm = comentario.split("\\ ");
             
-            // Obtenemos las palabras del comentario y las comparamos con las palabras del fichero cargado
-            String[] arrayComm = comentario.split("\\ ");
-            
+        // Recorremos todas las palabras del comentario
+        while(i < arrayComm.length && !isBadWordFound){
+            // Obtenemos la palabra del comentario
+            String wordComment = arrayComm[i].toLowerCase();
             int j = 0;
-            while(j < arrayComm.length && !isBadWordFound){
+            
+            // Para cada palabra del comentario, recorremos todas las palabras del diccionario del fichero cargado
+            while(j < buffer.length() && !isBadWordFound){
+                // Obtenemos la palabra del diccionario
+                wordFile = buffer.getString(j).toLowerCase();
                 
                 // Si alguna palabra del diccionario es encontrada en el comentario, salimos indicando que hay vocabulario ofensivo en ?l
-                if (arrayComm[j].toLowerCase().equals(wordFile.toLowerCase())) {
+                if (wordComment.equals(wordFile) || wordComment.contains(wordFile)) {
                     logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Expresion \"" + wordFile + "\" encontrada en el comentario \"" + comentario + "\"");
                     isBadWordFound = true;
                 }
                 
-                // Incrementamos el contador de palabras del comentario
+                // Incrementamos el contador de palabras del diccionario
                 j++;
             }
             
-            // Incrementamos el contador de palabras recorridas
+            // Incrementamos el contador de palabras del comentario recorridas
             i++;
         }
 
