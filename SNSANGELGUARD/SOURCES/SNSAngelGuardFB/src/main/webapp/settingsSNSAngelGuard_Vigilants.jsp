@@ -15,24 +15,24 @@
 
 <%
 
-        SettingsSNSAngelGuardJSPControler_Vigilants controler = null;
-    
-        try {
-            controler = new SettingsSNSAngelGuardJSPControler_Vigilants(request, response);
-            controler.process();
-        } catch (InterDataBaseException e) {
-            String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
+    SettingsSNSAngelGuardJSPControler_Vigilants controler = null;
 
-            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-        } catch (InterProcessException e) {
-            String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
+    try {
+        controler = new SettingsSNSAngelGuardJSPControler_Vigilants(request, response);
+        controler.process();
+    } catch (InterDataBaseException e) {
+        String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
-            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-        } catch (InterEmailException e) {
-            String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
+        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+    } catch (InterProcessException e) {
+        String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
-            response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-        }
+        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+    } catch (InterEmailException e) {
+        String exceptionAsString = controler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
+
+        response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
+    }
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -43,7 +43,7 @@
 
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
         <link type="text/css" rel="stylesheet" href="Styles/jquery.loader.css" />
-        <link type="text/css" rel="stylesheet" href="Styles/fcbklistselection.css" />
+        <link type="text/css" rel="stylesheet" href="Styles/fcbklistselectionVig.css" />
 
         <script type="text/javascript" charset="UTF-8" src="js/jquery-1.5.1.min.js"></script>
         <script type="text/javascript" charset="UTF-8" src="js/jquery-ui-1.8.12.custom.min.js"></script>
@@ -67,15 +67,14 @@
                 loadTitleFcbList('<%= controler.getJspResources().getTitleFbList() %>','<%= controler.getJspResources().getTitleAngelSettAng() %>');
                 setArrayAngels('<%= controler.getSnsObject().getStringUtilities().arrayToString(controler.getArrayAngels())%>');
 
-                loadCheckFiltro('FltWall');
-                loadCheckFiltro('FltFriends');
-                loadCheckFiltro('FltPriv');
-                loadCheckFiltro('FltVist');
+                loadStateFiltro('FltWall');
+                loadStateFiltro('FltFriends');
+                loadStateFiltro('FltPriv');
+                loadStateFiltro('FltVist');
 
                 habilitarGuardar();
             });
         </script>
-
     </head>
     <body>
         <form id="frSNSVigilants" action="" method="">
@@ -103,160 +102,191 @@
 
 
             <div id="vigilants" class="vigilants">
-                <h1 class="tituloMed"><%= controler.getJspResources().getTitleSettVig()%></h1>
-                <hr class="linea" />
-                <table width="630px">
+                <table width="700px">
                     <tr>
                         <td>
-                            <table width="188px">
-                                <tr class="cabeceraVigilants">
-                                    <td width="147px"><%=controler.getJspResources().getTitleVigilantSettVig()%></td>
-                                    <td width="20px">
-                                        <input type="checkbox" id="chkAllFilters" name="chkAllFilters" value="chkAllFilters" 
-                                               disabled="disabled" onclick=""/>
-                                    </td>
-                                    <td width="17px"></td>
-                                </tr>
-                            </table>
-                            <div id="vigilantsContent" class="vigilantsContent">
-                                <table>
-                                    <tr id="vigilant0" class="pijama1">
-                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant0');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[2]%>','FltWall');habilitarCheck('chkVig0','FltWall');"><%= controler.getJspResources().getArrayVig()[0]%></td>
-                                        <td width="20px">
-                                            <input type="checkbox" style="cursor:pointer;" id="chkVig0" name="chkVig0" value="chkVig0"
-                                                   disabled="disabled" onclick="" />
-                                        </td>
-                                    </tr>
-                                   <tr id="vigilant1" class="pijama1">
-                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant1');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[1]%>','FltFriends');habilitarCheck('chkVig1','FltFriends');"><%= controler.getJspResources().getArrayVig()[1]%></td>
-                                        <td width="20px">
-                                            <input type="checkbox" style="cursor:pointer;" id="chkVig1" name="chkVig1" value="chkVig1"
-                                                   disabled="disabled" onclick="" />
-                                        </td>
-                                    </tr>
-                                    <tr id="vigilant2" class="pijama1">
-                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant2');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[3]%>','FltPriv');"><%= controler.getJspResources().getArrayVig()[2]%></td>
-                                        <td width="20px">
-                                            <input type="checkbox" style="cursor:pointer;" id="chkVig2" name="chkVig2" value="chkVig2"
-                                                   disabled="disabled" onclick="" />
-                                        </td>
-                                    </tr>
-                                    <tr id="vigilant3" class="pijama1">
-                                        <td width="141px" style="cursor:pointer;" onclick="seleccionVig('vigilant3');cargarOpcionesFiltros('<%= controler.getJspResources().getArrayDes()[4]%>','FltVist');habilitarCheck('chkVig3','FltVist');"><%= controler.getJspResources().getArrayVig()[3]%></td>
-                                        <td width="20px">
-                                            <input type="checkbox" style="cursor:pointer;" id="chkVig3" name="chkVig3" value="chkVig3"
-                                                   disabled="disabled" onclick="" />
-                                        </td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                    <tr class="pijama1">
-                                        <td width="141px"</td>
-                                        <td width="20px"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                        <td>
-                            <table width="350px">
+                            <table width="695px">
                                 <tr>
-                                    <td>
-                                        <h1 class="letraNorm"><%= controler.getJspResources().getArrayDes()[0]%></h1>
-                                        <div id="vigilantDescription" class="vigilantDescription">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div id="vigilantFrec" class="vigilantFrec">
-                                            <table width="100%">
+                                    <td> <!--imagen del usuario del usuario--> 
+                                        <div id="vigilantContainer1" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
+                                             onclick="seleccionVig('vigilantContainer1');loadEstadoFiltro('FltWall','../SNSAngelGuardFB/resources/robots/robot1.png');">
+                                            <table width="698px">
                                                 <tr>
-                                                    <td width="60%" align="left">
-                                                        <h1 class="letraNorm"><%= controler.getJspResources().getTitleVigFrecSettVig() %> </h1>
+                                                    <td>
+                                                        <figure class="user"> 
+                                                            <img src="../SNSAngelGuardFB/resources/robots/robot1.png" WIDTH="50" HEIGHT="72" alt="" />
+                                                        </figure> 
+                                                        <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
+                                                            <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[1]%></h1>
+                                                        </blockquote> 
                                                     </td>
-                                                    <td width="40%" align="right">
-                                                        <select id="slcFrecuency" disabled="disabled"
-                                                                onchange="obtenerFrecuencia(this.id);">
-                                                            <option value="0"><%= controler.getJspResources().getArrayFrc()[0]%></option>
-                                                            <option value="1"><%= controler.getJspResources().getArrayFrc()[1]%></option>
-                                                            <option value="2"><%= controler.getJspResources().getArrayFrc()[2]%></option>
-                                                            <option selected value="3"><%= controler.getJspResources().getArrayFrc()[3]%></option>
-                                                            <option value="4"><%= controler.getJspResources().getArrayFrc()[4]%></option>
-                                                            <option value="5"><%= controler.getJspResources().getArrayFrc()[5]%></option>
-                                                            <option value="6"><%= controler.getJspResources().getArrayFrc()[6]%></option>
-                                                        </select>
+                                                    <td width="35px" class="botonBox">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    <img id="imgTurnOnOff1" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <img id="imgAlertNotAngels1" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h1 class="letraNorm"><%=controler.getJspResources().getTitleVigAngSettVig() %></h1>
-                                        <div id="vigilantAngels" class="vigilantAngels">
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td> <!--imagen del usuario del usuario--> 
+                                            <div id="vigilantContainer2" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
+                                                 onclick="seleccionVig('vigilantContainer2');loadEstadoFiltro('FltWall','../SNSAngelGuardFB/resources/robots/robot2.png');">
+                                                <table width="698px">
+                                                    <tr>
+                                                        <td>
+                                                            <figure class="user"> 
+                                                                <img src="../SNSAngelGuardFB/resources/robots/robot2.png" WIDTH="50" HEIGHT="72" alt="" />
+                                                            </figure> 
+                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
+                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[2]%></h1>
+                                                            </blockquote> 
+                                                        </td>
+                                                        <td width="35px" class="botonBox">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgTurnOnOff2" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgAlertNotAngels2" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <!--imagen del usuario del usuario--> 
+                                            <div id="vigilantContainer3" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
+                                                 onclick="seleccionVig('vigilantContainer3');loadEstadoFiltro('FltWall','../SNSAngelGuardFB/resources/robots/robot3.png');">
+                                                <table width="698px">
+                                                    <tr>
+                                                        <td>
+                                                            <figure class="user"> 
+                                                                <img src="../SNSAngelGuardFB/resources/robots/robot3.png" WIDTH="50" HEIGHT="72" alt="" />
+                                                            </figure> 
+                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
+                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[3]%></h1>
+                                                            </blockquote> 
+                                                        </td>
+                                                        <td width="35px" class="botonBox">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgTurnOnOff3" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgAlertNotAngels3" style="display:none" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <!--imagen del usuario del usuario--> 
+                                            <div id="vigilantContainer4" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
+                                                 onclick="seleccionVig('vigilantContainer4');loadEstadoFiltro('FltWall','../SNSAngelGuardFB/resources/robots/robot4.png');">
+                                                <table width="698px">
+                                                    <tr>
+                                                        <td>
+                                                            <figure class="user"> 
+                                                                <img src="../SNSAngelGuardFB/resources/robots/robot4.png" WIDTH="50" HEIGHT="72" alt="" />
+                                                            </figure> 
+                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
+                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[4]%></h1>
+                                                            </blockquote> 
+                                                        </td>
+                                                        <td width="35px" class="botonBox">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgTurnOnOff4" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <img id="imgAlertNotAngels4" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
                             </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="vigilantSettings" class="vigilantSettingsNone">
+                                <table width="100%">
+                                    <tr>
+                                        <td width="175px" class="botonBoxMiddle">
+                                            <img id="imgCurrentVig" src="../SNSAngelGuardFB/resources/robots/robot1.png" WIDTH="160" HEIGHT="200" alt="" />
+                                        </td>
+                                        <td width="425px">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td>
+                                                        <div id="vigilantFrec" class="vigilantFrec">
+                                                            <table width="100%">
+                                                                <tr>
+                                                                    <td width="60%" align="left">
+                                                                        <h1 class="letraNorm"><%= controler.getJspResources().getTitleVigFrecSettVig()%> </h1>
+                                                                    </td>
+                                                                    <td width="40%" align="right">
+                                                                        <select id="slcFrecuency" disabled="disabled"
+                                                                                onchange="obtenerFrecuencia(this.id);">
+                                                                            <option value="0"><%= controler.getJspResources().getArrayFrc()[0]%></option>
+                                                                            <option value="1"><%= controler.getJspResources().getArrayFrc()[1]%></option>
+                                                                            <option value="2"><%= controler.getJspResources().getArrayFrc()[2]%></option>
+                                                                            <option selected value="3"><%= controler.getJspResources().getArrayFrc()[3]%></option>
+                                                                            <option value="4"><%= controler.getJspResources().getArrayFrc()[4]%></option>
+                                                                            <option value="5"><%= controler.getJspResources().getArrayFrc()[5]%></option>
+                                                                            <option value="6"><%= controler.getJspResources().getArrayFrc()[6]%></option>
+                                                                        </select>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <h1 class="letraNorm"><%=controler.getJspResources().getTitleVigAngSettVig()%></h1>
+                                                        <div id="vigilantAngels" class="vigilantAngels">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </td>
                     </tr>
                 </table>

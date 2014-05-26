@@ -926,30 +926,42 @@ function getIdFiltro(desFiltro){
     var idCheck;
 
     if(desFiltro == 'FltWall'){
-        idCheck = 'chkVig0';
+        idCheck = 1;
     }else if(desFiltro == 'FltFriends'){
-        idCheck = 'chkVig1';
+        idCheck = 2;
     }else if(desFiltro == 'FltPriv'){
-        idCheck = 'chkVig2';
+        idCheck = 3;
     }else if(desFiltro == 'FltVist'){
-        idCheck = 'chkVig3';
+        idCheck = 4;
     }
     
     return idCheck;
 }
 
-function loadCheckFiltro(desFiltro){
-    var idCheck = getIdFiltro(desFiltro);
+function getAngelsListByFiltro(desFiltro){
 
-    if(document.getElementById('hdActive' + desFiltro).value == '1'){
-        document.getElementById(idCheck).checked = true;
-    }
-    else{
-        document.getElementById(idCheck).checked = false;
+    return $("#hdLstAngels" + desFiltro).val();
+}
+
+function loadVigilantsState(idFiltro, idListAngels, numberFiltro) {
+    if ($("#hdActive" + idFiltro).attr("value") == "1") {
+        $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOff.png");
+
+        if ($(idListAngels).val() != '') {
+            $("#imgAlertNotAngels" + numberFiltro).attr("style", "display:none");
+        } else
+            $("#imgAlertNotAngels" + numberFiltro).attr("style", "");
+    } else {
+        $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOn.png");
     }
 }
 
+function loadStateFiltro(desFiltro){
+    loadVigilantsState(desFiltro,getAngelsListByFiltro(desFiltro), getIdFiltro(desFiltro));
+}
+
 function loadAngelSelects(angels){
+    alert(angels);
     var arrayAngels = angels.split(';');
 
     for(var i=0;i<arrayAngels.length; i++){
@@ -965,15 +977,24 @@ function loadAngelSelects(angels){
     }
 }
 
-function loadEstadoFiltro(desFiltro){
-    if(document.getElementById('hdActive' + desFiltro).value == '1'){
-        if(document.getElementById('hdLstAngels' + desFiltro).value != "null"){
-            document.getElementById('hdAngelsAux').value = document.getElementById('hdLstAngels' + desFiltro).value;
+function loadEstadoFiltro(desFiltro, srcImg){
+    
+    $("#imgCurrentVig").attr("src", srcImg);
+    
+    if($("#hdActive" + desFiltro).val() == '1'){
+        alert(1)
+        if($("#hdLstAngels" + desFiltro).val() != "null"){
+            alert(2)
+            $("#hdAngelsAux").attr("value",$("#hdLstAngels" + desFiltro).val());
         }
-        document.getElementById('slcFrecuency').value = document.getElementById('hdFrec' + desFiltro).value;
-        loadAngelSelects(document.getElementById('hdAngelsAux').value);
+        alert(3)
+        $("#slcFrecuency").attr("value",$("#hdFrec' + desFiltr").val());
+        habilitarEdicion("#hdActive" + desFiltro, desFiltro);
+        loadAngelSelects($("#hdAngelsAux").val());
+        alert(5)
     }
     else{
+        alert(10)
         deshabilitarAngelesFiltro(desFiltro);
     }
 }
@@ -995,7 +1016,7 @@ function cargarOpcionesFiltros(descripcion,desFiltro){
 }
 
 function habilitarEdicion(idCheck,desFiltro){
-    if(document.getElementById(idCheck).checked){
+    if($(idCheck).val() == '1'){
         habilitarAngelesFiltro(desFiltro);
     }else{
         //inicializarHiddenSalidaFiltro(desFiltro);
@@ -1039,6 +1060,7 @@ function disableAllChecks(){
         deshabilitarCheck("chkVig" + i);
     }
 }
+
 
 function habilitarCheck(idCheck,desFiltro){
     disableAllChecks();
@@ -1130,15 +1152,30 @@ function seleccionVig(idVigilante){
 
     limpiarListaVigilantes();
 
-    document.getElementById(idVigilante).className = 'pijama2';
+    $('#' + idVigilante).attr("class","vigilantContainerSelected");
+    
+    $('#' + idVigilante).mouseover(function(){
+            $(this).removeClass().addClass("vigilantContainerSelected");
+        }).mouseout(function(){
+            $(this).removeClass().addClass("vigilantContainerSelected");
+        });
+        
+    $('#vigilantSettings').attr("class", "vigilantSettings");
 }
 
+
+
 function limpiarListaVigilantes(){
-    for(var i = 0;i < 4; i++){
-        var elemento = document.getElementById('vigilant'+i);
-        if(elemento){
-            document.getElementById('vigilant'+i).className = 'pijama1';
-        }
+    for(var i = 1;i < 5; i++){
+        var idVig = '#vigilantContainer' + i;
+        
+        $(idVig).attr("class","vigilantContainer");
+        
+        $(idVig).mouseover(function(){
+            $(this).removeClass().addClass("vigilantContainerOver");
+        }).mouseout(function(){
+            $(this).removeClass().addClass("vigilantContainer");
+        });
     }
 }
 
@@ -2200,6 +2237,14 @@ function borrarItemSelected(idItem, idLista){
     
     $(idLista).attr("value",lstAux);
 
+}
+
+function mostrarIconoAlerta(idVig){
+    $("#imgAlertNotAngels" + idVig).value("style","");
+}
+
+function ocultarIconoAlerta(idVig){
+    $("#imgAlertNotAngels" + idVig).value("style","display:none");
 }
 
 function deleteAngelOfAllFilters(idItem){

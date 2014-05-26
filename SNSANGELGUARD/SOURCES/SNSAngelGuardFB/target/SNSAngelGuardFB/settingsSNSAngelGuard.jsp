@@ -240,7 +240,7 @@
                         </tr>
                     </table>
                 </div>
-                <div id="botoneraInferior" style="width:98%;height: 48px;" align="left" margin="15px">
+                <div id="botoneraInferior" style="width:98%;height: 48px;" align="right" margin="15px">
                     <hr class="linea" />
                     <table>
                         <tr>
