@@ -62,6 +62,8 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
             p(obj)
         }
         n(obj);
+        var desFiltro = getDesFiltroActual();
+        isAnyAngelForVig(getAngelsListByFiltro(desFiltro), getIdFiltro(desFiltro));
         habilitarGuardar();
     },
 

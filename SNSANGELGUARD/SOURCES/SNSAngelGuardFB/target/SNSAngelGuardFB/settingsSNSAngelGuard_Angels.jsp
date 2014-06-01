@@ -106,7 +106,7 @@
             </div>
             <div id="friendsGoogleImport" class="friendsGoogleImport">
                 <h1 class="tituloMed"><%= controler.getJspResources().getArrayContacts()[0]%></h1>
-                <table width="675px">
+                <table width="680px">
                     <tr>
                         <td width="536px">
                             <table>

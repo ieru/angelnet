@@ -35,7 +35,7 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
     private String titleAngelSettAng;
     
     /** Titulos de los filtros disponibles */
-    private String[] arrayVig;
+    private String arrayVig;
     
     /** Descripcion para cada filtro */
     private String[] arrayDes;
@@ -45,6 +45,15 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
     
     /** Titulo del contenedor de angeles */
     private String titleVigAngSettVig;
+    
+    /** Titulo para activar un vigilante */
+    private String titleAltVigOn;
+    
+    /** Titulo para desactivar un vigilante */
+    private String titleAltVigOff;
+    
+    /** Titulo para indicar que no se ha a?adido ningun angel */
+    private String titleAlarmNoAngelsSelect;
 
     public SNSAngelGuardFBManager getSnsObject() {
         return snsObject;
@@ -94,11 +103,11 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
         this.titleAngelSettAng = titleAngelSettAng;
     }
 
-    public String[] getArrayVig() {
+    public String getArrayVig() {
         return arrayVig;
     }
 
-    public void setArrayVig(String[] arrayVig) {
+    public void setArrayVig(String arrayVig) {
         this.arrayVig = arrayVig;
     }
 
@@ -125,6 +134,30 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
     public void setTitleVigAngSettVig(String titleVigAngSettVig) {
         this.titleVigAngSettVig = titleVigAngSettVig;
     }
+
+    public String getTitleAltVigOn() {
+        return titleAltVigOn;
+    }
+
+    public void setTitleAltVigOn(String titleAltVigOn) {
+        this.titleAltVigOn = titleAltVigOn;
+    }
+
+    public String getTitleAltVigOff() {
+        return titleAltVigOff;
+    }
+
+    public void setTitleAltVigOff(String titleAltVigOff) {
+        this.titleAltVigOff = titleAltVigOff;
+    }
+
+    public String getTitleAlarmNoAngelsSelect() {
+        return titleAlarmNoAngelsSelect;
+    }
+
+    public void setTitleAlarmNoAngelsSelect(String titleAlarmNoAngelsSelect) {
+        this.titleAlarmNoAngelsSelect = titleAlarmNoAngelsSelect;
+    }
     
 
     /**
@@ -140,11 +173,48 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
         this.titleSettVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleSettVig();
         this.titleFbList = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFbListSettAng();
         this.titleAngelSettAng = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getSubTitleAngelSettAng();
-        this.arrayVig = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
-        this.arrayDes = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig());
+        this.arrayVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig();
+        this.arrayDes = replaceVigInDesc(this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig()));
         this.arrayFrc = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigFrecSelectSettVig());
         this.titleVigAngSettVig = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigAngSettVig();
+        this.titleAltVigOn = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleActiveDesactiveVig().split(";")[0];
+        this.titleAltVigOff = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleActiveDesactiveVig().split(";")[1];
+        this.titleAlarmNoAngelsSelect = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings().split(";")[14];
+    }  
+    
+    /**
+     * Metodo que reemplaza en cada descripci?n de cada vigilante su nombre 
+     * correspondiente para ser mostrado por pantalla.
+     * 
+     * @param desc
+     *      Array con las descripciones de todos los angeles.
+     * @return 
+     *      Array con las descripciones personalizadas de todos los angeles.
+     */
+    public final String[] replaceVigInDesc(String[] desc){
+        String[] resultDesc = null;
+        final String REPLACE_PATRON = "[1]";
+        
+        if(desc != null){
+            // Inicializamos el array
+            resultDesc = new String[desc.length];
+            
+            // Obtenemos los nombres de los vigilantes
+            String[] nameVig = this.snsObject.getStringUtilities().stringToArray(arrayVig);
+            
+            // Por cada vigilante, cambiamos el patr?n de la descripcion por su nombre
+            for(int i = 0; i < desc.length; i++){
+                
+                if(i == 0)
+                    // No se cambia porque el 0 indica el titulo de la descripcion
+                    resultDesc[i] = desc[i];
+                else
+                    // Realizamos el reemplazo por el nombre del vigilante
+                    resultDesc[i] = desc[i].replace(REPLACE_PATRON, nameVig[i - 1]);
+            }
+        }
+        
+        // Retornamos el resultado
+        return resultDesc;
     }
-    
-    
 }

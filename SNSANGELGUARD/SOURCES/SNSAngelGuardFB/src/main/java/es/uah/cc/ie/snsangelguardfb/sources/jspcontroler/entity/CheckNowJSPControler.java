@@ -116,8 +116,7 @@ public class CheckNowJSPControler extends GenericJSPControler{
 
         String hdLstAngelsFltWall = request.getParameter("hdLstAngelsFltWall");
         String hdLstAngelsFltFriends = request.getParameter("hdLstAngelsFltFriends");
-        //String hdLstAngelsFltPriv = request.getParameter("hdLstAngelsFltPriv");
-        String hdLstAngelsFltPriv = "";
+        String hdLstAngelsFltPriv = request.getParameter("hdLstAngelsFltPriv");
         String hdLstAngelsFltVist = request.getParameter("hdLstAngelsFltVist");
         String hdActiveFltWall = request.getParameter("hdActiveFltWall");
         String hdActiveFltFriends = request.getParameter("hdActiveFltFriends");

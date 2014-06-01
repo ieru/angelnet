@@ -968,6 +968,78 @@ public class LocaleSettingsConverter {
         entity.setPostFriendFacebook(value);
     }
     
+    /**
+     * Geter for titleActiveDesactiveVig
+     * 
+     * @return value of titleActiveDesactiveVig 
+     */
+    @XmlElement
+    public String getTitleActiveDesactiveVig(){
+        return (expandLevel > 0) ? entity.getTitleActiveDesactiveVig() : null;
+    }
+    
+    /**
+     * Setter for titleActiveDesactiveVig
+     * 
+     * @param value The value to set titleActiveDesactiveVig
+     */
+    public void setTitleActiveDesactiveVig(String value){
+        entity.setTitleActiveDesactiveVig(value);
+    }
+    
+    /**
+     * Geter for titleTutInitHelp
+     * 
+     * @return value of titleTutInitHelp 
+     */
+    public String getTitleTutInitHelp() {
+        return (expandLevel > 0) ? entity.getTitleTutInitHelp(): null;
+    }
+
+    /**
+     * Setter for titleTutInitHelp
+     *
+     * @param value The value to set titleTutInitHelp
+     */
+    public void setTitleTutInitHelp(String value) {
+        entity.setTitleTutInitHelp(value);
+    }
+
+    /**
+     * Geter for desTutInitHelp
+     * 
+     * @return value of desTutInitHelp 
+     */
+    public String getDesTutInitHelp() {
+        return (expandLevel > 0) ? entity.getDesTutInitHelp(): null;
+    }
+
+    /**
+     * Setter for desTutInitHelp
+     *
+     * @param value The value to set desTutInitHelp
+     */
+    public void setDesTutInitHelp(String value) {
+        entity.setDesTutInitHelp(value);
+    }
+
+    /**
+     * Geter for titlePagTutInitHelp
+     * 
+     * @return value of titlePagTutInitHelp 
+     */
+    public String getTitlePagTutInitHelp() {
+        return (expandLevel > 0) ? entity.getTitlePagTutInitHelp(): null;
+    }
+
+    /**
+     * Setter for titlePagTutInitHelp
+     *
+     * @param value The value to set titlePagTutInitHelp
+     */
+    public void setTitlePagTutInitHelp(String value) {
+        entity.setTitlePagTutInitHelp(value);
+    }
 
     /**
      * Getter for userSettingsCollection.
@@ -992,7 +1064,7 @@ public class LocaleSettingsConverter {
     public void setUserSettingsCollection(UserSettingssConverter value) {
         entity.setUserSettingsCollection((value != null) ? value.getEntities() : null);
     }
-
+    
     /**
      * Returns the URI associated with this converter.
      *

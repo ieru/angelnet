@@ -13,115 +13,6 @@ package es.uah.cc.ie.snsangelguardfb.sources.dao.entity;
  */
 public class LocaleSettingsDAO {
 
-    /**
-     * Constructor sin argumentos.
-     */
-    public LocaleSettingsDAO() {
-    }
-
-    /**
-     * Constructor de clase. Inicializa todos los par?metros que han sido
-     * cargados de base de datos.
-     * 
-     * @param idLocale
-     * @param acceptingTerms
-     * @param legalAccepted
-     * @param btnAgreeAT
-     * @param btnCancelAT
-     * @param titleAT
-     * @param titleSettings
-     * @param titleMenSettings
-     * @param btnSaveCheckSettings
-     * @param titleSettAng
-     * @param titleFriendsContentSettAng
-     * @param titleFriendsImportSettAng
-     * @param txtNameTutorSettAng
-     * @param txtEmailTutorSettAng
-     * @param btnImportSettAng
-     * @param titleFbListSettAng
-     * @param subTitleAngelSettAng
-     * @param titleSettVig
-     * @param titleVigilantSettVig
-     * @param titleVigSettVig
-     * @param titleVigDescriptionSettVig
-     * @param titleVigFrecSettVig
-     * @param titleVigFrecSelectSettVig
-     * @param titleVigAngSettVig
-     * @param titleAngConfirm
-     * @param desInfoAngConfirm
-     * @param aceptConfAngConfirm
-     * @param cancelConfAngConfirm
-     * @param infoAngGuard
-     * @param titleAngUser
-     * @param nameUserAngUser
-     * @param btnCloseAngUser
-     * @param titleGoogleCont
-     * @param titleContGoogleCont
-     * @param btnLogGoogleCont
-     * @param titleNameContactGoogleCont
-     * @param titleEmailContactGoogleCont
-     * @param btnAceptGoogleCont
-     * @param btnCancelGoogleCont
-     * @param helpMe
-     * @param warnings
-     * @param titleInformationMessage
-     * @param informationMessage
-     * @param mailDelete
-     * @param mailNotification
-     * @param altContactsAngelsEd
-     * @param titleVisitsFilterOptions
-     */
-    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, String titleVigSettVig, String titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions, String postFriendFacebook) {
-        this.idLocale = idLocale;
-        this.acceptingTerms = acceptingTerms;
-        this.legalAccepted = legalAccepted;
-        this.btnAgreeAT = btnAgreeAT;
-        this.btnCancelAT = btnCancelAT;
-        this.titleAT = titleAT;
-        this.titleSettings = titleSettings;
-        this.titleMenSettings = titleMenSettings;
-        this.btnSaveCheckSettings = btnSaveCheckSettings;
-        this.titleSettAng = titleSettAng;
-        this.titleFriendsContentSettAng = titleFriendsContentSettAng;
-        this.titleFriendsImportSettAng = titleFriendsImportSettAng;
-        this.txtNameTutorSettAng = txtNameTutorSettAng;
-        this.txtEmailTutorSettAng = txtEmailTutorSettAng;
-        this.btnImportSettAng = btnImportSettAng;
-        this.titleFbListSettAng = titleFbListSettAng;
-        this.subTitleAngelSettAng = subTitleAngelSettAng;
-        this.titleSettVig = titleSettVig;
-        this.titleVigilantSettVig = titleVigilantSettVig;
-        this.titleVigSettVig = titleVigSettVig;
-        this.titleVigDescriptionSettVig = titleVigDescriptionSettVig;
-        this.titleVigFrecSettVig = titleVigFrecSettVig;
-        this.titleVigFrecSelectSettVig = titleVigFrecSelectSettVig;
-        this.titleVigAngSettVig = titleVigAngSettVig;
-        this.titleAngConfirm = titleAngConfirm;
-        this.desInfoAngConfirm = desInfoAngConfirm;
-        this.aceptConfAngConfirm = aceptConfAngConfirm;
-        this.cancelConfAngConfirm = cancelConfAngConfirm;
-        this.infoAngGuard = infoAngGuard;
-        this.titleAngUser = titleAngUser;
-        this.nameUserAngUser = nameUserAngUser;
-        this.btnCloseAngUser = btnCloseAngUser;
-        this.titleGoogleCont = titleGoogleCont;
-        this.titleContGoogleCont = titleContGoogleCont;
-        this.btnLogGoogleCont = btnLogGoogleCont;
-        this.titleNameContactGoogleCont = titleNameContactGoogleCont;
-        this.titleEmailContactGoogleCont = titleEmailContactGoogleCont;
-        this.btnAceptGoogleCont = btnAceptGoogleCont;
-        this.btnCancelGoogleCont = btnCancelGoogleCont;
-        this.helpMe = helpMe;
-        this.warnings = warnings;
-        this.titleInformationMessage = titleInformationMessage;
-        this.informationMessage = informationMessage;
-        this.mailDelete = mailDelete;
-        this.mailNotification = mailNotification;
-        this.altContactsAngelsEd = altContactsAngelsEd;
-        this.titleVisitsFilterOptions = titleVisitsFilterOptions;
-        this.postFriendFacebook = postFriendFacebook;
-    }
-
     private String idLocale;
     private String acceptingTerms;
     private String legalAccepted;
@@ -170,6 +61,10 @@ public class LocaleSettingsDAO {
     private String altContactsAngelsEd;
     private String titleVisitsFilterOptions;
     private String postFriendFacebook;
+    private String titleActiveDesactiveVig;
+    private String titleTutInitHelp;
+    private String desTutInitHelp;
+    private String titlePagTutInitHelp;
 
     /**
      * @return the idLocale
@@ -841,5 +736,194 @@ public class LocaleSettingsDAO {
      */
     public void setPostFriendFacebook(String postFriendFacebook) {
         this.postFriendFacebook = postFriendFacebook;
+    }
+
+    /**
+     * Getter for titleActiveDesactiveVig
+     * 
+     * @return the titleActiveDesactiveVig
+     */
+    public String getTitleActiveDesactiveVig() {
+        return titleActiveDesactiveVig;
+    }
+
+    /**
+     * Setter for titleActiveDesactiveVig
+     * 
+     * @param titleActiveDesactiveVig The value to set
+     */
+    public void setTitleActiveDesactiveVig(String titleActiveDesactiveVig) {
+        this.titleActiveDesactiveVig = titleActiveDesactiveVig;
+    }
+
+    /**
+     * Getter for titleTutInitHelp.
+     * 
+     * @return the titleTutInitHelp
+     */
+    public String getTitleTutInitHelp() {
+        return titleTutInitHelp;
+    }
+
+    /**
+     * Setter for titleTutInitHelp.
+     * 
+     * @param titleTutInitHelp The value to set.
+     */
+    public void setTitleTutInitHelp(String titleTutInitHelp) {
+        this.titleTutInitHelp = titleTutInitHelp;
+    }
+
+    /**
+     * Getter for desTutInitHelp.
+     * 
+     * @return the desTutInitHelp 
+     */
+    public String getDesTutInitHelp() {
+        return desTutInitHelp;
+    }
+
+    /**
+     * Setter for desTutInitHelp.
+     * 
+     * @param desTutInitHelp The value to set.
+     */
+    public void setDesTutInitHelp(String desTutInitHelp) {
+        this.desTutInitHelp = desTutInitHelp;
+    }
+
+    /**
+     * Getter for titlePagTutInitHelp.
+     * 
+     * @return the titlePagTutInitHelp 
+     */
+    public String getTitlePagTutInitHelp() {
+        return titlePagTutInitHelp;
+    }
+
+    /**
+     * Setter for titlePagTutInitHelp.
+     * 
+     * @param titlePagTutInitHelp The value to set
+     */
+    public void setTitlePagTutInitHelp(String titlePagTutInitHelp) {
+        this.titlePagTutInitHelp = titlePagTutInitHelp;
+    }
+
+    /**
+     * Constructor without arguments.
+     */
+    public LocaleSettingsDAO() {
+    }
+
+    /**
+     * Constructor with the data base values for the object.
+     * 
+     * @param idLocale
+     * @param acceptingTerms
+     * @param legalAccepted
+     * @param btnAgreeAT
+     * @param btnCancelAT
+     * @param titleAT
+     * @param titleSettings
+     * @param titleMenSettings
+     * @param btnSaveCheckSettings
+     * @param titleSettAng
+     * @param titleFriendsContentSettAng
+     * @param titleFriendsImportSettAng
+     * @param txtNameTutorSettAng
+     * @param txtEmailTutorSettAng
+     * @param btnImportSettAng
+     * @param titleFbListSettAng
+     * @param subTitleAngelSettAng
+     * @param titleSettVig
+     * @param titleVigilantSettVig
+     * @param titleVigSettVig
+     * @param titleVigDescriptionSettVig
+     * @param titleVigFrecSettVig
+     * @param titleVigFrecSelectSettVig
+     * @param titleVigAngSettVig
+     * @param titleAngConfirm
+     * @param desInfoAngConfirm
+     * @param aceptConfAngConfirm
+     * @param cancelConfAngConfirm
+     * @param infoAngGuard
+     * @param titleAngUser
+     * @param nameUserAngUser
+     * @param btnCloseAngUser
+     * @param titleGoogleCont
+     * @param titleContGoogleCont
+     * @param btnLogGoogleCont
+     * @param titleNameContactGoogleCont
+     * @param titleEmailContactGoogleCont
+     * @param btnAceptGoogleCont
+     * @param btnCancelGoogleCont
+     * @param helpMe
+     * @param warnings
+     * @param titleInformationMessage
+     * @param informationMessage
+     * @param mailDelete
+     * @param mailNotification
+     * @param altContactsAngelsEd
+     * @param titleVisitsFilterOptions
+     * @param postFriendFacebook
+     * @param titleActiveDesactiveVig
+     * @param titleTutInitHelp
+     * @param desTutInitHelp
+     * @param titlePagTutInitHelp 
+     */
+    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, String titleVigSettVig, String titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions, String postFriendFacebook, String titleActiveDesactiveVig, String titleTutInitHelp, String desTutInitHelp, String titlePagTutInitHelp) {
+        this.idLocale = idLocale;
+        this.acceptingTerms = acceptingTerms;
+        this.legalAccepted = legalAccepted;
+        this.btnAgreeAT = btnAgreeAT;
+        this.btnCancelAT = btnCancelAT;
+        this.titleAT = titleAT;
+        this.titleSettings = titleSettings;
+        this.titleMenSettings = titleMenSettings;
+        this.btnSaveCheckSettings = btnSaveCheckSettings;
+        this.titleSettAng = titleSettAng;
+        this.titleFriendsContentSettAng = titleFriendsContentSettAng;
+        this.titleFriendsImportSettAng = titleFriendsImportSettAng;
+        this.txtNameTutorSettAng = txtNameTutorSettAng;
+        this.txtEmailTutorSettAng = txtEmailTutorSettAng;
+        this.btnImportSettAng = btnImportSettAng;
+        this.titleFbListSettAng = titleFbListSettAng;
+        this.subTitleAngelSettAng = subTitleAngelSettAng;
+        this.titleSettVig = titleSettVig;
+        this.titleVigilantSettVig = titleVigilantSettVig;
+        this.titleVigSettVig = titleVigSettVig;
+        this.titleVigDescriptionSettVig = titleVigDescriptionSettVig;
+        this.titleVigFrecSettVig = titleVigFrecSettVig;
+        this.titleVigFrecSelectSettVig = titleVigFrecSelectSettVig;
+        this.titleVigAngSettVig = titleVigAngSettVig;
+        this.titleAngConfirm = titleAngConfirm;
+        this.desInfoAngConfirm = desInfoAngConfirm;
+        this.aceptConfAngConfirm = aceptConfAngConfirm;
+        this.cancelConfAngConfirm = cancelConfAngConfirm;
+        this.infoAngGuard = infoAngGuard;
+        this.titleAngUser = titleAngUser;
+        this.nameUserAngUser = nameUserAngUser;
+        this.btnCloseAngUser = btnCloseAngUser;
+        this.titleGoogleCont = titleGoogleCont;
+        this.titleContGoogleCont = titleContGoogleCont;
+        this.btnLogGoogleCont = btnLogGoogleCont;
+        this.titleNameContactGoogleCont = titleNameContactGoogleCont;
+        this.titleEmailContactGoogleCont = titleEmailContactGoogleCont;
+        this.btnAceptGoogleCont = btnAceptGoogleCont;
+        this.btnCancelGoogleCont = btnCancelGoogleCont;
+        this.helpMe = helpMe;
+        this.warnings = warnings;
+        this.titleInformationMessage = titleInformationMessage;
+        this.informationMessage = informationMessage;
+        this.mailDelete = mailDelete;
+        this.mailNotification = mailNotification;
+        this.altContactsAngelsEd = altContactsAngelsEd;
+        this.titleVisitsFilterOptions = titleVisitsFilterOptions;
+        this.postFriendFacebook = postFriendFacebook;
+        this.titleActiveDesactiveVig = titleActiveDesactiveVig;
+        this.titleTutInitHelp = titleTutInitHelp;
+        this.desTutInitHelp = desTutInitHelp;
+        this.titlePagTutInitHelp = titlePagTutInitHelp;
     }
 }

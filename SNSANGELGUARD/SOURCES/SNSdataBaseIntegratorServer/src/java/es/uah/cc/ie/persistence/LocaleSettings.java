@@ -165,6 +165,14 @@ public class LocaleSettings implements Serializable {
     private String titleVisitsFilterOptions;
     @Column(name = "post_friend_facebook")
     private String postFriendFacebook;
+    @Column(name = "titleActiveDesactiveVig")
+    private String titleActiveDesactiveVig;
+    @Column(name = "titleTutInitHelp")
+    private String titleTutInitHelp;
+    @Column(name = "desTutInitHelp")
+    private String desTutInitHelp;
+    @Column(name = "titlePagTutInitHelp")
+    private String titlePagTutInitHelp;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "localeSettings")
     private Collection<UserSettings> userSettingsCollection;
 
@@ -557,6 +565,38 @@ public class LocaleSettings implements Serializable {
 
     public void setPostFriendFacebook(String postFriendFacebook) {
         this.postFriendFacebook = postFriendFacebook;
+    }
+
+    public String getTitleActiveDesactiveVig() {
+        return titleActiveDesactiveVig;
+    }
+
+    public void setTitleActiveDesactiveVig(String titleActiveDesactiveVig) {
+        this.titleActiveDesactiveVig = titleActiveDesactiveVig;
+    }
+
+    public String getTitleTutInitHelp() {
+        return titleTutInitHelp;
+    }
+
+    public void setTitleTutInitHelp(String titleTutInitHelp) {
+        this.titleTutInitHelp = titleTutInitHelp;
+    }
+
+    public String getDesTutInitHelp() {
+        return desTutInitHelp;
+    }
+
+    public void setDesTutInitHelp(String desTutInitHelp) {
+        this.desTutInitHelp = desTutInitHelp;
+    }
+
+    public String getTitlePagTutInitHelp() {
+        return titlePagTutInitHelp;
+    }
+
+    public void setTitlePagTutInitHelp(String titlePagTutInitHelp) {
+        this.titlePagTutInitHelp = titlePagTutInitHelp;
     }
 
     public Collection<UserSettings> getUserSettingsCollection() {

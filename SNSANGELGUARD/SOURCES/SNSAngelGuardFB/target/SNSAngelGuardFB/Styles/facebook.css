@@ -533,6 +533,16 @@ div.divFilter{
     border:1px solid #CCC;
 }
 
+select.slcFrecuency{
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    text-indent: 0.01px; 
+    border-radius:5px; 
+    text-overflow: ""; 
+    padding: 5px;
+    box-shadow: inset 0 0 5px rgba(000,000,000, 0.5);
+}
+
 table.cabecera{
     width:640px;
     height:20px;

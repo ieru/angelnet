@@ -132,7 +132,8 @@ public class LocaleSettingsDaoManager {
                     jsonLocale.getString("titleGoogleCont"), jsonLocale.getString("titleContGoogleCont"), jsonLocale.getString("btnLogGoogleCont"),
                     jsonLocale.getString("titleNameContactGoogleCont"), jsonLocale.getString("titleEmailContactGoogleCont"), jsonLocale.getString("btnAceptGoogleCont"), jsonLocale.getString("btnCancelGoogleCont"),
                     jsonLocale.getString("helpMe"), jsonLocale.getString("warnings"), jsonLocale.getString("titleInformationMessage"), jsonLocale.getString("informationMessage"), jsonLocale.getString("mailDelete"),
-                    jsonLocale.getString("mailNotification"), jsonLocale.getString("altContactsAngelsEd"), jsonLocale.getString("titleVisitsFilterOptions"), jsonLocale.getString("postFriendFacebook"));
+                    jsonLocale.getString("mailNotification"), jsonLocale.getString("altContactsAngelsEd"), jsonLocale.getString("titleVisitsFilterOptions"), jsonLocale.getString("postFriendFacebook"),
+                    jsonLocale.getString("titleActiveDesactiveVig"), jsonLocale.getString("titleTutInitHelp"), jsonLocale.getString("desTutInitHelp"), jsonLocale.getString("titlePagTutInitHelp"));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadLocaleSettingsOffLine: Recursos en el atributo localeSettingsDao cargados!!");
         } catch (Exception ex) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadLocaleSettingsOffLine: Excepcion capturada Exception: " + ex.getMessage());
@@ -192,7 +193,8 @@ public class LocaleSettingsDaoManager {
                     jsonLocale.getString("titleGoogleCont"), jsonLocale.getString("titleContGoogleCont"), jsonLocale.getString("btnLogGoogleCont"),
                     jsonLocale.getString("titleNameContactGoogleCont"), jsonLocale.getString("titleEmailContactGoogleCont"), jsonLocale.getString("btnAceptGoogleCont"), jsonLocale.getString("btnCancelGoogleCont"),
                     jsonLocale.getString("helpMe"), jsonLocale.getString("warnings"), jsonLocale.getString("titleInformationMessage"), jsonLocale.getString("informationMessage"), jsonLocale.getString("mailDelete"),
-                    jsonLocale.getString("mailNotification"), jsonLocale.getString("altContactsAngelsEd"), jsonLocale.getString("titleVisitsFilterOptions"), jsonLocale.getString("postFriendFacebook"));
+                    jsonLocale.getString("mailNotification"), jsonLocale.getString("altContactsAngelsEd"), jsonLocale.getString("titleVisitsFilterOptions"), jsonLocale.getString("postFriendFacebook"),
+                    jsonLocale.getString("titleActiveDesactiveVig"), jsonLocale.getString("titleTutInitHelp"), jsonLocale.getString("desTutInitHelp"), jsonLocale.getString("titlePagTutInitHelp"));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadLocaleSettings: Recursos en el atributo localeSettingsDao cargados!!");
         } catch (Exception ex) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadLocaleSettings: Excepci?n capturada Exception: " + ex.getMessage());

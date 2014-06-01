@@ -65,6 +65,7 @@
         <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js"></script>
 
         <script type="text/javascript" src="js/fcbklistselection.js"></script>
+        <script type="text/javascript" charset="UTF-8" src="js/settingsSNSAngelGuard_Vigilants.js"></script>
         <script type="text/javascript" src="js/utilidadesFormularios.js"></script>
         
 
@@ -240,7 +241,7 @@
                         </tr>
                     </table>
                 </div>
-                <div id="botoneraInferior" style="width:98%;height: 48px;" align="right" margin="15px">
+                <div id="botoneraInferior" style="width:1000px;height: 48px;" align="right" margin="15px">
                     <hr class="linea" />
                     <table>
                         <tr>
