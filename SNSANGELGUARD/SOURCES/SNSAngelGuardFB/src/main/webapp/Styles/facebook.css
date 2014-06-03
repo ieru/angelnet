@@ -74,6 +74,14 @@ h1.letraNorm{
     margin:5px;
 }
 
+h1.letraNormTut{
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size:15px;
+    color: #3b5998;
+    margin:2% 15% 2% 15%;
+    text-align:justify;
+}
+
 h1.aceptinTerms{
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
     font-size:15px;
@@ -590,6 +598,27 @@ table.tabCenter{
     margin-top: -100px;
     width: 450px;
     margin-left: -225px;
+}
+
+img.disabledPag{}
+
+img.enabledPag{
+    cursor: pointer;
+}
+
+img.currentImgTut{
+    width: 750px;
+    height:425px;
+    border:1px solid #CCC;
+}
+
+img.paginationImg{
+    width: 35px;
+    height: 35px;
+}
+
+.centrar-imagen {
+text-align: center; 
 }
 
 img.newAngel{
