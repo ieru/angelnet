@@ -120,7 +120,7 @@ function removeApp(){
 function pintarTutorial(inicio, title) {
     if (inicio === "0") {
         $(function() {
-            showDialogWithTitle("../SNSAngelGuardFB/tutorialInicio.jsp", 900, 670, title);
+            showDialogWithTitle("../SNSAngelGuardFB/tutorialInicio.jsp", 900, 660, title);
         });
     }
 }
@@ -132,7 +132,7 @@ var miVentana;
 function showDialogWithTitle(url, ancho, alto, title){
     var dialogDiv = $('#modalDialog');
 
-    dialogDiv.html('<iframe style="border: 0px; " id="idFrame" src="' + url + '" width="100%" height="100%"></iframe>')
+    dialogDiv.html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
             .dialog({
         title: title,
         height: alto,
