@@ -117,11 +117,42 @@ function removeApp(){
 }
 
 
-
+function pintarTutorial(inicio, title) {
+    if (inicio === "0") {
+        $(function() {
+            showDialogWithTitle("../SNSAngelGuardFB/tutorialInicio.jsp", 900, 670, title);
+        });
+    }
+}
 
 
 var vent = null;
 var miVentana;
+
+function showDialogWithTitle(url, ancho, alto, title){
+    var dialogDiv = $('#modalDialog');
+
+    dialogDiv.html('<iframe style="border: 0px; " id="idFrame" src="' + url + '" width="100%" height="100%"></iframe>')
+            .dialog({
+        title: title,
+        height: alto,
+        maxheight: alto,
+        width: ancho,
+        maxWidth: ancho,
+        resizeable: false,
+        draggable: false,
+        modal: true,
+        open: function(event, ui) {
+            dialogDiv.css('overflow', 'hidden'); //this line does the actual hiding
+        },
+        close: function() {
+            dialogDiv = $('<div id=\"modalDialog\"></div>').appendTo('#modalContainer');
+            $("#modalDialog").dialog("destroy").remove();
+        }
+    });
+
+    dialogDiv.dialog("open");
+}
 
 function showDialog(url, ancho, alto) {
 

@@ -76,9 +76,9 @@ h1.letraNorm{
 
 h1.letraNormTut{
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
-    font-size:15px;
+    font-size:13px;
     color: #3b5998;
-    margin:2% 15% 2% 15%;
+    margin:5px 5px 10px 5px;
     text-align:justify;
 }
 
@@ -617,6 +617,15 @@ img.paginationImg{
     height: 35px;
 }
 
+div.desTut{
+    width: 760px;
+    height: 85px;
+}
+
+div.imgTut{
+    width: 760px;
+    height: 435px;
+}
 .centrar-imagen {
 text-align: center; 
 }

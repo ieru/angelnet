@@ -172,6 +172,7 @@
                 });
             }
             
+            pintarTutorial('<%= jspControler.getNewConection() %>', '<%= jspControler.getJspResources().getTitleInitTut()  %>');
         </script>
     </head>
     <body onload="cargaMenu();">

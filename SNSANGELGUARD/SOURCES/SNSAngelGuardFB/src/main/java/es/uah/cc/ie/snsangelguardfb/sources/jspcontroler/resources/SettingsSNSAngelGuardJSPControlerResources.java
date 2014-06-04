@@ -85,6 +85,9 @@ public class SettingsSNSAngelGuardJSPControlerResources {
     
     /** Mensaje del post para la aceptacion del envio de notificaciones en Facebook */
     private String bodyPostFacebook;
+    
+    /** Titulo del tutorial inicial */
+    private String titleInitTut;
 
     public String getBtnSaveSettings() {
         return btnSaveSettings;
@@ -178,6 +181,10 @@ public class SettingsSNSAngelGuardJSPControlerResources {
         this.bodyPostFacebook = bodyPostFacebook;
     }
 
+    public String getTitleInitTut() {
+        return titleInitTut;
+    }
+
     /**
      * Constructor de clase.
      * 
@@ -214,6 +221,8 @@ public class SettingsSNSAngelGuardJSPControlerResources {
         this.titlePostFacebook = arrayResourcesPost[0];
         this.subtitlePostFacebook = arrayResourcesPost[1];
         this.bodyPostFacebook = arrayResourcesPost[2];
+        
+        this.titleInitTut = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleTutInitHelp();
 
         loadMenus();
     }

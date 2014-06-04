@@ -16,10 +16,30 @@ var MAX_PAG = parseInt(16);
 var currentValue = parseInt(0);
 
 /**
+ * Inicializa las variables de la p?gina principal.
+ * 
+ * @param {type} hdLocaleValue
+ * @param {type} hdTitleFirst
+ * @param {type} hdTitlePrevious
+ * @param {type} hdTitleNext
+ * @param {type} hdTitleLast
+ * @param {type} hdDesTutInitHelp
+ * @returns {undefined}
+ */
+function initLoadValues(hdLocaleValue, hdTitleFirst, hdTitlePrevious, hdTitleNext, hdTitleLast, hdDesTutInitHelp){
+    $("#hdLocaleValue").attr("value", hdLocaleValue);
+    $("#hdTitleFirst").attr("value", hdTitleFirst);
+    $("#hdTitlePrevious").attr("value", hdTitlePrevious);
+    $("#hdTitleNext").attr("value", hdTitleNext);
+    $("#hdTitleLast").attr("value", hdTitleLast);
+    $("#hdDesTutInitHelp").attr("value", hdDesTutInitHelp);
+}
+
+/**
  * Carga la descripci?n de la imagen actual.
  */
 function loadDescription(){
-    var arrayDes = $("#hdDesTutInitHelp").split(";");
+    var arrayDes = $("#hdDesTutInitHelp").val().split(";");
     
     $("#idTdDescription").attr("innerHTML",'<h1 class="letraNormTut">' + arrayDes[parseInt(currentValue)] + '</h1>');
 }

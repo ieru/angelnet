@@ -16,6 +16,7 @@
     
     try {
             jspControler = new TutorialInicioJSPControler(request, response);
+            jspControler.process();
         } catch (InterDataBaseException e) {
             exceptionAsString = jspControler.getSnsObject().getExceptionManager().exceptionToString(e.getException());
 
@@ -45,38 +46,46 @@
         <script type="text/javascript" charset="ISO-8859-1" src="js/tutorialInicio.js" ></script>
         <script type="text/javascript" >
           $(function() {
+              initLoadValues("<%= jspControler.getLocale() %>", 
+              "<%= jspControler.getResources().getTitleFirstPage() %>", 
+              "<%= jspControler.getResources().getTitlePreviousPage() %>", 
+              "<%= jspControler.getResources().getTitleNextPage() %>", 
+              "<%= jspControler.getResources().getTitleLastPage() %>", 
+              "<%= jspControler.getResources().getDescPagesTutorial() %>");
+              
               getFirst();
           });
           </script>
     </head>
     <body>
-        <form id="tutorialInicio">
-            <input type="hidden" id="hdLocaleValue" name="hdLocaleValue" value="<%= jspControler.getLocale() %>" />
-            <input type="hidden" id="hdTitleFirst" name="hdTitleFirst" value="<%= jspControler.getResources().getTitleFirstPage() %>" />
-            <input type="hidden" id="hdTitlePrevious" name="hdTitlePrevious" value="<%= jspControler.getResources().getTitlePreviousPage() %>" />
-            <input type="hidden" id="hdTitleNext" name="hdTitleNext" value="<%= jspControler.getResources().getTitleNextPage() %>" />
-            <input type="hidden" id="hdTitleLast" name="hdTitleLast" value="<%= jspControler.getResources().getTitleLastPage() %>" />
-            <input type="hidden" id="hdDesTutInitHelp" name="hdDesTutInitHelp" value="<%= jspControler.getResources().getDescPagesTutorial() %>" />
+        <form id="tutorialInicio" onload="">
+            <input type="hidden" id="hdLocaleValue" name="hdLocaleValue" value="" />
+            <input type="hidden" id="hdTitleFirst" name="hdTitleFirst" value="" />
+            <input type="hidden" id="hdTitlePrevious" name="hdTitlePrevious" value="" />
+            <input type="hidden" id="hdTitleNext" name="hdTitleNext" value="" />
+            <input type="hidden" id="hdTitleLast" name="hdTitleLast" value="" />
+            <input type="hidden" id="hdDesTutInitHelp" name="hdDesTutInitHelp" value="" />
             <div id="tutInitial">
                 <center>
                     <div id="contenido" style="width:97%;" >
-                        <h1 class="titulo">Tutorial Inicial</h1>
-                        <table>
-                            <tr>
-                            <div class="centrar-imagen">
-                                <td width="95%" id="idTdDescription">
-                                    <h1 class="letraNormTut">Aqui iria una descripción de la paginaAqui iria una descripción de la paginaAqui iria una descripción de la paginaAqui iria una descripción de la paginaAqui iria una descripción de la paginaAqui iria una descripción de la paginaAqui iria una descripción de la pagina</h1>
-                                </td>
-                            </div>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="centrar-imagen">
-                                        <img class="currentImgTut" id="currentImgTut" src="../SNSAngelGuardFB/resources/fondoBienvenida.png" /> 
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+
+                        <div class="desTut centrar-imagen">
+                            <table>
+                                <tr>
+                                    <td id="idTdDescription">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="imgTut centrar-imagen">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img class="currentImgTut" id="currentImgTut" src="" /> 
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                         <div id="botoneraInferior">
                             <table>
                                 <tr>

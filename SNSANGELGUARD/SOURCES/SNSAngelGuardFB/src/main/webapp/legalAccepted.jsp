@@ -78,7 +78,7 @@
                         <div class="acuerdoLegal">
                             <h1 class="acuerdoLegal"><%= jspControler.getJspResources().getLegalAccepted()%></h1>
                         </div>
-                        <div id="botoneraInferior" style="width:80%;" align="left" margin="15px">
+                        <div id="botoneraInferior" style="width:80%;" align="right" margin="15px">
                             <hr class="linea" />
                             <table>
                                 <tr>
