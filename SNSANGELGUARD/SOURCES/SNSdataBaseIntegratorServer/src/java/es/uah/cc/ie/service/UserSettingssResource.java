@@ -20,10 +20,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.persistence.EntityManager;
 import es.uah.cc.ie.persistence.LocaleSettings;
 import es.uah.cc.ie.persistence.SettingsAngels;
-import es.uah.cc.ie.persistence.SettingsfltWall;
-import es.uah.cc.ie.persistence.SettingsfltPriv;
-import es.uah.cc.ie.persistence.SettingsfltFriends;
-import es.uah.cc.ie.persistence.SettingsfltVist;
+import es.uah.cc.ie.persistence.SettingsFilter;
 import es.uah.cc.ie.converter.UserSettingssConverter;
 import es.uah.cc.ie.converter.UserSettingsConverter;
 import com.sun.jersey.api.core.ResourceContext;
@@ -130,21 +127,8 @@ public class UserSettingssResource {
         if (localeSettings != null) {
             localeSettings.getUserSettingsCollection().add(entity);
         }
-        SettingsfltFriends settingsfltFriends = entity.getSettingsfltFriends();
-        if (settingsfltFriends != null) {
-            settingsfltFriends.setUserSettings(entity);
-        }
-        SettingsfltPriv settingsfltPriv = entity.getSettingsfltPriv();
-        if (settingsfltPriv != null) {
-            settingsfltPriv.setUserSettings(entity);
-        }
-        SettingsfltWall settingsfltWall = entity.getSettingsfltWall();
-        if (settingsfltWall != null) {
-            settingsfltWall.setUserSettings(entity);
-        }
-        SettingsfltVist settingsfltVist = entity.getSettingsfltVist();
-        if (settingsfltVist != null) {
-            settingsfltVist.setUserSettings(entity);
+        for (SettingsFilter value : entity.getSettingsFilterCollection()) {
+            value.getUserSettingsCollection().add(entity);
         }
         User user = entity.getUser();
         if (user != null) {

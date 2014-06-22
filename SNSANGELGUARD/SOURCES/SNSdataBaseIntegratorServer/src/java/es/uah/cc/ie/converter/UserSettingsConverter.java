@@ -15,11 +15,8 @@ import javax.ws.rs.core.UriBuilder;
 import javax.persistence.EntityManager;
 import es.uah.cc.ie.persistence.LocaleSettings;
 import es.uah.cc.ie.persistence.SettingsAngels;
-import es.uah.cc.ie.persistence.SettingsfltWall;
-import es.uah.cc.ie.persistence.SettingsfltPriv;
-import es.uah.cc.ie.persistence.SettingsfltFriends;
+import es.uah.cc.ie.persistence.SettingsFilter;
 import java.util.Collection;
-import es.uah.cc.ie.persistence.SettingsfltVist;
 import es.uah.cc.ie.persistence.User;
 
 /**
@@ -51,10 +48,7 @@ public class UserSettingsConverter {
         this.expandLevel = expandLevel;
         getSettingsAngelsCollection();
         getLocaleSettings();
-        getSettingsfltFriends();
-        getSettingsfltPriv();
-        getSettingsfltWall();
-        getSettingsfltVist();
+        getSettingsFilterCollection();
         getUser();
     }
 
@@ -288,100 +282,29 @@ public class UserSettingsConverter {
         entity.setLocaleSettings((value != null) ? value.getEntity() : null);
     }
 
+
     /**
-     * Getter for settingsfltFriends.
+     * Getter for settingsFilter.
      *
-     * @return value for settingsfltFriends
+     * @return value for settingsFilter
      */
     @XmlElement
-    public SettingsfltFriendsConverter getSettingsfltFriends() {
+    public SettingsFiltersConverter getSettingsFilterCollection() {
         if (expandLevel > 0) {
-            if (entity.getSettingsfltFriends() != null) {
-                return new SettingsfltFriendsConverter(entity.getSettingsfltFriends(), uri.resolve("settingsfltFriends/"), expandLevel - 1, false);
+            if (entity.getSettingsFilterCollection() != null) {
+                return new SettingsFiltersConverter(entity.getSettingsFilterCollection(), uri.resolve("settingsFilterCollection/"), expandLevel - 1);
             }
         }
         return null;
     }
 
     /**
-     * Setter for settingsfltFriends.
+     * Setter for settingsFilter.
      *
      * @param value the value to set
      */
-    public void setSettingsfltFriends(SettingsfltFriendsConverter value) {
-        entity.setSettingsfltFriends((value != null) ? value.getEntity() : null);
-    }
-
-    /**
-     * Getter for settingsfltPriv.
-     *
-     * @return value for settingsfltPriv
-     */
-    @XmlElement
-    public SettingsfltPrivConverter getSettingsfltPriv() {
-        if (expandLevel > 0) {
-            if (entity.getSettingsfltPriv() != null) {
-                return new SettingsfltPrivConverter(entity.getSettingsfltPriv(), uri.resolve("settingsfltPriv/"), expandLevel - 1, false);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Setter for settingsfltPriv.
-     *
-     * @param value the value to set
-     */
-    public void setSettingsfltPriv(SettingsfltPrivConverter value) {
-        entity.setSettingsfltPriv((value != null) ? value.getEntity() : null);
-    }
-
-    /**
-     * Getter for settingsfltWall.
-     *
-     * @return value for settingsfltWall
-     */
-    @XmlElement
-    public SettingsfltWallConverter getSettingsfltWall() {
-        if (expandLevel > 0) {
-            if (entity.getSettingsfltWall() != null) {
-                return new SettingsfltWallConverter(entity.getSettingsfltWall(), uri.resolve("settingsfltWall/"), expandLevel - 1, false);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Setter for settingsfltWall.
-     *
-     * @param value the value to set
-     */
-    public void setSettingsfltWall(SettingsfltWallConverter value) {
-        entity.setSettingsfltWall((value != null) ? value.getEntity() : null);
-    }
-
-    /**
-     * Getter for settingsfltVist.
-     *
-     * @return value for settingsfltVist
-     */
-    @XmlElement
-    public SettingsfltVistConverter getSettingsfltVist() {
-        if (expandLevel > 0) {
-            if (entity.getSettingsfltVist() != null) {
-                return new SettingsfltVistConverter(entity.getSettingsfltVist(), uri.resolve("settingsfltVist/"), expandLevel - 1, false);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Setter for settingsfltVist.
-     *
-     * @param value the value to set
-     */
-    public void setSettingsfltVist(SettingsfltVistConverter value) {
-        entity.setSettingsfltVist((value != null) ? value.getEntity() : null);
+    public void setSettingsFilter(SettingsFiltersConverter value) {
+        entity.setSettingsFilterCollection((value != null) ? value.getEntities() : null);
     }
 
     /**
@@ -456,26 +379,21 @@ public class UserSettingsConverter {
             }
         }
         entity.setSettingsAngelsCollection(newsettingsAngelsCollection);
+        
         LocaleSettings localeSettings = entity.getLocaleSettings();
         if (localeSettings != null) {
             entity.setLocaleSettings(em.getReference(LocaleSettings.class, localeSettings.getIdLocale()));
         }
-        SettingsfltFriends settingsfltFriends = entity.getSettingsfltFriends();
-        if (settingsfltFriends != null) {
-            entity.setSettingsfltFriends(em.getReference(SettingsfltFriends.class, settingsfltFriends.getUserSettingsUid()));
+        
+        Collection<SettingsFilter> settingsFilterCollection = entity.getSettingsFilterCollection();
+        Collection<SettingsFilter> newsettingsFilterCollection = new java.util.ArrayList<SettingsFilter>();
+        if (settingsFilterCollection != null) {
+            for (SettingsFilter item: settingsFilterCollection) {
+                newsettingsFilterCollection.add(em.getReference(SettingsFilter.class, item.getIdFilter()));
+            }
         }
-        SettingsfltPriv settingsfltPriv = entity.getSettingsfltPriv();
-        if (settingsfltPriv != null) {
-            entity.setSettingsfltPriv(em.getReference(SettingsfltPriv.class, settingsfltPriv.getUserSettingsUid()));
-        }
-        SettingsfltWall settingsfltWall = entity.getSettingsfltWall();
-        if (settingsfltWall != null) {
-            entity.setSettingsfltWall(em.getReference(SettingsfltWall.class, settingsfltWall.getUserSettingsUid()));
-        }
-        SettingsfltVist settingsfltVist = entity.getSettingsfltVist();
-        if (settingsfltVist != null) {
-            entity.setSettingsfltVist(em.getReference(SettingsfltVist.class, settingsfltVist.getUserSettingsUid()));
-        }
+        entity.setSettingsFilterCollection(newsettingsFilterCollection);
+        
         User user = entity.getUser();
         if (user != null) {
             entity.setUser(em.getReference(User.class, user.getUserSettingsUid()));

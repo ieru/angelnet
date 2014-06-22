@@ -4,12 +4,23 @@
  */
 package es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality;
 
+import es.uah.cc.ie.snsangelguardfb.ILifeCycleFilter;
 import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
+import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_DESFILTER;
+import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_FIRSTCHECK;
+import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_JSONFILTER;
+import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_LASTCHECK;
+import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_REQUEST;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -20,25 +31,16 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author tote
  */
-public class GenericFilterFuncionality {
+public class GenericFilterFuncionality implements IKeyArgsFilter {
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(GenericFilterFuncionality.class);
-    
-    /** Key para filtro de vocabulario ofensivo */
-    private static final String DES_WALL_FILTER = "fltWall";
-    
-    /** Key para el filtro de amistades */
-    private static final String DES_FRIENDS_FILTER = "fltFriends";
-    
-    /** Key para el filtro de privacidad */
-    private static final String DES_PRIV_FILTER = "fltPriv";
-    
-    /** Key para el filtro de visitas */
-    private static final String DES_VIST_FILTER = "fltVist";
 
     /** Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
+    
+    /** Mapa que contiene los filtros activos */
+    private Map<String, ILifeCycleFilter> filterActiveMap;
 
     /**
      * Constructor de clase
@@ -47,6 +49,12 @@ public class GenericFilterFuncionality {
      */
     public GenericFilterFuncionality(SNSAngelGuardFBManager snsObject) {
         this.snsObject = snsObject;
+        try {
+            loadMapFilters();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - GenericFilterFuncionality: Excepcion capturada Exception: " + ex.getMessage());
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - GenericFilterFuncionality: No se ha podido cargar el mapa de los filtros");
+        }
     }
 
     /**
@@ -68,6 +76,15 @@ public class GenericFilterFuncionality {
     }
 
     /**
+     * Obtiene el mapa de filtros.
+     * 
+     * @return Map<String, ILifeCycleFilter>
+     */
+    public Map<String, ILifeCycleFilter> getFilterActiveMap() {
+        return filterActiveMap;
+    }
+
+    /**
      * Comprueba si el usuario tiene activo el filtro desFilter
      *
      * @param desFilter: Tipo de filtro a comprobar
@@ -76,58 +93,13 @@ public class GenericFilterFuncionality {
      *  - false: Si el filtro no est? activo
      */
     public boolean isActiveFilter(String desFilter) {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isActiveFilter: Comprobando si el filtro " + desFilter + " est? activo...");
-        boolean activeFilter = false;
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isActiveFilter: Comprobando si el filtro " + desFilter + " esta activo...");
         
-        switch (desFilter) {
-            case DES_WALL_FILTER:
-                activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getActive().equals("1");
-                break;
-            case DES_FRIENDS_FILTER:
-                activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getActive().equals("1");
-                break;
-            case DES_PRIV_FILTER:
-                activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getActive().equals("1");
-                break;
-            case DES_VIST_FILTER: 
-                activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getActive().equals("1");
-                break;
-        }
+        boolean activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(desFilter).getFrec().equals("1");
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isActiveFilter: Filtro " + desFilter + " activo: " + activeFilter);
 
         return activeFilter;
-    }
-    
-    /**
-     * Encuentra de entre los ?ngeles definidos para un filtro, si est? definido para ?ste el angel actual.
-     * 
-     * @param desFilter
-     * @param currentAngel
-     * @return boolean 
-     */
-    private boolean isActiveFilterForAngel(String desFilter, String currentAngel){
-        boolean angelFound = false;
-         
-        String angels = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getAngelsFilter(desFilter);
-        
-        if(angels != null){
-            if (!angels.equals("")) {
-                
-                String[] angelsSelected = angels.split(";");
-                
-                for(String angelEmail: angelsSelected){
-                    if(angelEmail.equals(currentAngel)){
-                        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilter: Angel a quien se le enviar? la notificaci?n del filtro " + desFilter + ": " + angelEmail);
-                         angelFound = true;
-                         break;
-                    }
-                }
-               
-            }
-        }
-        
-        return angelFound;
     }
 
     /**
@@ -138,25 +110,7 @@ public class GenericFilterFuncionality {
      * @return Date
      */
     private Date getLastCheckGenericFilter(String desFilter) {
-        Date lastCheck = null;
-
-        // Dependiendo del tipo de filtro, devolvemos una fecha u otra
-        switch (desFilter) {
-            case DES_WALL_FILTER:
-                lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getLastCheck();
-                break;
-            case DES_FRIENDS_FILTER:
-                lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getLastCheck();
-                break;
-            case DES_PRIV_FILTER:
-                lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getLastCheck();
-                break;
-            case DES_VIST_FILTER:
-                lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
-                break;
-        }
-
-        return lastCheck;
+        return this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(desFilter).getLastCheck();
     }
     
     /**
@@ -201,9 +155,9 @@ public class GenericFilterFuncionality {
         
         // Si el angel esta definido para el filtro, se le mandaran notificaciones
         if(jsonAngel.getString("typeAngel").equals("F")){
-            angelFound = isActiveFilterForAngel(desFilter, jsonAngel.getString("idFacebook"));
+            angelFound = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().isActiveFilterForAngel(desFilter, jsonAngel.getString("idFacebook"));
         }else{
-            angelFound = isActiveFilterForAngel(desFilter, jsonAngel.getString("idAngel"));
+            angelFound = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().isActiveFilterForAngel(desFilter, jsonAngel.getString("idAngel"));
         }
 
         // Si el angel existe, el filtro esta activo y hoy toca ejecutar el filtro, lo ejecutamos
@@ -218,6 +172,28 @@ public class GenericFilterFuncionality {
         return result;
     }
 
+    /**
+     * Obtiene un mapa con todos los parametros de la ejecucion de un filtro.
+     * 
+     * @param request
+     * @param desFilter
+     * @param firstCheck
+     * @param jsonFilter
+     * @param lastCheck
+     * @return Map<String, Object> 
+     */
+    private Map<String, Object> getArgsFilter(HttpServletRequest request, String desFilter, boolean firstCheck, JSONObject jsonFilter, Date lastCheck){
+        Map<String, Object> argsFilter = new HashMap<>();
+        
+        argsFilter.put(ARGS_KEY_REQUEST, request);
+        argsFilter.put(ARGS_KEY_JSONFILTER, jsonFilter);
+        argsFilter.put(ARGS_KEY_DESFILTER, desFilter);
+        argsFilter.put(ARGS_KEY_FIRSTCHECK, firstCheck);
+        argsFilter.put(ARGS_KEY_LASTCHECK, lastCheck);
+        
+        return argsFilter;
+    }
+    
     /**
      * Realiza el chequeo del filtro desFilter.
      *
@@ -236,24 +212,10 @@ public class GenericFilterFuncionality {
      * @throws bsh.ParseException
      */
     public String getResultCheckFilter(HttpServletRequest request, String desFilter, boolean firstCheck, JSONObject jsonFilter, Date lastCheck) throws Exception{
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getResultCheckFilter: Inicio getResultCheckFilter para el filtro " + desFilter + "...");
-        String result = "";
-        
-        // Ejecutamos el filtro y obtenemos los resultados a devolver dependiendo del tipo de filtro
-        switch (desFilter) {
-            case DES_WALL_FILTER:
-                result = this.snsObject.getWallFilterFuncionality().checkPostWall(request, firstCheck, jsonFilter, lastCheck);
-                break;
-            case DES_FRIENDS_FILTER:
-                result = this.snsObject.getFriendsFilterFuncionality().checkFriends();
-                break;
-            case DES_PRIV_FILTER:
-                result = "Filtro en construccion";
-                break;
-            case DES_VIST_FILTER:
-                result = this.snsObject.getVisitsFilterFuncionality().checkVisitFilter(firstCheck, lastCheck);
-                break;
-        }
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getResultCheckFilter: Inicio getResultCheckFilter para el filtro " + desFilter + "...");    
+      
+        // Ejecutamos el filtro
+        String result = this.filterActiveMap.get(desFilter).executeFilter(getArgsFilter(request, desFilter, firstCheck, jsonFilter, lastCheck));
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getResultCheckFilter: Fin getResultCheckFilter para el filtro " + desFilter + "...");
         return result;
@@ -278,14 +240,31 @@ public class GenericFilterFuncionality {
     public void firstCheckAngelConfirmation(HttpServletRequest request, JSONObject jsonAngel) throws InterDataBaseException, InterProcessException, InterEmailException{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Inicio firstCheckAngelConfirmation...");
 
+        // Inicializamos la lista para almacenar el resultado de la ejecucion de los filtros
+        List<String> resultFilterList = new ArrayList<>();
+        
+        // Inicializamos las variables para los filtros
+        String desFilter;
+        String resultFilter;
+        
         try {
-            String resultFltWall = this.checkFilter(request, DES_WALL_FILTER, true, true, jsonAngel, null);
-            String resultFltFriends = this.checkFilter(request, DES_FRIENDS_FILTER, true, true, jsonAngel, null);
-            String resultFltPriv = this.checkFilter(request, DES_PRIV_FILTER, true, true, jsonAngel, null);
-            String resultFltVist = this.checkFilter(request, DES_VIST_FILTER, true, true, jsonAngel, null);
+            
+            Iterator itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+                        
+            while(itFilter.hasNext()){
+
+                // Obtenemos la descripci?n del filtro
+                desFilter = itFilter.next().toString();
+                
+                // Obtenemos el resultado del filtro
+                resultFilter = this.checkFilter(request, desFilter, true, true, jsonAngel, null);
+                
+                // A?adimos el resultado a la lista
+                resultFilterList.add(resultFilter);
+            }
 
             // Mandamos email de confirmacion
-            this.snsObject.getEmailObject().sendEmailCheck(resultFltWall, resultFltFriends, resultFltPriv, resultFltVist, jsonAngel);
+            this.snsObject.getEmailObject().sendEmailCheck(resultFilterList, jsonAngel);
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Fin firstCheckAngelConfirmation...");
         } catch (Exception ex) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Excepcion capturada Exception: " + ex.getMessage());
@@ -327,37 +306,62 @@ public class GenericFilterFuncionality {
      */
     public void checkUserSettingsOffLine(HttpServletRequest request, JSONArray angelsUser) throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Inicio checkUserSettingsOffLine...");
+        Date lastCheck;
+        List<Date> lastCheckFilterList = new ArrayList();
+        List<Boolean> isTimeToCheckFilterList = new ArrayList();
+        String key;
         
-        // Obtenemos la ?ltima fecha de ejecuci?n de cada filtro
-        Date lastCheckFltWall = getLastCheckGenericFilter(DES_WALL_FILTER);
-        Date lastCheckFltFriends = getLastCheckGenericFilter(DES_WALL_FILTER);
-        Date lastCheckFltPriv = getLastCheckGenericFilter(DES_PRIV_FILTER);
-        Date lastCheckFltVist = getLastCheckGenericFilter(DES_WALL_FILTER);
+        // Obtenemos el iterador para la lista de keys de filtros
+        Iterator itKey = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
         
-        // Comprobamos si debemos pasar los filtros
-        boolean isTimeToCheckFltWall = isTimeToCheck(DES_WALL_FILTER, lastCheckFltWall);
-        boolean isTimeToCheckFltFriends = isTimeToCheck(DES_FRIENDS_FILTER, lastCheckFltFriends);
-        boolean isTimeToCheckFltPriv = isTimeToCheck(DES_PRIV_FILTER, lastCheckFltPriv);
-        boolean isTimeToCheckFltVist = isTimeToCheck(DES_VIST_FILTER, lastCheckFltVist);
+        while(itKey.hasNext()){
+            
+            // Obtenemos la key del filtro
+            key = itKey.next().toString();
+            
+            // Obtenemos la ?ltima fecha de ejecucion del filtro
+            lastCheck = getLastCheckGenericFilter(key);
+            
+            // Introducimos la fecha en la lista
+            lastCheckFilterList.add(lastCheck);
+            
+            // Introducimos el resultado en la lista
+            isTimeToCheckFilterList.add(isTimeToCheck(key,lastCheck));
+        }
         
-        
+        Integer count = 0;
         
         // Para cada angel definido por el usuario realizamos el envio de la informacion
         for (int j = 0; j < angelsUser.length(); j++) {
 
+            count = 0;
+            
             try {
                 JSONObject jsonAngel = angelsUser.getJSONObject(j);
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Iniciando chequeo para: " + jsonAngel.getString("idAngel"));
 
-                // Ejecutamos los filtros
-                String resultFltWall = this.checkFilter(request, DES_WALL_FILTER, isTimeToCheckFltWall, false, jsonAngel, lastCheckFltWall);
-                String resultFltFriends = this.checkFilter(request, DES_FRIENDS_FILTER, isTimeToCheckFltFriends, false, jsonAngel, lastCheckFltFriends);
-                String resultFltPriv = this.checkFilter(request, DES_PRIV_FILTER, isTimeToCheckFltPriv, false, jsonAngel, lastCheckFltPriv);
-                String resultFltVist = this.checkFilter(request, DES_VIST_FILTER, isTimeToCheckFltVist, false, jsonAngel, lastCheckFltVist);
+                List<String> resultFilterList = new ArrayList();
+                String keyFilter;
+                String resultFilter;
+                Iterator itKeyFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+                
+                while(itKeyFilter.hasNext()){
+                    // Obtenemos la key del filtro
+                    keyFilter = itKeyFilter.next().toString();
+                    
+                    // Ejecutamos el filtro
+                    resultFilter = this.checkFilter(request, keyFilter, isTimeToCheckFilterList.get(count), false, jsonAngel, lastCheckFilterList.get(count));
+                    
+                    // A?adimos el resultado a la lista de resultados para enviar el email
+                    resultFilterList.add(resultFilter);
+                    
+                    // Incrementamos el contador
+                    count++;
+                }
 
                 // Si el angel ha aceptado los terminos, se le envia el email con el resultado del chequeo
                 if (jsonAngel.getString("acceptAngel").equals("1")) {
-                    this.snsObject.getEmailObject().sendEmailCheck(resultFltWall, resultFltFriends, resultFltPriv, resultFltVist, jsonAngel);
+                    this.snsObject.getEmailObject().sendEmailCheck(resultFilterList, jsonAngel);
                 }
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Fin chequeo para: " + jsonAngel.getString("idAngel"));
             } catch (Exception ex) {
@@ -381,35 +385,24 @@ public class GenericFilterFuncionality {
      */
     public boolean checkFilterToday(String desFilter, Date lastCheck) throws Exception {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Inicio checkFilterToday...");
-        long proxCheck = 0;
         
-        switch (desFilter) {
-            case DES_WALL_FILTER:
-                proxCheck = this.snsObject.getDateTimeUtilities().getNextCheckTime(Integer.parseInt(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getFrec()), lastCheck);
-                break;
-            case DES_FRIENDS_FILTER:
-                proxCheck = this.snsObject.getDateTimeUtilities().getNextCheckTime(Integer.parseInt(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getFrec()), lastCheck);
-                break;
-            case DES_PRIV_FILTER:
-                proxCheck = this.snsObject.getDateTimeUtilities().getNextCheckTime(Integer.parseInt(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getFrec()), lastCheck);
-                break;
-            case DES_VIST_FILTER:
-                proxCheck = this.snsObject.getDateTimeUtilities().getNextCheckTime(Integer.parseInt(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getFrec()), lastCheck);
-                break;
-        }
+        // Obtenemos la fecha de la proxima ejecucion del filtro
+        long proxCheck = this.snsObject.getDateTimeUtilities().getNextCheckTime(Integer.parseInt(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(desFilter).getFrec()), lastCheck);
 
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Proximo chequeo a realizar en fecha: " + new Date(proxCheck) + ", Ultimo chequeo realizado en fecha: " + new Date(lastCheck.getTime()));
         Calendar timeNow = Calendar.getInstance();
 
         if (proxCheck > timeNow.getTimeInMillis()) {
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Fin checkFilterToday. No se realizar? el chequeo para el filtro " + desFilter);
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Fin checkFilterToday. No se realizara el chequeo para el filtro " + desFilter);
             return false;
         } else {
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Fin checkFilterToday. Se realizar? el chequeo para el filtro " + desFilter);
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilterToday: Fin checkFilterToday. Se realizara el chequeo para el filtro " + desFilter);
             return true;
         }
     }
-     private String getAngelsFilterUpdated(String idNewAngel, String idOlderAngel, String olderAngels) {
+    
+    
+    private String getAngelsFilterUpdated(String idNewAngel, String idOlderAngel, String olderAngels) {
         String newAngels = "";
 
         if (olderAngels != null) {
@@ -444,17 +437,44 @@ public class GenericFilterFuncionality {
      * @param idNewAngel Identificador nuevo angel.
      */
     public void updateAngelForFilter(String idOlderAngel, String idNewAngel) {
-
-        // Borramos el angel del filtro de control del lenguaje
-        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getAngels()));
-
-        // Borramos el angel del filtro de control de amigos
-        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getAngels()));
-
-        // Borramos el angel del filtro de control de privacidad
-        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getAngels()));
-
-        // Borramos el angel del filtro de control de visitas
-        this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getAngels()));
-    }
+        
+        String keyFilter;
+        Iterator<String> itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        
+        while(itFilter.hasNext()){
+            // Obtenemos la key del filtro
+            keyFilter = itFilter.next();
+            
+            // Borramos el angel del filtro
+            this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setAngels(getAngelsFilterUpdated(idNewAngel, idOlderAngel, this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getAngels()));
+        }
+}
+    
+    /**
+     * Carga en el map interno los objetos que representan los filtros.
+     * 
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException 
+     */
+    public final void loadMapFilters() throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+        
+        this.filterActiveMap = new HashMap<>();
+        
+        Iterator<String> itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        
+        while(itFilter.hasNext()){
+            String strFilter = itFilter.next();
+            
+            // Obtenemos el filtro
+            Class classFilter = Class.forName(this.snsObject.getConfigurationManager().getKeyValueClassFilter().get(strFilter));
+            ILifeCycleFilter iFilter = (ILifeCycleFilter) classFilter.newInstance();
+            
+            // Inicializamos el filtro
+            iFilter.init(this.snsObject, strFilter);
+            
+            // Introducimos el filtro en el mapa
+            this.filterActiveMap.put(strFilter, iFilter);
+        }
+    }  
 }

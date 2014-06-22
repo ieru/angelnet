@@ -41,7 +41,7 @@ public class PersistenceService {
     
     private PersistenceService() { 
         if(configManager == null){
-            configManager = new ConfigurationManagerService();
+            configManager = new ConfigurationManagerService();        
         }
         this.em = pmf.createEntityManager(configManager.getDbPool());
         this.utx = em.getTransaction();

@@ -20,11 +20,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.persistence.NoResultException;
 import javax.persistence.EntityManager;
 import es.uah.cc.ie.persistence.UserSettings;
-import es.uah.cc.ie.persistence.SettingsfltWall;
-import es.uah.cc.ie.persistence.SettingsfltPriv;
-import es.uah.cc.ie.persistence.SettingsfltFriends;
+import es.uah.cc.ie.persistence.SettingsFilter;
 import java.util.Collection;
-import es.uah.cc.ie.persistence.SettingsfltVist;
 import es.uah.cc.ie.converter.SettingsAngelsConverter;
 import com.sun.jersey.api.core.ResourceContext;
 
@@ -129,45 +126,19 @@ public class SettingsAngelsResource {
      */
     private SettingsAngels updateEntity(SettingsAngels entity, SettingsAngels newEntity) {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
-        Collection<SettingsfltVist> settingsfltVistCollection = entity.getSettingsfltVistCollection();
-        Collection<SettingsfltVist> settingsfltVistCollectionNew = newEntity.getSettingsfltVistCollection();
-        Collection<SettingsfltWall> settingsfltWallCollection = entity.getSettingsfltWallCollection();
-        Collection<SettingsfltWall> settingsfltWallCollectionNew = newEntity.getSettingsfltWallCollection();
-        Collection<SettingsfltPriv> settingsfltPrivCollection = entity.getSettingsfltPrivCollection();
-        Collection<SettingsfltPriv> settingsfltPrivCollectionNew = newEntity.getSettingsfltPrivCollection();
+        Collection<SettingsFilter> settingsFilterCollection = entity.getSettingsFilterCollection();
+        Collection<SettingsFilter> settingsFilterCollectionNew = newEntity.getSettingsFilterCollection();
         Collection<UserSettings> userSettingsCollection = entity.getUserSettingsCollection();
         Collection<UserSettings> userSettingsCollectionNew = newEntity.getUserSettingsCollection();
-        Collection<SettingsfltFriends> settingsfltFriendsCollection = entity.getSettingsfltFriendsCollection();
-        Collection<SettingsfltFriends> settingsfltFriendsCollectionNew = newEntity.getSettingsfltFriendsCollection();
         entity = em.merge(newEntity);
-        for (SettingsfltVist value : settingsfltVistCollection) {
-            if (!settingsfltVistCollectionNew.contains(value)) {
-                value.getSettingsAngelsCollection().remove(entity);
+        for (SettingsFilter value : settingsFilterCollection) {
+            if (!settingsFilterCollectionNew.contains(value)) {
+                value.getSettingsAngelsFilterCollection().remove(entity);
             }
         }
-        for (SettingsfltVist value : settingsfltVistCollectionNew) {
-            if (!settingsfltVistCollection.contains(value)) {
-                value.getSettingsAngelsCollection().add(entity);
-            }
-        }
-        for (SettingsfltWall value : settingsfltWallCollection) {
-            if (!settingsfltWallCollectionNew.contains(value)) {
-                value.getSettingsAngelsCollection().remove(entity);
-            }
-        }
-        for (SettingsfltWall value : settingsfltWallCollectionNew) {
-            if (!settingsfltWallCollection.contains(value)) {
-                value.getSettingsAngelsCollection().add(entity);
-            }
-        }
-        for (SettingsfltPriv value : settingsfltPrivCollection) {
-            if (!settingsfltPrivCollectionNew.contains(value)) {
-                value.getSettingsAngelsCollection().remove(entity);
-            }
-        }
-        for (SettingsfltPriv value : settingsfltPrivCollectionNew) {
-            if (!settingsfltPrivCollection.contains(value)) {
-                value.getSettingsAngelsCollection().add(entity);
+        for (SettingsFilter value : settingsFilterCollectionNew) {
+            if (!settingsFilterCollection.contains(value)) {
+                value.getSettingsAngelsFilterCollection().add(entity);
             }
         }
         for (UserSettings value : userSettingsCollection) {
@@ -177,16 +148,6 @@ public class SettingsAngelsResource {
         }
         for (UserSettings value : userSettingsCollectionNew) {
             if (!userSettingsCollection.contains(value)) {
-                value.getSettingsAngelsCollection().add(entity);
-            }
-        }
-        for (SettingsfltFriends value : settingsfltFriendsCollection) {
-            if (!settingsfltFriendsCollectionNew.contains(value)) {
-                value.getSettingsAngelsCollection().remove(entity);
-            }
-        }
-        for (SettingsfltFriends value : settingsfltFriendsCollectionNew) {
-            if (!settingsfltFriendsCollection.contains(value)) {
                 value.getSettingsAngelsCollection().add(entity);
             }
         }
@@ -200,61 +161,29 @@ public class SettingsAngelsResource {
      */
     private void deleteEntity(SettingsAngels entity) {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
-        for (SettingsfltVist value : entity.getSettingsfltVistCollection()) {
-            value.getSettingsAngelsCollection().remove(entity);
+
+        for (SettingsFilter value : entity.getSettingsFilterCollection()) {
+            value.getSettingsAngelsFilterCollection().remove(entity);
         }
-        for (SettingsfltWall value : entity.getSettingsfltWallCollection()) {
-            value.getSettingsAngelsCollection().remove(entity);
-        }
-        for (SettingsfltPriv value : entity.getSettingsfltPrivCollection()) {
-            value.getSettingsAngelsCollection().remove(entity);
-        }
+
         for (UserSettings value : entity.getUserSettingsCollection()) {
             value.getSettingsAngelsCollection().remove(entity);
         }
-        for (SettingsfltFriends value : entity.getSettingsfltFriendsCollection()) {
-            value.getSettingsAngelsCollection().remove(entity);
-        }
+
         em.remove(entity);
     }
 
     /**
-     * Returns a dynamic instance of SettingsfltVistsResource used for entity navigation.
+     * Returns a dynamic instance of SettingsFiltersResource used for entity navigation.
      *
      * @param id identifier for the parent entity
-     * @return an instance of SettingsfltVistsResource
+     * @return an instance of SettingsFiltersResource
      */
-    @Path("settingsfltVistCollection/")
-    public SettingsfltVistsResource getSettingsfltVistCollectionResource() {
-        SettingsfltVistCollectionResourceSub settingsfltVistCollectionResourceSub = resourceContext.getResource(SettingsfltVistCollectionResourceSub.class);
-        settingsfltVistCollectionResourceSub.setParent(getEntity());
-        return settingsfltVistCollectionResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltWallsResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltWallsResource
-     */
-    @Path("settingsfltWallCollection/")
-    public SettingsfltWallsResource getSettingsfltWallCollectionResource() {
-        SettingsfltWallCollectionResourceSub settingsfltWallCollectionResourceSub = resourceContext.getResource(SettingsfltWallCollectionResourceSub.class);
-        settingsfltWallCollectionResourceSub.setParent(getEntity());
-        return settingsfltWallCollectionResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltPrivsResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltPrivsResource
-     */
-    @Path("settingsfltPrivCollection/")
-    public SettingsfltPrivsResource getSettingsfltPrivCollectionResource() {
-        SettingsfltPrivCollectionResourceSub settingsfltPrivCollectionResourceSub = resourceContext.getResource(SettingsfltPrivCollectionResourceSub.class);
-        settingsfltPrivCollectionResourceSub.setParent(getEntity());
-        return settingsfltPrivCollectionResourceSub;
+    @Path("settingsFilterCollection/")
+    public SettingsFiltersResource getSettingsFilterCollectionResource() {
+        SettingsFilterCollectionResourceSub settingsFilterCollectionResourceSub = resourceContext.getResource(SettingsFilterCollectionResourceSub.class);
+        settingsFilterCollectionResourceSub.setParent(getEntity());
+        return settingsFilterCollectionResourceSub;
     }
 
     /**
@@ -270,20 +199,7 @@ public class SettingsAngelsResource {
         return userSettingsCollectionResourceSub;
     }
 
-    /**
-     * Returns a dynamic instance of SettingsfltFriendssResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltFriendssResource
-     */
-    @Path("settingsfltFriendsCollection/")
-    public SettingsfltFriendssResource getSettingsfltFriendsCollectionResource() {
-        SettingsfltFriendsCollectionResourceSub settingsfltFriendsCollectionResourceSub = resourceContext.getResource(SettingsfltFriendsCollectionResourceSub.class);
-        settingsfltFriendsCollectionResourceSub.setParent(getEntity());
-        return settingsfltFriendsCollectionResourceSub;
-    }
-
-    public static class SettingsfltVistCollectionResourceSub extends SettingsfltVistsResource {
+    public static class SettingsFilterCollectionResourceSub extends SettingsFiltersResource {
 
         private SettingsAngels parent;
 
@@ -292,54 +208,10 @@ public class SettingsAngelsResource {
         }
 
         @Override
-        protected Collection<SettingsfltVist> getEntities(int start, int max, String query) {
-            Collection<SettingsfltVist> result = new java.util.ArrayList<SettingsfltVist>();
+        protected Collection<SettingsFilter> getEntities(int start, int max, String query) {
+            Collection<SettingsFilter> result = new java.util.ArrayList<SettingsFilter>();
             int index = 0;
-            for (SettingsfltVist e : parent.getSettingsfltVistCollection()) {
-                if (index >= start && (index - start) < max) {
-                    result.add(e);
-                }
-                index++;
-            }
-            return result;
-        }
-    }
-
-    public static class SettingsfltWallCollectionResourceSub extends SettingsfltWallsResource {
-
-        private SettingsAngels parent;
-
-        public void setParent(SettingsAngels parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected Collection<SettingsfltWall> getEntities(int start, int max, String query) {
-            Collection<SettingsfltWall> result = new java.util.ArrayList<SettingsfltWall>();
-            int index = 0;
-            for (SettingsfltWall e : parent.getSettingsfltWallCollection()) {
-                if (index >= start && (index - start) < max) {
-                    result.add(e);
-                }
-                index++;
-            }
-            return result;
-        }
-    }
-
-    public static class SettingsfltPrivCollectionResourceSub extends SettingsfltPrivsResource {
-
-        private SettingsAngels parent;
-
-        public void setParent(SettingsAngels parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected Collection<SettingsfltPriv> getEntities(int start, int max, String query) {
-            Collection<SettingsfltPriv> result = new java.util.ArrayList<SettingsfltPriv>();
-            int index = 0;
-            for (SettingsfltPriv e : parent.getSettingsfltPrivCollection()) {
+            for (SettingsFilter e : parent.getSettingsFilterCollection()) {
                 if (index >= start && (index - start) < max) {
                     result.add(e);
                 }
@@ -362,28 +234,6 @@ public class SettingsAngelsResource {
             Collection<UserSettings> result = new java.util.ArrayList<UserSettings>();
             int index = 0;
             for (UserSettings e : parent.getUserSettingsCollection()) {
-                if (index >= start && (index - start) < max) {
-                    result.add(e);
-                }
-                index++;
-            }
-            return result;
-        }
-    }
-
-    public static class SettingsfltFriendsCollectionResourceSub extends SettingsfltFriendssResource {
-
-        private SettingsAngels parent;
-
-        public void setParent(SettingsAngels parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected Collection<SettingsfltFriends> getEntities(int start, int max, String query) {
-            Collection<SettingsfltFriends> result = new java.util.ArrayList<SettingsfltFriends>();
-            int index = 0;
-            for (SettingsfltFriends e : parent.getSettingsfltFriendsCollection()) {
                 if (index >= start && (index - start) < max) {
                     result.add(e);
                 }

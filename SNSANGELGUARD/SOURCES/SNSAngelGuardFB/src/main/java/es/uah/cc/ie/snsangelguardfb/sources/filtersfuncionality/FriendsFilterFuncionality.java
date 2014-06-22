@@ -1,5 +1,6 @@
 package es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality;
 
+import es.uah.cc.ie.snsangelguardfb.ILifeCycleFilter;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
@@ -9,6 +10,7 @@ import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 import java.util.List;
+import java.util.Map;
 import javax.mail.MessagingException;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -20,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author tote
  */
-public class FriendsFilterFuncionality {
+public class FriendsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter {
     
     /** Maxima diferencia de edad permitida para los contactos */
     private static final int MAX_AGE_LIMITED = 5;
@@ -28,17 +30,16 @@ public class FriendsFilterFuncionality {
     /** Logger Class */
     private static Logger logger = Logger.getLogger(FriendsFilterFuncionality.class);
 
-    /** Clase Manager de la aplicaci?n */
+    /** Clase Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
+    
+    /** Identificador del filtro */
+    private String idFilter;
 
     /**
-     * Constructor de clase. Inicializa su atributo manager de la aplicacion.
-     *
-     * @param snsObject SNSAngelGuardFBManager Manager de la aplicaci?n.
+     * Constructor de clase sin argumentos.
      */
-    public FriendsFilterFuncionality(SNSAngelGuardFBManager snsObject) {
-        this.snsObject = snsObject;
-    }
+    public FriendsFilterFuncionality() { }
 
     /**
      * Obtiene el objeto manager de la aplicaci?n.
@@ -460,5 +461,35 @@ public class FriendsFilterFuncionality {
         }
 
         return result;
+    }
+
+    @Override
+    public void init(SNSAngelGuardFBManager snsObject, String id) {
+        this.snsObject = snsObject;
+        this.idFilter = id;
+    }
+
+    @Override
+    public String executeFilter(Map<String, Object> args) throws Exception {
+        return checkFriends();
+    }
+
+    @Override
+    public String getId() {
+        return this.idFilter;
+    }
+
+    @Override
+    public void updateInformationFacebook() throws Exception {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationFacebook: Inicio updateInformationFacebook...");
+        this.getUserFriends();
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationFacebook: Fin updateInformationFacebook!!");
+    }
+
+    @Override
+    public void getInformationFacebook() throws Exception {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getInformationFacebook: Inicio getInformationFacebook...");
+        this.getUserFriends();
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getInformationFacebook: Fin getInformationFacebook!!");
     }
 }

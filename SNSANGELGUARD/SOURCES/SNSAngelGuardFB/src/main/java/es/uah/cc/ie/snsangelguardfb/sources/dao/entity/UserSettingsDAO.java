@@ -15,6 +15,9 @@ import es.uah.cc.ie.snsangelguardfb.sources.utilities.JSONUtilities;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.servlet.http.HttpServletRequest;
@@ -88,17 +91,8 @@ public class UserSettingsDAO {
     /** Fecha del ultimo backup de informacion offline */
     private Date backupCheck;
     
-    /** Objeto para el filtro de control de lenguaje */
-    private UserSettings_SettingsFilterDAO fltWall;
-    
-    /** Objeto para el filtro de control de amistades */
-    private UserSettings_SettingsFilterDAO fltFriends;
-    
-    /** Objeto para el filtro de control de privacidad */
-    private UserSettings_SettingsFilterDAO fltPriv;
-    
-    /** Objeto para el filtro de control de visitas */
-    private UserSettings_SettingsFilterDAO fltVist;
+    /** Mapa de filtros configurados */
+    private Map<String, UserSettings_SettingsFilterDAO> filterDaoMap;
     
     /** Campo que almacena los angeles seleccionados en la aplicacion separados por el caracter ; */
     private String angelsSelected = "";
@@ -150,14 +144,13 @@ public class UserSettingsDAO {
         this.appActivated = appActivated;
         this.userSession = userSession;
         this.backupCheck = backupCheck;
-        this.fltWall = new UserSettings_SettingsFilterDAO(manager);
-        this.fltFriends = new UserSettings_SettingsFilterDAO(manager);
-        this.fltPriv = new UserSettings_SettingsFilterDAO(manager);
-        this.fltVist = new UserSettings_SettingsFilterDAO(manager);
         this.snsObject = snsObject;
 
+        // Inicializamos los filtros
+        initFiltersMap();
+        
         // Cargamos todos los filtros con la informacion de la base de datos
-        this.loadFullFuntionalityFilter();
+        loadFullFuntionalityFilter();
     }
 
     /**
@@ -301,62 +294,6 @@ public class UserSettingsDAO {
     }
 
     /**
-     * @return the fltWall
-     */
-    public UserSettings_SettingsFilterDAO getFltWall() {
-        return fltWall;
-    }
-
-    /**
-     * @param fltWall the fltWall to set
-     */
-    public void setFltWall(UserSettings_SettingsFilterDAO fltWall) {
-        this.fltWall = fltWall;
-    }
-
-    /**
-     * @return the fltFriends
-     */
-    public UserSettings_SettingsFilterDAO getFltFriends() {
-        return fltFriends;
-    }
-
-    /**
-     * @param fltFriends the fltFriends to set
-     */
-    public void setFltFriends(UserSettings_SettingsFilterDAO fltFriends) {
-        this.fltFriends = fltFriends;
-    }
-
-    /**
-     * @return the fltPriv
-     */
-    public UserSettings_SettingsFilterDAO getFltPriv() {
-        return fltPriv;
-    }
-
-    /**
-     * @param fltPriv the fltPriv to set
-     */
-    public void setFltPriv(UserSettings_SettingsFilterDAO fltPriv) {
-        this.fltPriv = fltPriv;
-    }
-
-    /**
-     * @return the fltVist
-     */
-    public UserSettings_SettingsFilterDAO getFltVist() {
-        return fltVist;
-    }
-
-    /**
-     * @param fltVist the fltVist to set
-     */
-    public void setFltVist(UserSettings_SettingsFilterDAO fltVist) {
-        this.fltVist = fltVist;
-    }
-
-    /**
      * @return the snsObject
      */
     public SNSAngelGuardFBManager getSnsObject() {
@@ -431,6 +368,14 @@ public class UserSettingsDAO {
         this.angelsSelected = angelsSelected;
     }
 
+    /**
+     * Mapa de filtros.
+     * 
+     * @return Map<String, UserSettings_SettingsFilterDAO> 
+     */
+    public Map<String, UserSettings_SettingsFilterDAO> getFilterDaoMap() {
+        return filterDaoMap;
+    }
 
     /**
      * Obtiene una cadena de texto cifrada en Base64 utilizando el algoritmo AES a partir de la cadena de entrada. Podr? lanzar excepciones del tipo org.bouncycastle.crypto.DataLengthException,
@@ -499,6 +444,26 @@ public class UserSettingsDAO {
         cipher.doFinal(textoEnClaro, temp);
         return new String(textoEnClaro);
     }
+    
+    /**
+     * Inicializa y enlaza en base de datos, una instancia para cada filtro
+     * definido al usuario de la aplicacion.
+     *
+     * @throws JSONException
+     */
+    private void initNewFilters() throws JSONException{
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initNewFilters: Fin initNewFilters...");
+        Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String keyFilter;
+
+        while (itKeyFilters.hasNext()) {
+            keyFilter = itKeyFilters.next();
+
+            this.filterDaoMap.get(keyFilter).saveNewFilter();
+        }
+
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initNewFilters: Fin initNewFilters...");
+    }
 
     /**
      * Crea un objeto JSONObject a partir de los atributos de la clase y lo persiste en base de datos mediante el servicio web userSettings\_setNewEntityUserSettings, despu?s lo retorna como resultado.
@@ -554,18 +519,14 @@ public class UserSettingsDAO {
         
         codeLocale.put("uri", jsonLocale.get("uri"));
         newInstance.put("localeSettings", codeLocale);
-//        newInstance.put("localeSettings", this.getLocaleSettings());
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Nueva objeto a base de datos: " + newInstance.toString());
         try {
             this.snsObject.getClient().userSettings_setNewEntityUserSettings(String.class, newInstance);
-            //this.putNewAngels(true);
-            //this.getNewAngels();
-            this.initDBnewFilter("fltWall");
-            this.initDBnewFilter("fltFriends");
-            this.initDBnewFilter("fltPriv");
-            this.initDBnewFilter("fltVist");
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Inicializamos en base de datos los filtros...");
+            initNewFilters();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Filtros correctamente inicializados!!");
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Fin getNewInstanceUS...");
-        } catch (Exception e) {
+        } catch (UniformInterfaceException | JSONException e) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Excepcion capturada Exception: " + e.getMessage());
             this.snsObject.getExceptionManager().initControlException(e);         
         }
@@ -594,21 +555,15 @@ public class UserSettingsDAO {
      * @throws UniformInterfaceException
      * @throws IOException 
      */
-    public void setAngelsUserSettings(String activeFilter, boolean newConnection) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
+    public void setAngelsUserSettings(String activeFilter, boolean newConnection) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException, InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setAngelsUserSettings: Inicio setAngelsUserSettings...");
-        //this.putNewAngels(false);
-        //if(!newConnection){
-            this.deleteAngelsRelationship();
-            //this.deleteOlderAngels();
-        //}
+      
+        this.deleteAngelsRelationship();
         this.getNewAngels();
 
-        String[] arrActiveFilter = getArrayActiveFilter(activeFilter);
+        //String[] arrActiveFilter = getArrayActiveFilter(activeFilter);
 
-        this.putNewInstanceFilter("fltWall", arrActiveFilter[0]);
-        this.putNewInstanceFilter("fltFriends", arrActiveFilter[1]);
-        this.putNewInstanceFilter("fltPriv", arrActiveFilter[2]);
-        this.putNewInstanceFilter("fltVist", arrActiveFilter[3]);
+        this.updateFilters();
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setAngelsUserSettings: Fin setAngelsUserSettings...");
     }
 
@@ -625,85 +580,64 @@ public class UserSettingsDAO {
      * @throws NoSuchProviderException
      * @throws MessagingException
      */
-    public void setAngelsUserSettingsByFilter(String desFilter, String activeFilter) throws JSONException, UnsupportedEncodingException, UniformInterfaceException, IOException, NoSuchProviderException, MessagingException {
+    @Deprecated
+    public void setAngelsUserSettingsByFilter(String desFilter, String activeFilter) throws JSONException, UnsupportedEncodingException, UniformInterfaceException, IOException, NoSuchProviderException, MessagingException, InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setAngelsUserSettingsByFilter: Inicio setAngelsUserSettingsByFilter...");
         //this.putNewAngels(false);
         this.deleteAngelsRelationship();
         //this.deleteOlderAngels();
         this.getNewAngels();
-        this.putNewInstanceFilter(desFilter, activeFilter);
+        this.updateFilters();
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setAngelsUserSettingsByFilter: Fin setAngelsUserSettingsByFilter...");
     }
 
-    public JSONObject getJsonAngelWithFilterRelationship(JSONObject jsonAngel, int modo, String des) throws JSONException{
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getJsonAngelWithFilterRelationship: Inicio getJsonAngelWithFilterRelationship...");
-        JSONObject jsonCollection;
-        JSONArray aux;
-        JSONObject jsonUri;
-        Long uidLong = (new Double(this.getUid())).longValue();
+     public JSONObject getJsonAngelWithUserSettingsRelationship(JSONObject jsonAngel) throws JSONException{
+         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getJsonAngelWithFilterRelationship: Inicio getJsonAngelWithFilterRelationship...");
+         JSONObject jsonCollection;
+         JSONArray aux;
+         JSONObject jsonUri;
+         Long uidLong = (new Double(this.getUid())).longValue();
 
-        switch (modo) {
-            case 1:
-                try{
-                    jsonCollection = jsonAngel.getJSONObject("userSettingsCollection");
-                    aux = jsonCollection.getJSONArray("userSettings");
-                    jsonUri = new JSONObject();
+         try {
+             jsonCollection = jsonAngel.getJSONObject("userSettingsCollection");
+             aux = jsonCollection.getJSONArray("userSettings");
+             jsonUri = new JSONObject();
 
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/userSettingsCollection/" + uidLong + "/");
-                    aux.put(jsonUri);
-                    jsonCollection.put("userSettings", aux);
+             jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + 
+                     "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + 
+                     "/userSettingsCollection/" + uidLong + "/");
+             aux.put(jsonUri);
+             jsonCollection.put("userSettings", aux);
 
-                    jsonAngel.put("userSettingsCollection", jsonCollection);
-                } catch(JSONException e){
-                    // Si no existen m?s angeles relacionados.
-                    jsonUri = new JSONObject();
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/userSettingsCollection/" + uidLong + "/");
-                    
-                    JSONObject jsonUriUserSettings = new JSONObject();
-                    jsonUriUserSettings.put("userSettings", jsonUri);
-                    
-                    jsonAngel.put("userSettingsCollection", jsonUriUserSettings);
-                }
-                break;
-            case 2:
-                try{
-                    jsonCollection = jsonAngel.getJSONObject("settings" + des + "Collection");
-                    aux = jsonCollection.getJSONArray("settings" + des);
-                    jsonUri = new JSONObject();
+             jsonAngel.put("userSettingsCollection", jsonCollection);
+         } catch (JSONException e) {
+             // Si no existen mas angeles relacionados.
+             jsonUri = new JSONObject();
+             jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + 
+                     "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + 
+                     "/userSettingsCollection/" + uidLong + "/");
 
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/settings" + des + "Collection/" + uidLong + "/");
-                    aux.put(jsonUri);
-                    jsonCollection.put("settings" + des, aux);
+             JSONObject jsonUriUserSettings = new JSONObject();
+             jsonUriUserSettings.put("userSettings", jsonUri);
 
-                    jsonAngel.put("settings" + des + "Collection", jsonCollection);
-                } catch(JSONException e){
-                    // Si no existen m?s angeles relacionados.
-                    jsonUri = new JSONObject();
-                    jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/settings" + des + "Collection/" + uidLong + "/");
-                    
-                    JSONObject jsonUriUserSettings = new JSONObject();
-                    jsonUriUserSettings.put("settings" + des, jsonUri);
-                    
-                    jsonAngel.put("settings" + des + "Collection", jsonUriUserSettings);
-                }
-                break;
-        }
-        
-        
-        return jsonAngel;
+             jsonAngel.put("userSettingsCollection", jsonUriUserSettings);
+         }
+
+
+         return jsonAngel;
     }
     
     /**
-     * Actualiza los angeles para un determinado filtro. Puede lanzar excepciones del tipo JSONException.
+     * Actualiza los angeles de un usuario. Puede lanzar excepciones del tipo JSONException.
      *
      * @param jsonAngel
      * @param modo
      * @param des
      * @throws JSONException
      */
-    public void setCollectionAngels(JSONObject jsonAngel, int modo, String des) throws JSONException {
+    public void setCollectionAngels(JSONObject jsonAngel) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setCollectionAngels: Inicio setCollectionAngels...");
-        jsonAngel = getJsonAngelWithFilterRelationship(jsonAngel, modo, des);
+        jsonAngel = getJsonAngelWithUserSettingsRelationship(jsonAngel);
         
         try{
             this.snsObject.getClient().userSettings_setNewAngelsCollectionByUid(String.class, jsonAngel.getString("uidAngel"), jsonAngel);
@@ -731,7 +665,7 @@ public class UserSettingsDAO {
 
         for (int i = 0; i < jsonArrayAngels.length(); i++) {
             jsonAngel = jsonArrayAngels.getJSONObject(i);
-            setCollectionAngels(jsonAngel, 1, "");
+            setCollectionAngels(jsonAngel);
         }
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewAngels: Fin getNewAngels...");
     }
@@ -774,11 +708,16 @@ public class UserSettingsDAO {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Inicio deleteAngelFiltersRelationship...");
 
         if (!jsonAngel.getString("uidAngel").equals("")) {
-            jsonAngel = deleteCollection(jsonAngel, "fltWall", 2);
-            jsonAngel = deleteCollection(jsonAngel, "fltFriends", 2);
-            jsonAngel = deleteCollection(jsonAngel, "fltPriv", 2);
-            jsonAngel = deleteCollection(jsonAngel, "fltVist", 2);
-            jsonAngel = deleteCollection(jsonAngel, "", 1);
+            
+            // Eliminamos la relacion entre el angel y los filtros
+            Iterator<String> itKeysFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+            
+            while(itKeysFilter.hasNext()){
+                jsonAngel = this.filterDaoMap.get(itKeysFilter.next()).deleteAngelFromFilterAngelCollection(jsonAngel);
+            }
+            
+            // Eliminamos la relacion entre el angel y el usuario de la aplicacion
+            jsonAngel = deleteAngelFromUserSettingsAngelCollection(jsonAngel);
 
             try {
                 logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFiltersRelationship: Relacion eliminada: " + jsonAngel.toString());
@@ -792,31 +731,23 @@ public class UserSettingsDAO {
     }
     
     /**
-     * Borra del objeto angel la relaci?n que le un?a a un filtro.
+     * Borra del objeto angel la relacion que le unia a un usuario de la aplicacion.
      *
-     * @param jsonAngel
-     * @param des
-     * @param mode
-     * @return
+     * @param jsonAngel JSONObject con los datos del angel
+     * @return JSONObject del angel con la relacion con el usuario de la aplicacion eliminada
      * @throws JSONException
      */
-    public JSONObject deleteCollection(JSONObject jsonAngel, String des, int mode) throws JSONException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteCollection: Inicio deleteCollection...");
-        JSONObject jsonUri = null;
+    public JSONObject deleteAngelFromUserSettingsAngelCollection(JSONObject jsonAngel) throws JSONException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFromUserSettingsAngelCollection: Inicio deleteAngelFromUserSettingsAngelCollection...");
 
-        switch (mode) {
-            case 1:
-                jsonUri = new JSONObject();
-                jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/userSettingsCollection/");
-                jsonAngel.put("userSettingsCollection", jsonUri);
-                break;
-            case 2:
-                jsonUri = new JSONObject();
-                jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + "/settings" + des + "Collection/");
-                jsonAngel.put("settings" + des + "Collection", jsonUri);
-                break;
-        }
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteCollection: Fin deleteCollection...");
+        JSONObject jsonUri = new JSONObject();
+        jsonUri.put("uri", this.snsObject.getConfigurationManager().getConfigHostApplication() + 
+                "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + 
+                "/userSettingsCollection/");
+        
+        jsonAngel.put("userSettingsCollection", jsonUri);
+
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - deleteAngelFromUserSettingsAngelCollection: Fin deleteAngelFromUserSettingsAngelCollection...");
         return jsonAngel;
     }
 
@@ -1165,10 +1096,15 @@ public class UserSettingsDAO {
      */
     public JSONArray putNewAngels(boolean inicio) throws JSONException, UnsupportedEncodingException, UniformInterfaceException, IOException, NoSuchProviderException, MessagingException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngels: Inicio putNewAngels...");
-        this.gelAngelsUserFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected(), this.getFltWall().getAngels());
-        this.gelAngelsUserFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected(), this.getFltFriends().getAngels());
-        this.gelAngelsUserFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected(), this.getFltPriv().getAngels());
-        this.gelAngelsUserFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected(), this.getFltVist().getAngels());
+        
+        Iterator<String> desFilterIt = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String keyFilter;
+        
+        while(desFilterIt.hasNext()){
+            keyFilter = desFilterIt.next();
+            
+            gelAngelsUserFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected(), this.filterDaoMap.get(keyFilter).getAngels());
+        }
 
         JSONArray angels = this.getAngels(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngels: Nuevos angeles: " + angels.toString());
@@ -1339,55 +1275,14 @@ public class UserSettingsDAO {
                 jsonAngel = jsonArrayAngels.getJSONObject(i);
                 if(jsonAngel.getString("typeAngel").equals("F")){
                     if (angelsFilter.getJSONObject(j).getString("idAngel").equals(jsonAngel.getString("idFacebook"))) {
-                        setCollectionAngels(jsonAngel, 2, des);
+                        this.filterDaoMap.get(des).putAngelInCollectionFilter(jsonAngel);
                     }
                 }else if (angelsFilter.getJSONObject(j).getString("idAngel").equals(jsonAngel.getString("idAngel"))) {
-                    setCollectionAngels(jsonAngel, 2, des);
+                    this.filterDaoMap.get(des).putAngelInCollectionFilter(jsonAngel);
                 }
             }
         }
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putAngelsFilter: Fin putAngelsFilter...");
-    }
-
-    /**
-     * Inicializa la base de datos para un nuevo filtro no seleccionado.
-     * 
-     * @param des
-     */
-    public void initDBnewFilter(String des){
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Inicio initDBnewFilter para filtro " + des + "...");
-        JSONObject newInstanceFilter = null;
-
-        if (des.equals("fltWall")) {
-            try {
-                newInstanceFilter = this.getFltWall().getObjectFilter(des);
-                this.snsObject.getClient().settingsFltWall_setNewUser(String.class, newInstanceFilter);
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltFriends")) {
-            try {
-                newInstanceFilter = this.getFltFriends().getObjectFilter(des);
-                this.snsObject.getClient().settingsFltFriends_setNewUser(String.class, newInstanceFilter);
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltPriv")) {
-            try {
-                newInstanceFilter = this.getFltPriv().getObjectFilter(des);
-                this.snsObject.getClient().settingsFltPriv_setNewUser(String.class, newInstanceFilter);
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltVist")) {
-            try {
-                newInstanceFilter = this.getFltVist().getObjectFilter(des);
-                this.snsObject.getClient().settingsFltVist_setNewUser(String.class, newInstanceFilter);
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        }
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initDBnewFilter: Fin initDBnewFilter para filtro " + des + "...");
     }
     
     /**
@@ -1400,118 +1295,59 @@ public class UserSettingsDAO {
     public JSONObject getAngelInformationWithFilters(JSONObject jsonAngel) throws JSONException{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelInformationWithFilters: Inicio getAngelInformationWithFilters...");
         
-        String strAngelsSelectedFltWall = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getAngels();
-        if(strAngelsSelectedFltWall != null){
-            jsonAngel = updateInformationAngelForFilter(jsonAngel, strAngelsSelectedFltWall, "fltWall");
-        } 
+        Iterator<String> itKeysFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
         
-        String strAngelsSelectedFltFriends = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getAngels();
-        if(strAngelsSelectedFltFriends != null){
-            jsonAngel = updateInformationAngelForFilter(jsonAngel, strAngelsSelectedFltFriends, "fltFriends");
-        } 
-        
-        String strAngelsSelectedFltPriv = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getAngels();
-        if(strAngelsSelectedFltPriv != null){
-            jsonAngel = updateInformationAngelForFilter(jsonAngel, strAngelsSelectedFltPriv, "fltPriv");
-        } 
-        
-        String strAngelsSelectedFltVist = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getAngels();
-        if(strAngelsSelectedFltVist != null){ 
-            jsonAngel = updateInformationAngelForFilter(jsonAngel, strAngelsSelectedFltVist, "fltVist");
-        } 
+        while(itKeysFilter.hasNext()) {
+            this.filterDaoMap.get(itKeysFilter.next()).getJsonAngelWithFilterRelationship(jsonAngel);
+        }
         
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelInformationWithFilters: Fin getAngelInformationWithFilters!!");
         return jsonAngel;
     }
-    
-    /**
-     * Obtiene la informacion de un angel actualizada con el filtro marcado por el parametro desFilter.
-     * 
-     * @param jsonUpdateAngel
-     * @param strAngelsSelected
-     * @param desFilter
-     * @return
-     * @throws JSONException 
-     */
-    private JSONObject updateInformationAngelForFilter(JSONObject jsonUpdateAngel, String strAngelsSelected, String desFilter) throws JSONException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAngelForFilter: Inicio updateInformationAngelForFilter para filtro " + desFilter + "...");
-        String[] arrayAngelsSelected = strAngelsSelected.split(";");
-
-        for (int i = 0; i < arrayAngelsSelected.length; i++) {
-            if (arrayAngelsSelected[i].equals(jsonUpdateAngel.get("uidAngel"))) {
-                jsonUpdateAngel = getJsonAngelWithFilterRelationship(jsonUpdateAngel, 2, desFilter);
-            }
-        }
-        
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAngelForFilter: Fin updateInformationAngelForFilter para filtro " + desFilter + "!!");
-        return jsonUpdateAngel;
-    }
+   
 
     /**
-     * Almacena en base de datos un nuevo filtro definido. Puede lanzar excepciones del tipo JSONException.
+     * Actualiza en base de datos los filtros almacenados. Puede lanzar excepciones del tipo JSONException.
      * 
-     * @param des
-     * @param activeFilter
-     * @return
+     * @return JSONObject
      * @throws JSONException
      */
-    public JSONObject putNewInstanceFilter(String des, String activeFilter) throws JSONException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Inicio putNewInstanceFilter para filtro " + des + "...");
+    public JSONObject updateFilters() throws JSONException, InterDataBaseException, InterProcessException, InterEmailException {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Inicio putNewInstanceFilter... ");
         JSONObject newInstanceFilter = null;
-        JSONArray jsonAngFilter = null;
+        JSONArray jsonAngFilter;
         Long uidLong = (new Double(this.getUid())).longValue();
 
-        if (des.equals("fltWall")) {
-            newInstanceFilter = this.getFltWall().getObjectFilter(des);
+        Iterator<String> itKeysFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String keyFilter;
+        
+        while (itKeysFilter.hasNext()) {
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Actualizando filtro " + itKeysFilter.next() + "...");
+            keyFilter = itKeysFilter.next();
+            
+            // Obtenemos el objeto JSON del filtro
+            newInstanceFilter = this.filterDaoMap.get(keyFilter).getObjectFilter();
+            
             try {
-                this.snsObject.getClient().settingsFltWall_setFilterByUid(String.class, uidLong.toString(), newInstanceFilter);
+                // Actualizamos la informacion del filtro en base de datos
+                this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, uidLong.toString(), newInstanceFilter);
             } catch (UniformInterfaceException e) {
-                if (e.getResponse().getStatus() == 204) {
-                    jsonAngFilter = this.getFltWall().getAngelsFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
-                    putAngelsFilter(jsonAngFilter, "fltWall");
-                } else {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
-                }
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
+                
+                // Analizamos la excepcion y seguimos si es una 2XX
+                this.snsObject.getExceptionManager().initControlException(e);
+                
+                // Obtenemos los angeles del filtro
+                jsonAngFilter = this.filterDaoMap.get(keyFilter).getAngelsFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
+                
+                // Los actualizamos en base de datos
+                putAngelsFilter(jsonAngFilter, keyFilter);
             }
-        } else if (des.equals("fltFriends")) {
-            newInstanceFilter = this.getFltFriends().getObjectFilter(des);
-            try {
-                this.snsObject.getClient().settingsFltFriends_setFilterByUid(String.class, uidLong.toString(), newInstanceFilter);
-            } catch (UniformInterfaceException e) {
-                if (e.getResponse().getStatus() == 204) {
-                    jsonAngFilter = this.getFltFriends().getAngelsFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
-                    putAngelsFilter(jsonAngFilter, "fltFriends");
-                }else {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
-                }
-            }
-        } else if (des.equals("fltPriv")) {
-            newInstanceFilter = this.getFltPriv().getObjectFilter(des);
-            try {
-                this.snsObject.getClient().settingsFltPriv_setFilterByUid(String.class, uidLong.toString(), newInstanceFilter);
-            } catch (UniformInterfaceException e) {
-                if (e.getResponse().getStatus() == 204) {
-                    jsonAngFilter = this.getFltPriv().getAngelsFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
-                    putAngelsFilter(jsonAngFilter, "fltPriv");
-                }else {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
-                }
-            }
-        } else if (des.equals("fltVist")) {
-            newInstanceFilter = this.getFltVist().getObjectFilter(des);
-            try {
-                this.snsObject.getClient().settingsFltVist_setFilterByUid(String.class, uidLong.toString(), newInstanceFilter);
-            } catch (UniformInterfaceException e) {
-                if (e.getResponse().getStatus() == 204) {
-                    jsonAngFilter = this.getFltVist().getAngelsFilter(this.snsObject.getAngelsUtilities().getArrayAngelsSelected());
-                    putAngelsFilter(jsonAngFilter, "fltVist");
-                }
-                else {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
-                }
-            }
+            
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Filtro " + keyFilter + " correctamente actualizado!!");
         }
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Fin putNewInstanceFilter para filtro " + des + "...");
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Fin putNewInstanceFilter!!");
         return newInstanceFilter;
     }
 
@@ -1655,44 +1491,43 @@ public class UserSettingsDAO {
         return jsonArray;
     }
 
-    /**
-     * Obtiene los angeles para un filtro determinado.
-     *
-     * @param des Identificador del filtro.
-     * @return String separado por ; con los angeles definidos para el filtro.
-     */
-    public String getAngelsFilter(String des) {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Inicio getAngelsFilter...");
-        String angels = "";
-
-        if (des.equals("fltWall")) {
-            angels = this.getFltWall().getAngels();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de muro: " + angels);
-        } else if (des.equals("fltFriends")) {
-            angels = this.getFltFriends().getAngels();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de amigos: " + angels);
-        } else if (des.equals("fltPriv")) {
-            angels = this.getFltPriv().getAngels();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de privacidad: " + angels);
-        } else if (des.equals("fltVist")) {
-            angels = this.getFltVist().getAngels();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Angeles para el filtro de control de visitas: " + angels);
+    private void initFiltersMap(){
+        // Inicializamos el map de los filtros
+        this.filterDaoMap = new HashMap();
+        
+        Iterator<String> itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String desFilter;
+        
+        while(itFilter.hasNext()){
+            // Obtenemos la key del filtro
+            desFilter = itFilter.next();
+            
+            // Inicializamos el filtro en el map
+            this.filterDaoMap.put(desFilter, new UserSettings_SettingsFilterDAO(this.manager, desFilter));
         }
-
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getAngelsFilter: Fin getAngelsFilter...");
-        return angels;
     }
-
+    
     /**
      * Carga toda la funcionalidad de la aplicacion para los filtros definidos.
      * 
      */
     private void loadFullFuntionalityFilter(){
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFullFuntionalityFilter: Inicio loadFullFuntionalityFilter...");
-        loadFilter("fltWall");
-        loadFilter("fltFriends");
-        loadFilter("fltVist");
-        loadFilter("fltPriv");
+        
+        Iterator<String> itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String desFilter;
+        
+        while(itFilter.hasNext()){
+            // Obtenemos la key del filtro
+            desFilter = itFilter.next();
+            try {
+                // Cargamos el filtro
+                loadFilter(desFilter);
+            } catch (JSONException | ParseException | java.text.ParseException ex) {
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFullFuntionalityFilter: Se ha producido un error al cargar los filtros...");
+            }
+        }
+        
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFullFuntionalityFilter: Fin loadFullFuntionalityFilter...");
     }
 
@@ -1702,103 +1537,27 @@ public class UserSettingsDAO {
      * @param des Identificador de filtro.
      * @throws JSONException
      */
-    public void loadFilter(String des) {
+    public void loadFilter(String des) throws JSONException, ParseException, java.text.ParseException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Inicio loadFilter para " + des);
-        JSONObject jsonFilter = null;
-        JSONObject jsonAngels = null;
-        JSONArray jsonArrayAngels = null;
+        JSONObject jsonFilter;
+        JSONObject jsonAngels;
+        JSONArray jsonArrayAngels;
         Long uidLong = (new Double(this.getUid())).longValue();
 
-        if (des.equals("fltWall")) {
-            try {
-                jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltWall_getUserByUid(String.class, uidLong.toString()));
-                jsonAngels = new JSONObject(this.snsObject.getClient().settingsFltWall_getAngelsCollectionByUid(String.class, uidLong.toString()));
-                try {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
-                    try {
-                        jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
-                    } catch (Exception e) {
-                        logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada JSONException: " + e.getMessage());
-                    }
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Array de angeles: " + jsonArrayAngels.toString());
-                } catch (Exception e) {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: No existen angeles definidos para el filtro " + des);
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada Exception: " + e.getMessage());
-                }
-                try {
-                    this.getFltWall().loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
-                } catch (ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada ParseException: " + ex.getMessage());
-                } catch (java.text.ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada java.text.ParseException: " + ex.getMessage());
-                }
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltFriends")) {
-            try {
-                jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltFriends_getUserByUid(String.class, uidLong.toString()));
-                jsonAngels = new JSONObject(this.snsObject.getClient().settingsFltFriends_getAngelsCollectionByUid(String.class, uidLong.toString()));
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
-                try {
-                    jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
-                } catch (Exception e) {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: No existen angeles definidos para el filtro " + des);
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada Exception: " + e.getMessage());
-                }
-                try {
-                    this.getFltFriends().loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
-                } catch (ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada ParseException: " + ex.getMessage());
-                } catch (java.text.ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada java.text.ParseException: " + ex.getMessage());
-                }
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltPriv")) {
-            try {
-                jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltPriv_getUserByUid(String.class, uidLong.toString()));
-                jsonAngels = new JSONObject(this.snsObject.getClient().settingsFltPriv_getAngelsCollectionByUid(String.class, uidLong.toString()));
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
-                try {
-                    jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
-                } catch (Exception e) {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: No existen angeles definidos para el filtro " + des);
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada Exception: " + e.getMessage());
-                }
-                try {
-                    this.getFltPriv().loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
-                } catch (ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada ParseException: " + ex.getMessage());
-                } catch (java.text.ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada java.text.ParseException: " + ex.getMessage());
-                }
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        } else if (des.equals("fltVist")) {
-            try {
-                jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltVist_getUserByUid(String.class, uidLong.toString()));
-                jsonAngels = new JSONObject(this.snsObject.getClient().settingsFltVist_getAngelsCollectionByUid(String.class, uidLong.toString()));
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
-                try {
-                    jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
-                } catch (Exception e) {
-                    logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: No existen angeles definidos para el filtro " + des);
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada Exception: " + e.getMessage());
-                }
-                try {
-                    this.getFltVist().loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
-                } catch (ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada ParseException: " + ex.getMessage());
-                } catch (java.text.ParseException ex) {
-                    logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada java.text.ParseException: " + ex.getMessage());
-                }
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Excepcion capturada JSONException: " + ex.getMessage());
-            }
-        }
+        // Obtenemos el filtro y sus angeles de base de datos
+        jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, uidLong.toString(), des));
+        jsonAngels = new JSONObject(this.snsObject.getClient().settingsFilter_getAngelsCollectionByIdFilter(String.class, jsonFilter.getString("idFilter")));
+
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
+        jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
+        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Array de angeles: " + jsonArrayAngels.toString());
+        
+        // Creamos el filtro y lo metemos en el mapa
+        UserSettings_SettingsFilterDAO filter = new UserSettings_SettingsFilterDAO(this.manager, des);
+        this.filterDaoMap.put(des, filter);
+
+        // Cargamos el resto de caracteristicas del filtro
+        this.filterDaoMap.get(des).loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Fin loadFilter para " + des);
     }
@@ -1812,73 +1571,20 @@ public class UserSettingsDAO {
      */
     public JSONObject updateFilter(String desFilter) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Inicio updateFilter para " + desFilter);
-        JSONObject jsonFilter = null;
+        JSONObject jsonFilter ;
         Long uidLong = (new Double(this.getUid())).longValue();
 
-        if (desFilter.equals("fltWall")) {
-            jsonFilter = this.getFltWall().getObjectFilter(desFilter);
-            try {
-                this.snsObject.getClient().settingsFltWall_setFilterByUid(String.class, uidLong.toString(), jsonFilter);
-            } catch (Exception e) {
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
-            }
-            jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltWall_getUserByUid(String.class, uidLong.toString()));
-
-        } else if (desFilter.equals("fltFriends")) {
-            jsonFilter = this.getFltFriends().getObjectFilter(desFilter);
-            try {
-                this.snsObject.getClient().settingsFltFriends_setFilterByUid(String.class, uidLong.toString(), jsonFilter);
-            } catch (Exception e) {
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
-            }
-            jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltFriends_getUserByUid(String.class, uidLong.toString()));
-        } else if (desFilter.equals("fltPriv")) {
-            jsonFilter = this.getFltPriv().getObjectFilter(desFilter);
-            try {
-                this.snsObject.getClient().settingsFltPriv_setFilterByUid(String.class, uidLong.toString(), jsonFilter);
-            } catch (Exception e) {
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
-            }
-            jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltPriv_getUserByUid(String.class, uidLong.toString()));
-        } else if (desFilter.equals("fltVist")) {
-            jsonFilter = this.getFltVist().getObjectFilter(desFilter);
-            try {
-               this.snsObject.getClient().settingsFltVist_setFilterByUid(String.class, uidLong.toString(), jsonFilter);
-            } catch (Exception e) {
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
-            }
-            jsonFilter = new JSONObject(this.snsObject.getClient().settingsFltVist_getUserByUid(String.class, uidLong.toString()));
+        jsonFilter = this.filterDaoMap.get(desFilter).getObjectFilter();
+        try {
+            this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, uidLong.toString(), jsonFilter);
+        } catch (Exception e) {
+            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
         }
+        jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, uidLong.toString(), desFilter));
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Fin updateFilter para " + desFilter);
         return jsonFilter;
-    }
-
-    /**
-     * Actualiza la fecha de utimo chequeo para un filtro determinado.
-     *
-     * @param desFilter Identificador de filtro.
-     * @param uid Identificador de usuario al que pertenece el filtro.
-     */
-    public void setLastCheckFilter(String desFilter, String uid) {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setLastCheckFilter: Inicio setLastCheckFilter para " + desFilter);
-        Long uidLong = (new Double(uid)).longValue();
-
-        if (desFilter.equals("fltWall")) {
-            this.snsObject.getClient().settingsFltWall_setLastCheckByUid(String.class, uidLong.toString());
-        } else if (desFilter.equals("fltFriends")) {
-            this.snsObject.getClient().settingsFltFriends_setLastCheckByUid(String.class, uidLong.toString());
-        } else if (desFilter.equals("fltPriv")) {
-            this.snsObject.getClient().settingsFltPriv_setLastCheckByUid(String.class, uidLong.toString());
-        } else if (desFilter.equals("fltVist")) {
-            this.snsObject.getClient().settingsFltVist_setLastCheckByUid(String.class, uidLong.toString());
-        }
-
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setLastCheckFilter: Fin setLastCheckFilter para " + desFilter);
     }
 
     /**
@@ -2016,5 +1722,36 @@ public class UserSettingsDAO {
         }
 
         return jsonUser;
+    }
+    
+            /**
+     * Encuentra de entre los ?ngeles definidos para un filtro, si est? definido para ?ste el angel actual.
+     * 
+     * @param desFilter
+     * @param currentAngel
+     * @return boolean 
+     */
+    public boolean isActiveFilterForAngel(String desFilter, String currentAngel){
+        boolean angelFound = false;
+         
+        String angels = this.filterDaoMap.get(desFilter).getAngels();
+        
+        if(angels != null){
+            if (!angels.equals("")) {
+                
+                String[] angelsSel = angels.split(";");
+                
+                for(String angelEmail: angelsSel){
+                    if(angelEmail.equals(currentAngel)){
+                        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkFilter: Angel a quien se le enviar? la notificaci?n del filtro " + desFilter + ": " + angelEmail);
+                         angelFound = true;
+                         break;
+                    }
+                }
+               
+            }
+        }
+        
+        return angelFound;
     }
 }

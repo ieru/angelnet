@@ -20,10 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.persistence.EntityManager;
 import es.uah.cc.ie.persistence.UserSettings;
-import es.uah.cc.ie.persistence.SettingsfltWall;
-import es.uah.cc.ie.persistence.SettingsfltPriv;
-import es.uah.cc.ie.persistence.SettingsfltFriends;
-import es.uah.cc.ie.persistence.SettingsfltVist;
+import es.uah.cc.ie.persistence.SettingsFilter;
 import es.uah.cc.ie.converter.SettingsAngelssConverter;
 import es.uah.cc.ie.converter.SettingsAngelsConverter;
 import com.sun.jersey.api.core.ResourceContext;
@@ -124,19 +121,12 @@ public class SettingsAngelssResource {
         entity.setUidAngel(null);
         EntityManager em = PersistenceService.getInstance().getEntityManager();
         em.persist(entity);
-        for (SettingsfltVist value : entity.getSettingsfltVistCollection()) {
-            value.getSettingsAngelsCollection().add(entity);
+
+        for (SettingsFilter value : entity.getSettingsFilterCollection()) {
+            value.getSettingsAngelsFilterCollection().add(entity);
         }
-        for (SettingsfltWall value : entity.getSettingsfltWallCollection()) {
-            value.getSettingsAngelsCollection().add(entity);
-        }
-        for (SettingsfltPriv value : entity.getSettingsfltPrivCollection()) {
-            value.getSettingsAngelsCollection().add(entity);
-        }
+
         for (UserSettings value : entity.getUserSettingsCollection()) {
-            value.getSettingsAngelsCollection().add(entity);
-        }
-        for (SettingsfltFriends value : entity.getSettingsfltFriendsCollection()) {
             value.getSettingsAngelsCollection().add(entity);
         }
     }

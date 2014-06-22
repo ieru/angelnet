@@ -57,11 +57,12 @@
 
         <script type="text/javascript" >
             $(function() {
+                createHiddenFilters("#frSNSAngels", '<%= controler.getListActiveFilters() %>');
+            
                 loadInicioDatesAngels('<%= controler.getHdAngels() %>','<%= controler.getHdAngelsEd() %>','<%= controler.getHdAngelsGoogleSelected() %>',
-                '<%= controler.getHdLstAngelsFltWall() %>','<%= controler.getHdLstAngelsFltFriends() %>','<%= controler.getHdLstAngelsFltPriv() %>','<%= controler.getHdLstAngelsFltVist() %>',
-                '<%= controler.getHdActiveFltWall() %>','<%= controler.getHdActiveFltFriends() %>','<%= controler.getHdActiveFltPriv() %>','<%= controler.getHdActiveFltVist() %>',
-                '<%= controler.getHdFrecFltWall() %>','<%= controler.getHdFrecFltFriends() %>','<%= controler.getHdFrecFltPriv() %>','<%= controler.getHdFrecFltVist() %>','<%= controler.getHdAngelsAux() %>',
-                '<%= controler.getJspResources().getArrayAltAngels() %>','<%= controler.getJspResources().getNameContact() %>','<%= controler.getJspResources().getEmailContact() %>','<%= controler.getJspResources().getConfirm() %>','<%= controler.getJspResources().getDelete() %>');
+                '<%= controler.getJsonFiltersInfo() %>','<%= controler.getHdAngelsAux() %>','<%= controler.getJspResources().getArrayAltAngels() %>',
+                '<%= controler.getJspResources().getNameContact() %>','<%= controler.getJspResources().getEmailContact() %>',
+                '<%= controler.getJspResources().getConfirm() %>','<%= controler.getJspResources().getDelete() %>');
             });
         </script>
     </head>
@@ -74,18 +75,6 @@
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />
             <input type="hidden" id="hdAngelsGoogleSelectedAux" name="hdAngelsGoogleSelectedAux" value="" />
             <input type="hidden" id="hdAngelsGoogleSelectedDel" name="hdAngelsGoogleSelectedDel" value="" />
-            <input type="hidden" id="hdLstAngelsFltWall" name="hdLstAngelsFltWall" value="" />
-            <input type="hidden" id="hdLstAngelsFltFriends" name="hdLstAngelsFltFriends" value="" />
-            <input type="hidden" id="hdLstAngelsFltPriv" name="hdLstAngelsFltPriv" value="" />
-            <input type="hidden" id="hdLstAngelsFltVist" name="hdLstAngelsFltVist" value="" />
-            <input type="hidden" id="hdActiveFltWall" name="hdActiveFltWall" value="0" />
-            <input type="hidden" id="hdActiveFltFriends" name="hdActiveFltFriends" value="0" />
-            <input type="hidden" id="hdActiveFltPriv" name="hdActiveFltPriv" value="0" />
-            <input type="hidden" id="hdActiveFltVist" name="hdActiveFltVist" value="0" />
-            <input type="hidden" id="hdFrecFltWall" name="hdFrecFltWall" value="0" />
-            <input type="hidden" id="hdFrecFltFriends" name="hdFrecFltFriends" value="0" />
-            <input type="hidden" id="hdFrecFltPriv" name="hdFrecFltPriv" value="0" />
-            <input type="hidden" id="hdFrecFltVist" name="hdFrecFltVist" value="0" />
             <input type="hidden" id="hdAngelsAux" name="hdAngelsAux" value="0" />
             <input type="hidden" id="hdAnadirContacto" name="hdAnadirContacto" value="" />
             <input type="hidden" id="hdEditarContacto" name="hdEditarContacto" value="" />

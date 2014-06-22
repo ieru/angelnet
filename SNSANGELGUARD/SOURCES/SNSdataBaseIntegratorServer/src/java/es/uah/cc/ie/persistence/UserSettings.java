@@ -71,17 +71,14 @@ public class UserSettings implements Serializable {
         @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")})
     @ManyToMany
     private Collection<SettingsAngels> settingsAngelsCollection;
+    @JoinTable(name = "user_settings_has_settings_filter", joinColumns = {
+        @JoinColumn(name = "user_settings_uid", referencedColumnName = "uid")}, inverseJoinColumns = {
+        @JoinColumn(name = "settings_filter_id_filter", referencedColumnName = "id_filter")})
+    @ManyToMany
+    private Collection<SettingsFilter> settingsFilterCollection;
     @JoinColumn(name = "locale_settings_id_locale", referencedColumnName = "id_locale")
     @ManyToOne(optional = false)
     private LocaleSettings localeSettings;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userSettings")
-    private SettingsfltFriends settingsfltFriends;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userSettings")
-    private SettingsfltPriv settingsfltPriv;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userSettings")
-    private SettingsfltWall settingsfltWall;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userSettings")
-    private SettingsfltVist settingsfltVist;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userSettings")
     private User user;
 
@@ -185,36 +182,12 @@ public class UserSettings implements Serializable {
         this.localeSettings = localeSettings;
     }
 
-    public SettingsfltFriends getSettingsfltFriends() {
-        return settingsfltFriends;
+    public Collection<SettingsFilter> getSettingsFilterCollection() {
+        return settingsFilterCollection;
     }
 
-    public void setSettingsfltFriends(SettingsfltFriends settingsfltFriends) {
-        this.settingsfltFriends = settingsfltFriends;
-    }
-
-    public SettingsfltPriv getSettingsfltPriv() {
-        return settingsfltPriv;
-    }
-
-    public void setSettingsfltPriv(SettingsfltPriv settingsfltPriv) {
-        this.settingsfltPriv = settingsfltPriv;
-    }
-
-    public SettingsfltWall getSettingsfltWall() {
-        return settingsfltWall;
-    }
-
-    public void setSettingsfltWall(SettingsfltWall settingsfltWall) {
-        this.settingsfltWall = settingsfltWall;
-    }
-
-    public SettingsfltVist getSettingsfltVist() {
-        return settingsfltVist;
-    }
-
-    public void setSettingsfltVist(SettingsfltVist settingsfltVist) {
-        this.settingsfltVist = settingsfltVist;
+    public void setSettingsFilterCollection(Collection<SettingsFilter> settingsFilterCollection) {
+        this.settingsFilterCollection = settingsFilterCollection;
     }
 
     public User getUser() {

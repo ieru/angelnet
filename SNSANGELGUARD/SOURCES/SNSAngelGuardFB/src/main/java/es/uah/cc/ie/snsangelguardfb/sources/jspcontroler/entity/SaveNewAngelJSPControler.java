@@ -94,7 +94,7 @@ public class SaveNewAngelJSPControler extends GenericJSPControler {
                 jsonNewAngelFacebook = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().putNewAngelFacebook(jsonNewAngelFacebook);
 
                 // Actualizo la coleccion de angeles del usuario
-                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngelFacebook, 1, "");
+                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngelFacebook);
 
                 // Volvemos a la pagina de configuracion
                 response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=1&typeAngel=F&idFacebookAngel=" + jsonNewAngelFacebook.getString("idFacebook")

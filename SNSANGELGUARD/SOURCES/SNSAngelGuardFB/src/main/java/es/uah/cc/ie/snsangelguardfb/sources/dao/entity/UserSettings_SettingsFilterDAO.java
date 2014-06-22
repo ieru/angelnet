@@ -5,6 +5,7 @@
 package es.uah.cc.ie.snsangelguardfb.sources.dao.entity;
 
 import bsh.ParseException;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.sources.dao.UserSettingsDaoManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +27,9 @@ public class UserSettings_SettingsFilterDAO {
     /** Manager del objeto UserSettingsDAO */
     private UserSettingsDaoManager manager;
     
+    /** Identificador dinamico de ejecucion */
+    private String typeFilter;
+    
     /** Identificador en base de datos del filtro */
     private Long uid;
     
@@ -38,14 +42,11 @@ public class UserSettings_SettingsFilterDAO {
     /** Indicador de actividad del filtro */
     private String active;
     
-    /** Identificador propietario del filtro */
-    private Long uidProp;
-    
     /** Ultimo chequeo realizado por el filtro */
     private Date lastCheck;
 
     /**
-     * Constructor de clase. Recibir? todos los par?metros de la clase.
+     * Constructor de clase. Recibira todos los parametros de la clase.
      *
      * @param manager
      * @param uid
@@ -55,23 +56,32 @@ public class UserSettings_SettingsFilterDAO {
      * @param uidProp
      * @param lastCheck
      */
-    public UserSettings_SettingsFilterDAO(UserSettingsDaoManager manager, Long uid, String frec, String angels, String active, Long uidProp, Date lastCheck) {
+    public UserSettings_SettingsFilterDAO(UserSettingsDaoManager manager, String idFilter, Long uid, String frec, String angels, String active, Date lastCheck) {
         this.manager = manager;
+        this.typeFilter = idFilter;
         this.uid = uid;
         this.frec = frec;
         this.angels = angels;
         this.active = active;
-        this.uidProp = uidProp;
         this.lastCheck = lastCheck;
     }
 
     /**
      * Constructor sin argumentos.
      */
-    public UserSettings_SettingsFilterDAO(UserSettingsDaoManager manager) {
+    public UserSettings_SettingsFilterDAO(UserSettingsDaoManager manager, String idFilter) {
         this.manager = manager;
+        this.typeFilter = idFilter;
     }
 
+    /**
+     * 
+     * @return the typeFilter 
+     */
+    public String getTypeFilter() {
+        return typeFilter;
+    }
+    
     /**
      * @return the uid
      */
@@ -129,20 +139,6 @@ public class UserSettings_SettingsFilterDAO {
     }
 
     /**
-     * @return the uidProp
-     */
-    public Long getUidProp() {
-        return uidProp;
-    }
-
-    /**
-     * @param uidProp the uidProp to set
-     */
-    public void setUidProp(Long uidProp) {
-        this.uidProp = uidProp;
-    }
-
-    /**
      * @return the lastCheck
      */
     public Date getLastCheck() {
@@ -157,7 +153,7 @@ public class UserSettings_SettingsFilterDAO {
     }
 
     /**
-     * Formatea un String a un Date con formato "yyyy-MM-dd HH:mm:ss". Podr? lanzar excepciones del tipo ParseException o java.text.ParseException.
+     * Formatea un String a un Date con formato "yyyy-MM-dd HH:mm:ss". Podra lanzar excepciones del tipo ParseException o java.text.ParseException.
      *
      * @param strTime Fecha obtenida de la base de datos.
      * @return Date con la fecha parseada al formato anterior.
@@ -174,31 +170,31 @@ public class UserSettings_SettingsFilterDAO {
     }
 
     /**
-     * Obtiene el filtro de la base de datos indicado por el par?metro de entrada desFiltro. Podr? lanzar excepciones del tipo JSONException.
+     * Obtiene el filtro de la base de datos en formato JSON. Podra lanzar excepciones del tipo JSONException.
      *
-     * @param desFiltro Identificador de filtro.
      * @return
      * @throws JSONException
      */
-    public JSONObject getObjectFilter(String desFiltro) throws JSONException {
-        logger.info(this.uid + " - getObjectFilter: Inicio getObjectFilter para el filtro " + desFiltro);
+    public JSONObject getObjectFilter() throws JSONException {
+        logger.info(this.uid + " - getObjectFilter: Inicio getObjectFilter para el filtro " + typeFilter);
         JSONObject newObject = new JSONObject();
         JSONObject jsonUri = new JSONObject();
 
-        newObject.put("userSettingsUid", this.getUid().toString());
-        newObject.put("frec" + desFiltro, this.getFrec());
-        newObject.put("active" + desFiltro, this.getActive());
+        newObject.put("idFilter", this.uid);
+        newObject.put("frecFilter", this.getFrec());
+        newObject.put("activeFilter", this.getActive());
         newObject.put("lastCheck", "");
+        newObject.put("typeFilter", typeFilter);
 
         jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/userSettingss/" + this.getUid().toString() + "/");
         newObject.put("userSettings", jsonUri);
 
-        logger.info(this.uid + " - getObjectFilter: Fin getObjectFilter para el filtro " + desFiltro);
+        logger.info(this.uid + " - getObjectFilter: Fin getObjectFilter para el filtro " + typeFilter);
         return newObject;
     }
 
     /**
-     * Obtiene un JSONArray con todos los datos de los angeles de la aplicacion. Podr? lanzar excepciones del tipo JSONException.
+     * Obtiene un JSONArray con todos los datos de los angeles de la aplicacion. Podra lanzar excepciones del tipo JSONException.
      *
      * @param arrayAngels
      * @return
@@ -219,7 +215,7 @@ public class UserSettings_SettingsFilterDAO {
                     jsonDatesAngel.put("imgAngel", arrayAngels[j][2]);
                     jsonDatesAngel.put("typeAngel", arrayAngels[j][3]);
                     jsonDatesAngel.put("acceptAngel", "0");
-                    jsonDatesAngel.put("userPropAngel", this.getUidProp());
+                    jsonDatesAngel.put("userPropAngel", this.manager.getUserSettingsDAO().getUid());
                     jsonAngelsFilter.put(jsonDatesAngel);
                 }
             }
@@ -244,8 +240,8 @@ public class UserSettings_SettingsFilterDAO {
         this.setUid(new Double(jsonFilter.getString("userSettingsUid")).longValue());
         this.setFrec(jsonFilter.getString("frec" + des));
         this.setActive(jsonFilter.getString("active" + des));
-        this.setUidProp(new Double(jsonFilter.getString("userSettingsUid")).longValue());
         this.setLastCheck(formatTime(jsonFilter.getString("lastCheck").replace("T", " ")));
+        
         if (this.getActive().equals("1")) {
             loadAngelsFilter(jsonArrayAngels);
         }
@@ -285,5 +281,161 @@ public class UserSettings_SettingsFilterDAO {
             this.setAngels(lstAngels);
         }
         logger.info(this.uid + " - loadAngelsFilter: Fin loadAngelsFilter...");
+    }
+    
+    /**
+     * Inicializa la base de datos para un nuevo filtro no seleccionado.
+     * 
+     * @param des
+     */
+    public void saveNewFilter() throws JSONException{
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - initDBnewFilter: Inicio initDBnewFilter...");
+
+        // Convertimos de modelo interno a modelo JSON
+        JSONObject newInstanceFilter = this.manager.getUserSettingsDAO().getFilterDaoMap().get(typeFilter).getObjectFilter();
+        
+        // Almacenamos el filtro en base de datos sin relacionar
+        JSONObject resultNewInstanceFilter = new JSONObject(this.manager.getSnsObject().getClient().settingsFilter_setNewFilter(String.class, newInstanceFilter));
+        
+        // Almacenamos en modelo interno el identificador del filtro en base de datos
+        this.uid = resultNewInstanceFilter.getLong("idFilter");
+        
+        // Preparamos el filtro relacionado en un objeto JSON
+        resultNewInstanceFilter = getFilterWithRelationshipWithUserSettings(resultNewInstanceFilter, this.manager.getUserSettingsDAO().getUid());
+        
+        // Actualizamos el filtro en base de datos ya relacionado con su usuario
+        this.manager.getSnsObject().getClient().settingsFilter_updateFilterByIdFilter(String.class, resultNewInstanceFilter.getString("idFilter"), newInstanceFilter);
+
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - initDBnewFilter: Fin initDBnewFilter!!");
+    }
+    
+    /**
+     * Devuelve un objeto JSON del filtro preparado para ser enlazado por
+     * primera vez con un usuario de la aplicacion.
+     *
+     * @param instanceFilter Objeto JSON con la informacion del filtro.
+     * @param uidUserSettings Identificador del usuario de la aplicacion
+     * @return JSONObject para ser actualizado en base de datos.
+     * @throws JSONException
+     */
+    public JSONObject getFilterWithRelationshipWithUserSettings(JSONObject instanceFilter, String uidUserSettings) throws JSONException{
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - getFilterWithRelationshipWithUserSettings: Inicio getFilterWithRelationshipWithUserSettings...");
+        
+        JSONObject jsonUri = new JSONObject();
+        jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + 
+                "SNSdataBaseIntegratorServer/resources/settingsFilters/" + instanceFilter.getString("idFilter") + 
+                "/userSettingsCollection/" + uidUserSettings + "/");
+
+        JSONObject jsonUriUserSettings = new JSONObject();
+        jsonUriUserSettings.put("userSettings", jsonUri);
+
+        instanceFilter.put("userSettingsCollection", jsonUriUserSettings);
+
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - getFilterWithRelationshipWithUserSettings: Fin getFilterWithRelationshipWithUserSettings!!");
+        return instanceFilter;
+    }
+    
+    /**
+     * Enlaza un angel al filtro.
+     * 
+     * @param jsonAngel Angel que va a enlazarse al filtro.
+     * @return JSONObject con la relacion del angel y el filtro.
+     * @throws JSONException 
+     */
+    public JSONObject getJsonAngelWithFilterRelationship(JSONObject jsonAngel) throws JSONException {
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - getJsonAngelWithFilterRelationship: Inicio getJsonAngelWithFilterRelationship...");
+        JSONObject jsonCollection;
+        JSONArray aux;
+        JSONObject jsonUri;
+
+        try {
+            jsonCollection = jsonAngel.getJSONObject("settingsFilterCollection");
+            aux = jsonCollection.getJSONArray("settingsFilter");
+            jsonUri = new JSONObject();
+
+            jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication()
+                    + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel")
+                    + "/settingsFilterCollection/" + this.uid + "/");
+            aux.put(jsonUri);
+            jsonCollection.put("settingsFilter", aux);
+
+            jsonAngel.put("settingsFilterCollection", jsonCollection);
+        } catch (JSONException e) {
+            // Si no existen mas angeles relacionados.
+            jsonUri = new JSONObject();
+            jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication()
+                    + "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel")
+                    + "/settingsFilterCollection/" + this.uid + "/");
+
+            JSONObject jsonUriUserSettings = new JSONObject();
+            jsonUriUserSettings.put("settingsFilter", jsonUri);
+
+            jsonAngel.put("settingsFilterCollection", jsonUriUserSettings);
+        }
+
+        // Retornamos el angel con las relaciones actualizadas
+        return jsonAngel;
+    }
+    
+    /**
+     * Obtiene la informacion de un angel actualizada con el filtro marcado por el parametro desFilter.
+     * 
+     * @param jsonUpdateAngel
+     * @param strAngelsSelected
+     * @param desFilter
+     * @return
+     * @throws JSONException 
+     */
+    public JSONObject updateInformationAngelForFilter(JSONObject jsonUpdateAngel, String desFilter) throws JSONException {
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - updateInformationAngelForFilter: Inicio updateInformationAngelForFilter para filtro " + desFilter + "...");
+        String[] arrayAngelsSelected = this.angels.split(";");
+
+        for (int i = 0; i < arrayAngelsSelected.length; i++) {
+            if (arrayAngelsSelected[i].equals(jsonUpdateAngel.get("uidAngel"))) {
+                jsonUpdateAngel = getJsonAngelWithFilterRelationship(jsonUpdateAngel);
+            }
+        }
+        
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - updateInformationAngelForFilter: Fin updateInformationAngelForFilter para filtro " + desFilter + "!!");
+        return jsonUpdateAngel;
+    }
+    
+    /**
+     * Borra del objeto angel la relacion que le unia a un filtro.
+     *
+     * @param jsonAngel JSONObject con los datos del angel
+     * @return JSONObject del angel con las relaciones con el filtro eliminadas.
+     * @throws JSONException
+     */
+    public JSONObject deleteAngelFromFilterAngelCollection(JSONObject jsonAngel) throws JSONException {
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - deleteAngelFromFilterAngelCollection: Inicio deleteAngelFromFilterAngelCollection para el filtro: " + this.typeFilter);
+
+        JSONObject jsonUri = new JSONObject();
+        jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + 
+                "SNSdataBaseIntegratorServer/resources/settingsAngelss/" + jsonAngel.getString("uidAngel") + 
+                "/settingsFilterCollection/");
+        jsonAngel.put("settingsFilterCollection", jsonUri);
+
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - deleteAngelFromFilterAngelCollection: Fin deleteAngelFromFilterAngelCollection para el filtro: " + this.typeFilter);
+        return jsonAngel;
+    }
+    
+    /* Actualiza los angeles de un usuario. Puede lanzar excepciones del tipo JSONException.
+     *
+     * @param jsonAngel
+     * @param modo
+     * @param des
+     * @throws JSONException
+     */
+    public void putAngelInCollectionFilter(JSONObject jsonAngel) throws JSONException {
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - setCollectionAngels: Inicio setCollectionAngels...");
+        jsonAngel = getJsonAngelWithFilterRelationship(jsonAngel);
+        
+        try{
+            this.manager.getSnsObject().getClient().userSettings_setNewAngelsCollectionByUid(String.class, jsonAngel.getString("uidAngel"), jsonAngel);
+        } catch(UniformInterfaceException ex){
+            logger.error(this.manager.getUserSettingsDAO().getUid() + " - setCollectionAngels: Excepcion capturada UniformInterfaceException: " + ex.getMessage());
+        }    
+        logger.info(this.manager.getUserSettingsDAO().getUid() + " - setCollectionAngels: Fin setCollectionAngels...");
     }
 }

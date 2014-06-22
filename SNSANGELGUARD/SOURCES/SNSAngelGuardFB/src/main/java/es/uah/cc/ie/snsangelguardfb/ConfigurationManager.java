@@ -4,10 +4,20 @@
  */
 package es.uah.cc.ie.snsangelguardfb;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.openide.util.Exceptions;
 
 /**
@@ -20,6 +30,9 @@ public class ConfigurationManager {
     
     /** Ruta al fichero de configuracion */
     private static final String PATH_FILE_CONFIG = "/usr/local/snsangelguardfb/config/config.properties";
+    
+    /** Ruta al fichero de filtros activos */
+    private static final String PATH_FILE_FILTERS = "usr/local/snsangelguardfb/config/filters.xml";
     
     /** Clave al host de la aplicacion en el fichero de configuracion */
     private static final String NAME_CONTEXT_APPLICATION = "configHostApplication";
@@ -48,6 +61,12 @@ public class ConfigurationManager {
     /** Clave de la direcci?n del servidor donde se encuentran los ficheros de idioma referentes al control del lenguaje */
     public static final String PATH_LEXICAL_FILES = "pathLexicalFiles";
     
+    /** Key para el identificador del filtro en el fichero xml */
+    private static final String XML_KEY_ID_FILTER = "idFilter";
+    
+    /** Key para el valor de la clase del filtro */
+    private static final String XML_VALUE_CLASS = "valueClass";
+    
     /** Host de la aplicacion */
     private String configHostApplication;
     
@@ -74,6 +93,13 @@ public class ConfigurationManager {
     
     /** Path a los ficheros de idioma propios del filtro de control de lenguaje */
     private String pathLexicalFiles;
+    
+    /** Lista de keys de los filtros activos */
+    private List<String> listActiveFilters;
+    
+    /** Mapa que contiene los filtros a crear */
+    private Map<String, String> keyValueClassFilter;
+   
     
     public String getConfigHostApplication() {
         return configHostApplication;
@@ -114,6 +140,14 @@ public class ConfigurationManager {
     public void setPathLexicalFiles(String pathLexicalFiles) {
         this.pathLexicalFiles = pathLexicalFiles;
     }
+
+    public List<String> getListActiveFilters() {
+        return listActiveFilters;
+    }
+
+    public Map<String, String> getKeyValueClassFilter() {
+        return keyValueClassFilter;
+    }
     
     /**
      * Constructor de clase.
@@ -122,7 +156,11 @@ public class ConfigurationManager {
      * @throws IOException 
      */
     public ConfigurationManager() throws FileNotFoundException, IOException {
+        // Cargamos las propiedades de la configuracion
         loadConfigFile();
+        
+        // Cargamos la lista de filtros activos
+        loadActiveFiltersFile();
     }
     
     
@@ -151,6 +189,53 @@ public class ConfigurationManager {
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
+        }
+    }
+    
+    /**
+     * Carga el fichero de los filtros activos.
+     * 
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    private void loadActiveFiltersFile() throws FileNotFoundException, IOException {
+        // Inicializamos la lista de keys y el mapa de definci?n de los filtros
+        this.listActiveFilters = new ArrayList<>();
+        this.keyValueClassFilter = new HashMap<>();
+        
+        try {
+            SAXBuilder builder = new SAXBuilder();
+            
+            File in = new File(PATH_FILE_FILTERS);
+            
+            Document document = builder.build(in);
+            
+            List listFilter = document.getRootElement().getChildren();
+            
+            if(listFilter != null && !listFilter.isEmpty()){
+                
+                Element currentFilter;
+                String keyFilter;
+                String valueClassFilter;
+                
+                Iterator<Element> it = listFilter.iterator();
+                
+                while(it.hasNext()){
+                    currentFilter = it.next();
+                    
+                    // Obtenemos los valores del fichero xml para cada filtro
+                    keyFilter = currentFilter.getAttributeValue(XML_KEY_ID_FILTER);
+                    valueClassFilter = currentFilter.getAttributeValue(XML_VALUE_CLASS);
+                    
+                    // Introducimos el id en el fichero de keys
+                    this.listActiveFilters.add(keyFilter);
+                    
+                    // Introducimos la definicion de la clase a crear junto con su clave
+                    this.keyValueClassFilter.put(keyFilter, valueClassFilter);
+                }
+            }
+        } catch (JDOMException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 }

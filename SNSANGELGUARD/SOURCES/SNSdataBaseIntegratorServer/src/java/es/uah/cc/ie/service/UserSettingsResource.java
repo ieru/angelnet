@@ -20,11 +20,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.EntityManager;
 import es.uah.cc.ie.persistence.LocaleSettings;
 import es.uah.cc.ie.persistence.SettingsAngels;
-import es.uah.cc.ie.persistence.SettingsfltWall;
-import es.uah.cc.ie.persistence.SettingsfltPriv;
-import es.uah.cc.ie.persistence.SettingsfltFriends;
+import es.uah.cc.ie.persistence.SettingsFilter;
 import java.util.Collection;
-import es.uah.cc.ie.persistence.SettingsfltVist;
 import es.uah.cc.ie.converter.UserSettingsConverter;
 import com.sun.jersey.api.core.ResourceContext;
 import es.uah.cc.ie.persistence.User;
@@ -141,19 +138,14 @@ public class UserSettingsResource {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
         Collection<SettingsAngels> settingsAngelsCollection = entity.getSettingsAngelsCollection();
         Collection<SettingsAngels> settingsAngelsCollectionNew = newEntity.getSettingsAngelsCollection();
+        Collection<SettingsFilter> settingsFilterCollection = entity.getSettingsFilterCollection();
+        Collection<SettingsFilter> settingsFilterCollectionNew = newEntity.getSettingsFilterCollection();
         LocaleSettings localeSettings = entity.getLocaleSettings();
         LocaleSettings localeSettingsNew = newEntity.getLocaleSettings();
-        SettingsfltFriends settingsfltFriends = entity.getSettingsfltFriends();
-        SettingsfltFriends settingsfltFriendsNew = newEntity.getSettingsfltFriends();
-        SettingsfltPriv settingsfltPriv = entity.getSettingsfltPriv();
-        SettingsfltPriv settingsfltPrivNew = newEntity.getSettingsfltPriv();
-        SettingsfltWall settingsfltWall = entity.getSettingsfltWall();
-        SettingsfltWall settingsfltWallNew = newEntity.getSettingsfltWall();
-        SettingsfltVist settingsfltVist = entity.getSettingsfltVist();
-        SettingsfltVist settingsfltVistNew = newEntity.getSettingsfltVist();
         User user = entity.getUser();
         User userNew = newEntity.getUser();
         entity = em.merge(newEntity);
+        
         for (SettingsAngels value : settingsAngelsCollection) {
             if (!settingsAngelsCollectionNew.contains(value)) {
                 value.getUserSettingsCollection().remove(entity);
@@ -164,35 +156,23 @@ public class UserSettingsResource {
                 value.getUserSettingsCollection().add(entity);
             }
         }
+        
+        for (SettingsFilter value : settingsFilterCollection) {
+            if (!settingsFilterCollectionNew.contains(value)) {
+                value.getUserSettingsCollection().remove(entity);
+            }
+        }
+        for (SettingsFilter value : settingsFilterCollectionNew) {
+            if (!settingsFilterCollection.contains(value)) {
+                value.getUserSettingsCollection().add(entity);
+            }
+        }
+        
         if (localeSettings != null && !localeSettings.equals(localeSettingsNew)) {
             localeSettings.getUserSettingsCollection().remove(entity);
         }
         if (localeSettingsNew != null && !localeSettingsNew.equals(localeSettings)) {
             localeSettingsNew.getUserSettingsCollection().add(entity);
-        }
-        if (settingsfltFriends != null && !settingsfltFriends.equals(settingsfltFriendsNew)) {
-            settingsfltFriends.setUserSettings(null);
-        }
-        if (settingsfltFriendsNew != null && !settingsfltFriendsNew.equals(settingsfltFriends)) {
-            settingsfltFriendsNew.setUserSettings(entity);
-        }
-        if (settingsfltPriv != null && !settingsfltPriv.equals(settingsfltPrivNew)) {
-            settingsfltPriv.setUserSettings(null);
-        }
-        if (settingsfltPrivNew != null && !settingsfltPrivNew.equals(settingsfltPriv)) {
-            settingsfltPrivNew.setUserSettings(entity);
-        }
-        if (settingsfltWall != null && !settingsfltWall.equals(settingsfltWallNew)) {
-            settingsfltWall.setUserSettings(null);
-        }
-        if (settingsfltWallNew != null && !settingsfltWallNew.equals(settingsfltWall)) {
-            settingsfltWallNew.setUserSettings(entity);
-        }
-        if (settingsfltVist != null && !settingsfltVist.equals(settingsfltVistNew)) {
-            settingsfltVist.setUserSettings(null);
-        }
-        if (settingsfltVistNew != null && !settingsfltVistNew.equals(settingsfltVist)) {
-            settingsfltVistNew.setUserSettings(entity);
         }
         if (user != null && !user.equals(userNew)) {
             user.setUserSettings(null);
@@ -217,22 +197,6 @@ public class UserSettingsResource {
         if (localeSettings != null) {
             localeSettings.getUserSettingsCollection().remove(entity);
         }
-        SettingsfltFriends settingsfltFriends = entity.getSettingsfltFriends();
-        if (settingsfltFriends != null) {
-            settingsfltFriends.setUserSettings(null);
-        }
-        SettingsfltPriv settingsfltPriv = entity.getSettingsfltPriv();
-        if (settingsfltPriv != null) {
-            settingsfltPriv.setUserSettings(null);
-        }
-        SettingsfltWall settingsfltWall = entity.getSettingsfltWall();
-        if (settingsfltWall != null) {
-            settingsfltWall.setUserSettings(null);
-        }
-        SettingsfltVist settingsfltVist = entity.getSettingsfltVist();
-        if (settingsfltVist != null) {
-            settingsfltVist.setUserSettings(null);
-        }
         User user = entity.getUser();
         if (user != null) {
             user.setUserSettings(null);
@@ -252,6 +216,19 @@ public class UserSettingsResource {
         settingsAngelsCollectionResourceSub.setParent(getEntity());
         return settingsAngelsCollectionResourceSub;
     }
+    
+    /**
+     * Returns a dynamic instance of SettingsFilterResource used for entity navigation.
+     *
+     * @param id identifier for the parent entity
+     * @return an instance of SettingsFilterResource
+     */
+    @Path("settingsFilterCollection/")
+    public SettingsFiltersResource getSettingsFilterCollectionResource() {
+        SettingsFilterCollectionResourceSub settingsFilterCollectionResourceSub = resourceContext.getResource(SettingsFilterCollectionResourceSub.class);
+        settingsFilterCollectionResourceSub.setParent(getEntity());
+        return settingsFilterCollectionResourceSub;
+    }
 
     /**
      * Returns a dynamic instance of LocaleSettingsResource used for entity navigation.
@@ -264,58 +241,6 @@ public class UserSettingsResource {
         LocaleSettingsResourceSub localeSettingsResourceSub = resourceContext.getResource(LocaleSettingsResourceSub.class);
         localeSettingsResourceSub.setParent(getEntity());
         return localeSettingsResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltFriendsResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltFriendsResource
-     */
-    @Path("settingsfltFriends/")
-    public SettingsfltFriendsResource getSettingsfltFriendsResource() {
-        SettingsfltFriendsResourceSub settingsfltFriendsResourceSub = resourceContext.getResource(SettingsfltFriendsResourceSub.class);
-        settingsfltFriendsResourceSub.setParent(getEntity());
-        return settingsfltFriendsResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltPrivResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltPrivResource
-     */
-    @Path("settingsfltPriv/")
-    public SettingsfltPrivResource getSettingsfltPrivResource() {
-        SettingsfltPrivResourceSub settingsfltPrivResourceSub = resourceContext.getResource(SettingsfltPrivResourceSub.class);
-        settingsfltPrivResourceSub.setParent(getEntity());
-        return settingsfltPrivResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltWallResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltWallResource
-     */
-    @Path("settingsfltWall/")
-    public SettingsfltWallResource getSettingsfltWallResource() {
-        SettingsfltWallResourceSub settingsfltWallResourceSub = resourceContext.getResource(SettingsfltWallResourceSub.class);
-        settingsfltWallResourceSub.setParent(getEntity());
-        return settingsfltWallResourceSub;
-    }
-
-    /**
-     * Returns a dynamic instance of SettingsfltVistResource used for entity navigation.
-     *
-     * @param id identifier for the parent entity
-     * @return an instance of SettingsfltVistResource
-     */
-    @Path("settingsfltVist/")
-    public SettingsfltVistResource getSettingsfltVistResource() {
-        SettingsfltVistResourceSub settingsfltVistResourceSub = resourceContext.getResource(SettingsfltVistResourceSub.class);
-        settingsfltVistResourceSub.setParent(getEntity());
-        return settingsfltVistResourceSub;
     }
 
     /**
@@ -352,6 +277,28 @@ public class UserSettingsResource {
             return result;
         }
     }
+    
+    public static class SettingsFilterCollectionResourceSub extends SettingsFiltersResource {
+
+        private UserSettings parent;
+
+        public void setParent(UserSettings parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        protected Collection<SettingsFilter> getEntities(int start, int max, String query) {
+            Collection<SettingsFilter> result = new java.util.ArrayList<SettingsFilter>();
+            int index = 0;
+            for (SettingsFilter e : parent.getSettingsFilterCollection()) {
+                if (index >= start && (index - start) < max) {
+                    result.add(e);
+                }
+                index++;
+            }
+            return result;
+        }
+    }
 
     public static class LocaleSettingsResourceSub extends LocaleSettingsResource {
 
@@ -364,78 +311,6 @@ public class UserSettingsResource {
         @Override
         protected LocaleSettings getEntity() {
             LocaleSettings entity = parent.getLocaleSettings();
-            if (entity == null) {
-                throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
-            }
-            return entity;
-        }
-    }
-
-    public static class SettingsfltFriendsResourceSub extends SettingsfltFriendsResource {
-
-        private UserSettings parent;
-
-        public void setParent(UserSettings parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected SettingsfltFriends getEntity() {
-            SettingsfltFriends entity = parent.getSettingsfltFriends();
-            if (entity == null) {
-                throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
-            }
-            return entity;
-        }
-    }
-
-    public static class SettingsfltPrivResourceSub extends SettingsfltPrivResource {
-
-        private UserSettings parent;
-
-        public void setParent(UserSettings parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected SettingsfltPriv getEntity() {
-            SettingsfltPriv entity = parent.getSettingsfltPriv();
-            if (entity == null) {
-                throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
-            }
-            return entity;
-        }
-    }
-
-    public static class SettingsfltWallResourceSub extends SettingsfltWallResource {
-
-        private UserSettings parent;
-
-        public void setParent(UserSettings parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected SettingsfltWall getEntity() {
-            SettingsfltWall entity = parent.getSettingsfltWall();
-            if (entity == null) {
-                throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
-            }
-            return entity;
-        }
-    }
-
-    public static class SettingsfltVistResourceSub extends SettingsfltVistResource {
-
-        private UserSettings parent;
-
-        public void setParent(UserSettings parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        protected SettingsfltVist getEntity() {
-            SettingsfltVist entity = parent.getSettingsfltVist();
             if (entity == null) {
                 throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
             }

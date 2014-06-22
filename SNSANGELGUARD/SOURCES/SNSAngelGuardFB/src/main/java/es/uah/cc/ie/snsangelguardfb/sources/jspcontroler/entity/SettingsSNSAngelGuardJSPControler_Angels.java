@@ -12,10 +12,12 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources.SettingsSNSAngelGuardJSPControlerResourcesAngels;
 import java.io.IOException;
+import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Clase que controla el flujo de informacion en la pagina settingsSNSAngelGuard_Angels.jsp
@@ -26,6 +28,15 @@ public class SettingsSNSAngelGuardJSPControler_Angels extends GenericJSPControle
     
     /** URL a la imagen de carga entre p?ginas */
     public final String PATH_IMAGE_LOADING = "https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif";
+    
+    /** Indicador de filtro activo */
+    private final String KEY_JSON_ACTIVE_FILTER = "hdActive";
+    
+    /** Indicador de frecuencia del filtro */
+    private final String KEY_JSON_FREC_FILTER = "hdFrec";
+    
+    /** Indicador de los angeles del filtro */
+    private final String KEY_JSON_ANGELS_FILTER = "hdLstAngels";
     
     /** Logger Class */
     private static Logger logger = Logger.getLogger(SettingsSNSAngelGuardJSPControler.class);
@@ -50,42 +61,12 @@ public class SettingsSNSAngelGuardJSPControler_Angels extends GenericJSPControle
     
     /** Angeles elegidos de contactos de Google */
     private String hdAngelsGoogleSelected;
-
-    /** Lista de angeles para el filtro de control de lenguaje */
-    private String hdLstAngelsFltWall;
     
-    /** Lista de angeles para el filtro de control de amistades */
-    private String hdLstAngelsFltFriends;
+    /** Objeto JSON que contiene la informacion de todos los filtros */
+    private JSONObject jsonFiltersInfo;
     
-    /** Lista de angeles para el filtro de control de privacidad */
-    private String hdLstAngelsFltPriv;
-    
-    /** Lista de angeles para el filtro de control de visitas */
-    private String hdLstAngelsFltVist;
-
-    /** Indicador de si esta activo el filtro de control de lenguaje */
-    private String hdActiveFltWall;
-    
-    /** Indicador de si esta activo el filtro de control de amistades */
-    private String hdActiveFltFriends;
-    
-    /** Indicador de si esta activo el filtro de control de privacidad */
-    private String hdActiveFltPriv;
-    
-    /** Indicador de si esta activo el filtro de control de visitas */
-    private String hdActiveFltVist;
-
-    /** Frecuencia elegida para el filtro de control de lenguaje */
-    private String hdFrecFltWall;
-    
-    /** Frecuencia elegida para el filtro de control de amistades */
-    private String hdFrecFltFriends;
-    
-    /** Frecuencia elegida para el filtro de control de privacidad */
-    private String hdFrecFltPriv;
-    
-    /** Frecuencia elegida para el filtro de control de visitas */
-    private String hdFrecFltVist;
+    /** Array que contiene la lista de filtros activos */
+    private String[] listActiveFilters;
     
     /** Lista de angeles auxiliar */
     private String hdAngelsAux;
@@ -153,109 +134,29 @@ public class SettingsSNSAngelGuardJSPControler_Angels extends GenericJSPControle
     public void setHdAngelsGoogleSelected(String hdAngelsGoogleSelected) {
         this.hdAngelsGoogleSelected = hdAngelsGoogleSelected;
     }
-
-    public String getHdLstAngelsFltWall() {
-        return hdLstAngelsFltWall;
-    }
-
-    public void setHdLstAngelsFltWall(String hdLstAngelsFltWall) {
-        this.hdLstAngelsFltWall = hdLstAngelsFltWall;
-    }
-
-    public String getHdLstAngelsFltFriends() {
-        return hdLstAngelsFltFriends;
-    }
-
-    public void setHdLstAngelsFltFriends(String hdLstAngelsFltFriends) {
-        this.hdLstAngelsFltFriends = hdLstAngelsFltFriends;
-    }
-
-    public String getHdLstAngelsFltPriv() {
-        return hdLstAngelsFltPriv;
-    }
-
-    public void setHdLstAngelsFltPriv(String hdLstAngelsFltPriv) {
-        this.hdLstAngelsFltPriv = hdLstAngelsFltPriv;
-    }
-
-    public String getHdLstAngelsFltVist() {
-        return hdLstAngelsFltVist;
-    }
-
-    public void setHdLstAngelsFltVist(String hdLstAngelsFltVist) {
-        this.hdLstAngelsFltVist = hdLstAngelsFltVist;
-    }
-
-    public String getHdActiveFltWall() {
-        return hdActiveFltWall;
-    }
-
-    public void setHdActiveFltWall(String hdActiveFltWall) {
-        this.hdActiveFltWall = hdActiveFltWall;
-    }
-
-    public String getHdActiveFltFriends() {
-        return hdActiveFltFriends;
-    }
-
-    public void setHdActiveFltFriends(String hdActiveFltFriends) {
-        this.hdActiveFltFriends = hdActiveFltFriends;
-    }
-
-    public String getHdActiveFltPriv() {
-        return hdActiveFltPriv;
-    }
-
-    public void setHdActiveFltPriv(String hdActiveFltPriv) {
-        this.hdActiveFltPriv = hdActiveFltPriv;
-    }
-
-    public String getHdActiveFltVist() {
-        return hdActiveFltVist;
-    }
-
-    public void setHdActiveFltVist(String hdActiveFltVist) {
-        this.hdActiveFltVist = hdActiveFltVist;
-    }
-
-    public String getHdFrecFltWall() {
-        return hdFrecFltWall;
-    }
-
-    public void setHdFrecFltWall(String hdFrecFltWall) {
-        this.hdFrecFltWall = hdFrecFltWall;
-    }
-
-    public String getHdFrecFltFriends() {
-        return hdFrecFltFriends;
-    }
-
-    public void setHdFrecFltFriends(String hdFrecFltFriends) {
-        this.hdFrecFltFriends = hdFrecFltFriends;
-    }
-
-    public String getHdFrecFltPriv() {
-        return hdFrecFltPriv;
-    }
-
-    public void setHdFrecFltPriv(String hdFrecFltPriv) {
-        this.hdFrecFltPriv = hdFrecFltPriv;
-    }
-
-    public String getHdFrecFltVist() {
-        return hdFrecFltVist;
-    }
-
-    public void setHdFrecFltVist(String hdFrecFltVist) {
-        this.hdFrecFltVist = hdFrecFltVist;
-    }
-
+    
     public String getHdAngelsAux() {
         return hdAngelsAux;
     }
 
     public void setHdAngelsAux(String hdAngelsAux) {
         this.hdAngelsAux = hdAngelsAux;
+    }
+
+    public JSONObject getJsonFiltersInfo() {
+        return jsonFiltersInfo;
+    }
+
+    public void setJsonFiltersInfo(JSONObject jsonFiltersInfo) {
+        this.jsonFiltersInfo = jsonFiltersInfo;
+    }
+
+    public String[] getListActiveFilters() {
+        return listActiveFilters;
+    }
+
+    public void setListActiveFilters(String[] listActiveFilters) {
+        this.listActiveFilters = listActiveFilters;
     }
     
     /**
@@ -285,46 +186,89 @@ public class SettingsSNSAngelGuardJSPControler_Angels extends GenericJSPControle
          
     }
     
+    /**
+     * Carga la informacion en un objeto JSON de todos los filtros a mostrar
+     * cuando estamos en la navegacion entre pantallas.
+     *
+     * @throws JSONException
+     */
+    private void loadNotInitInfoFilters() throws JSONException {
+        Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        this.listActiveFilters = new String[this.snsObject.getConfigurationManager().getListActiveFilters().size()];
+        jsonFiltersInfo = new JSONObject();
+        String keyFilter;
+        int cont = 0;
+       
+        // Por cada filtro almacenamos su informacion en el JSON del objeto
+        while(itKeysFilters.hasNext()) {
+            
+            keyFilter = itKeysFilters.next();
+            
+            // A?adimos la key en la lista de filtros activos
+            this.listActiveFilters[cont] = keyFilter;
+            
+            JSONObject jsonFilter = new JSONObject();
+            jsonFilter.put(KEY_JSON_ACTIVE_FILTER + keyFilter, request.getParameter(KEY_JSON_ACTIVE_FILTER + keyFilter));
+            jsonFilter.put(KEY_JSON_FREC_FILTER + keyFilter, request.getParameter(KEY_JSON_FREC_FILTER + keyFilter));
+            jsonFilter.put(KEY_JSON_ANGELS_FILTER + keyFilter, request.getParameter(KEY_JSON_ANGELS_FILTER + keyFilter));
+            
+            // Introducimos en el JSON del objeto las propiedades del filtro
+            jsonFiltersInfo.put(keyFilter, jsonFilter);
+            
+            // Incrementamos el contador
+            cont++;
+        }
+    }
+    
+    
+    /**
+     * Carga la informacion comun a los filtros.
+     * 
+     * @throws JSONException
+     */
+    private void loadInitInfoFilters() throws JSONException {
+        Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        this.listActiveFilters = new String[this.snsObject.getConfigurationManager().getListActiveFilters().size()];
+        jsonFiltersInfo = new JSONObject();
+        String keyFilter;
+        int cont = 0;
+       
+        // Por cada filtro almacenamos su informacion en el JSON del objeto
+        while(itKeysFilters.hasNext()) {
+            
+            keyFilter = itKeysFilters.next();
+            
+            // A?adimos la key en la lista de filtros activos
+            this.listActiveFilters[cont] = keyFilter;
+            
+            JSONObject jsonFilter = new JSONObject();
+            jsonFilter.put(KEY_JSON_ACTIVE_FILTER + keyFilter, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive());
+            jsonFilter.put(KEY_JSON_FREC_FILTER + keyFilter, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive());
+            jsonFilter.put(KEY_JSON_ANGELS_FILTER + keyFilter, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive());
+            
+            // Introducimos en el JSON del objeto las propiedades del filtro
+            jsonFiltersInfo.put(keyFilter, jsonFilter);
+            
+            // Incrementamos el contador
+            cont++;
+        }
+    }
+    
+    
     @Override
     public void process() throws InterDataBaseException, InterProcessException, InterEmailException {
         try {
             this.hdAngels = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getAngelsUser("F");
             this.hdAngelsEd = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getAngelsUser("O");
             this.hdAngelsGoogleSelected = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getAngelsUser("G");
-
-            this.hdLstAngelsFltWall = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getAngels();
-            this.hdLstAngelsFltFriends = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getAngels();
-            this.hdLstAngelsFltPriv = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getAngels();
-            this.hdLstAngelsFltVist = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getAngels();
-
-            this.hdActiveFltWall = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getActive();
-            this.hdActiveFltFriends = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getActive();
-            this.hdActiveFltPriv = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getActive();
-            this.hdActiveFltVist = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getActive();
-
-            this.hdFrecFltWall = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().getFrec();
-            this.hdFrecFltFriends = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().getFrec();
-            this.hdFrecFltPriv = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().getFrec();
-            this.hdFrecFltVist = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getFrec();
             this.hdAngelsAux = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getAngelsUser("F");
-
+            loadInitInfoFilters();
 
             if (!snsObject.isInicio()) {
                 this.hdAngels = request.getParameter("hdAngels");
                 this.hdAngelsEd = request.getParameter("hdAngelsEd");
                 this.hdAngelsGoogleSelected = request.getParameter("hdAngelsGoogleSelected");
-                this.hdLstAngelsFltWall = request.getParameter("hdLstAngelsFltWall");
-                this.hdLstAngelsFltFriends = request.getParameter("hdLstAngelsFltFriends");
-                this.hdLstAngelsFltPriv = request.getParameter("hdLstAngelsFltPriv");
-                this.hdLstAngelsFltVist = request.getParameter("hdLstAngelsFltVist");
-                this.hdActiveFltWall = request.getParameter("hdActiveFltWall");
-                this.hdActiveFltFriends = request.getParameter("hdActiveFltFriends");
-                this.hdActiveFltPriv = request.getParameter("hdActiveFltPriv");
-                this.hdActiveFltVist = request.getParameter("hdActiveFltVist");
-                this.hdFrecFltWall = request.getParameter("hdFrecFltWall");
-                this.hdFrecFltFriends = request.getParameter("hdFrecFltFriends");
-                this.hdFrecFltPriv = request.getParameter("hdFrecFltPriv");
-                this.hdFrecFltVist = request.getParameter("hdFrecFltVist");
+                loadNotInitInfoFilters();
                 this.hdAngelsAux = request.getParameter("hdAngelsAux");
             }
         } catch (JSONException ex) {

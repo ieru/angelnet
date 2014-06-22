@@ -81,84 +81,30 @@ public class SNSdataBaseClient {
         return webResource.path("localeSettingss").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T settingsFltWall_getUserByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltWalls").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    public <T> T settingsFilter_getFiltersByUserSettingsUid(Class<T> responseType, String uid) throws UniformInterfaceException {
+        return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
+    public <T> T settingsFilter_getFilterByType(Class<T> responseType, String uid, String typeFilter) throws UniformInterfaceException {
+        String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
+        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsFilter e WHERE e.typeFilter = " + typeFilter};
+        return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T settingsFltWall_setNewUser(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltWalls").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
+    public <T> T settingsFilter_setNewFilter(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
+        return webResource.path("settingsFilters").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
     }
 
-    public <T> T settingsFltWall_setFilterByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltWalls").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
+    public <T> T settingsFilter_updateFilterByIdFilter(Class<T> responseType, String idFilter, Object requestEntity) throws UniformInterfaceException {
+        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
     }
 
-    public <T> T settingsFltWall_setLastCheckByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltWalls").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
+    public <T> T settingsFilter_setLastCheckByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
+        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
     }
 
-    public <T> T settingsFltWall_getAngelsCollectionByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltWalls").path(uid).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltFriends_getUserByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltFriendss").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltFriends_setNewUser(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltFriendss").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltFriends_setFilterByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltFriendss").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltFriends_setLastCheckByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltFriendss").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
-    }
-
-    public <T> T settingsFltFriends_getAngelsCollectionByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltFriendss").path(uid).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltPriv_getUserByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltPrivs").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltPriv_setNewUser(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltPrivs").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltPriv_setFilterByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltPrivs").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltPriv_setLastCheckByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltPrivs").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
-    }
-
-    public <T> T settingsFltPriv_getAngelsCollectionByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltPrivs").path(uid).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltVist_getUserByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltVists").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
-    public <T> T settingsFltVist_setNewUser(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltVists").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltVist_setFilterByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsfltVists").path(uid).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
-    }
-
-    public <T> T settingsFltVist_setLastCheckByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltVists").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
-    }
-
-    public <T> T settingsFltVist_getAngelsCollectionByUid(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("settingsfltVists").path(uid).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    public <T> T settingsFilter_getAngelsCollectionByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
+        return webResource.path("settingsFilters").path(idFilter).path("settingsAngelsFilterCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T settingsAngels_setAngelByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {

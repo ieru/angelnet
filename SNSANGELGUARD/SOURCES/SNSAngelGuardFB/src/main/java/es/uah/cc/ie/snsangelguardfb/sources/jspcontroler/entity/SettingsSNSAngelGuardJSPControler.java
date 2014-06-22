@@ -5,6 +5,9 @@
 
 package es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity;
 
+import bsh.ParseException;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import es.uah.cc.ie.snsangelguardfb.exception.CodeException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
@@ -13,11 +16,18 @@ import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import es.uah.cc.ie.snsangelguardfb.sources.dao.entity.UserSettings_SettingsFilterDAO;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources.SettingsSNSAngelGuardJSPControlerResources;
+import java.io.IOException;
+import java.security.NoSuchProviderException;
 import java.util.Date;
+import java.util.Iterator;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 
 /**
  * Clase que controla la ejecucion de la pagina principal de la aplicacion.
@@ -28,6 +38,15 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
     
     /** Logger Class */
     private static Logger logger = Logger.getLogger(SettingsSNSAngelGuardJSPControler.class);
+
+    /** Valor por defecto para el activado del filtro */
+    private final static String FILTER_DEFAULT_ACTIVE_VALUE = "0";
+    
+    /** Valor por defecto para los angeles de un filtro */
+    private final static String FILTER_DEFAULT_ANGELS_VALUE = "";
+    
+    /** Valor por defecto para la frecuencia de un filtro */
+    private final static String FILTER_DEFAULT_FREC_VALUE = "3";
     
     /** Manager principal de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -168,17 +187,20 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
 
                 Long uidLong = (new Double(uid)).longValue();
 
-                UserSettings_SettingsFilterDAO fltWall = new UserSettings_SettingsFilterDAO(this.snsObject.getUserSettingsDaoManager(), uidLong, "3", "", "0", uidLong, new Date());
-                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltWall(fltWall);
-
-                UserSettings_SettingsFilterDAO fltFriends = new UserSettings_SettingsFilterDAO(this.snsObject.getUserSettingsDaoManager(), uidLong, "3", "", "0", uidLong, new Date());
-                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltFriends(fltFriends);
-
-                UserSettings_SettingsFilterDAO fltPriv = new UserSettings_SettingsFilterDAO(this.snsObject.getUserSettingsDaoManager(), uidLong, "3", "", "0", uidLong, new Date());
-                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltPriv(fltPriv);
-
-                UserSettings_SettingsFilterDAO fltVist = new UserSettings_SettingsFilterDAO(this.snsObject.getUserSettingsDaoManager(), uidLong, "3", "", "0", uidLong, new Date());
-                this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltVist(fltVist);
+                Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+                String keyFilter;
+                UserSettings_SettingsFilterDAO newFilter;
+                
+                while (itKeyFilters.hasNext()) {
+                    keyFilter = itKeyFilters.next();
+                    
+                    // Seteamos en cada filtro los valores por defecto
+                    newFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter);
+                    newFilter.setActive(FILTER_DEFAULT_ACTIVE_VALUE);
+                    newFilter.setAngels(FILTER_DEFAULT_ANGELS_VALUE);
+                    newFilter.setFrec(FILTER_DEFAULT_FREC_VALUE);
+                    newFilter.setLastCheck(new Date());
+                }
 
                 this.snsObject.setInicio(true);
 
@@ -197,8 +219,8 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
 
 
             } else {
-                // Cargamos la pagina con la informaci?n de la base de datos
-                // Cargamos la configuraci?n en pantalla despu?s de acceder a la DB
+                // Cargamos la pagina con la informacion de la base de datos
+                // Cargamos la configuraci?n en pantalla despues de acceder a la DB
                 // METODOS PARA CARGAR LA CONFIGURACION RECUPERADA
                 this.snsObject.setInicio(true);
                 //this.snsObject.getFriendsFilterFuncionality().getUserFriends();
@@ -211,10 +233,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
                 // Cargamos los recursos de idioma
                 loadResources();
             }
-
-
-
-        } catch (Exception ex) {
+        } catch (NumberFormatException | UniformInterfaceException | IOException | JSONException | ParseException | DataLengthException | IllegalStateException | InvalidCipherTextException | NoSuchProviderException | MessagingException | InterDataBaseException | InterProcessException | InterEmailException | MySQLIntegrityConstraintViolationException ex) {
             logger.error(CodeException.UKNOWN_ERROR, ex);
             this.snsObject.getExceptionManager().initControlException(ex);
         } 

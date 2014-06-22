@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchProviderException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.mail.MessagingException;
 import org.apache.log4j.Logger;
@@ -198,12 +200,15 @@ public class GenericEmailObject {
      * @throws UniformInterfaceException
      * @throws IOException
      */
-    public void sendEmailCheck(String resultFltWall, String resultFltFriends, String resultFltPriv, String resultFltVist, JSONObject jsonAngel) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
+    public void sendEmailCheck(List<String> resultFilterList, JSONObject jsonAngel) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Inicio sendEmailCheck para el angel: " + jsonAngel.getString("idAngel"));
         String menDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getMailNotification());
         String titleVigDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
         String title = menDB[1];
         String[] titleHelp = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getHelpMe());
+        
+        // Flag que indica si hay que enviar email
+        boolean isTimeToSendEmail = false;
 
         String bodyEmail = "<html><head><title>" + menDB[0] + "</title>"
                 + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />"
@@ -214,37 +219,41 @@ public class GenericEmailObject {
                 + "<table width=\"97%\">"
                 + "<tr><br><td width=\"95%\"><A style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;color: #3b5998;cursor:pointer;\" href=\"" + this.snsObject.getConfigurationManager().getConfigHostApplication() + "SNSAngelGuardFB/helpMe.jsp?par1=" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUidPublic() + "\">" + titleHelp[0] + "</A></td></tr>";
 
-        if (!resultFltWall.equals("")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificaci?n filtro Wall: " + resultFltWall);
-            bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[0] + "</div><tr><td width=\"95%\"><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
-                    + "<tr><td><div id=\"divFilterWall\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + resultFltWall + "</div>"
-                    + "</div></td></tr>";
-        }
-
-        if (!resultFltFriends.equals("")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificaci?n filtro Friends: " + resultFltFriends);
-            bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[1] + "</div><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
-                    + "<tr><td><div id=\"divFilterFriends\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + resultFltFriends + "</div>"
-                    + "</div></td></tr>";
-        }
-        if (!resultFltPriv.equals("")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificaci?n filtro Priv: " + resultFltPriv);
-            bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[2] + "</div><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
-                    + "<tr><td><div id=\"divFilterPriv\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + resultFltPriv + "</div>"
-                    + "</div></td></tr>";
-        }
-        if (!resultFltVist.equals("")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificaci?n filtro Vist: " + resultFltVist);
-            bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[3] + "</div><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
-                    + "<tr><td><div id=\"divFilterVist\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + resultFltVist + "</div>"
-                    + "</div></td></tr>";
+        Integer filterCounter = 0;
+        
+        if(resultFilterList != null && !resultFilterList.isEmpty()){
+            
+            Iterator<String> it = resultFilterList.iterator();
+            String filterResult;
+            
+            while(it.hasNext()){
+            
+                // Obtenemos el resultado del filtro
+                filterResult = it.next();
+                
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificacion filtro " + titleVigDB[filterCounter] + ": " + filterResult);
+                
+                if(!filterResult.equals("")){
+                    
+                    // Si es distinto de vacio, enviaremos el resultado
+                    isTimeToSendEmail = true;
+                
+                    bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[filterCounter] + "</div><tr><td width=\"95%\"><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
+                        + "<tr><td><div id=\"divFilterWall\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + filterResult + "</div>"
+                        + "</div></td></tr>";
+               
+                }
+                
+                // Incrementamos el contador
+                filterCounter++;
+            }
         }
 
         bodyEmail += "</table><div id=\"botoneraInferior\" style=\"width:100%;\" align=\"left\" margin=\"15px\">"
                 + "<hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;color:#333;text-align:justify;margin: 5px;\"><A style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;color: #3b5998;cursor:pointer;\" href=\"http://www.facebook.com/apps/application.php?id=179105958774916\">SNSAngelGuard</A>" + this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getInfoAngGuard()
                 + "</div></div></div></form></body></html>";
 
-        if (!resultFltWall.equals("") || !resultFltFriends.equals("") || !resultFltPriv.equals("") || !resultFltVist.equals("")) {
+        if (isTimeToSendEmail) {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Enviando email al usuario: " + jsonAngel.getString("idAngel"));
             this.email.sendEmail(menDB[0], bodyEmail, jsonAngel.getString("idAngel"));
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Email enviado!!");

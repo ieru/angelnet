@@ -1,5 +1,6 @@
 package es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality;
 
+import es.uah.cc.ie.snsangelguardfb.ILifeCycleFilter;
 import bsh.ParseException;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FacebookUrlStadistics;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FriendsFacebook;
@@ -24,25 +25,24 @@ import org.openide.util.Exceptions;
  * 
  * @author tote
  */
-public class VisitsFilterFuncionality {
+public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter {
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(VisitsFilterFuncionality.class);
 
     /** Clase Manager de la aplicaci?n */
     private SNSAngelGuardFBManager snsObject;
+    
+    /** Identificador del filtro */
+    private String idFilter;
 
     /** Array que contiene todos los titulos utilizados por el filtro para incluir en los correos de informes. */
     private String[] titleOptions;
 
     /**
-     * Constructor de clase.
-     *
-     * @param snsObject Manager de la aplicaci?n.
+     * Constructor de clase sin par?metros.
      */
-    public VisitsFilterFuncionality(SNSAngelGuardFBManager snsObject) {
-        this.snsObject = snsObject;
-    }
+    public VisitsFilterFuncionality() {}
 
     /**
      * Obtiene el manager de la aplicaci?n asociado a la clase.
@@ -188,7 +188,7 @@ public class VisitsFilterFuncionality {
             if (firstCheck) {
                 commentsPost = this.snsObject.getClient().userFacebook_getComentsPostById(String.class, "\"" + postId + "\"");
             } else {
-                Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
+                Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(idFilter).getLastCheck();
                 SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getCommentsNumberPost: Buscando comentarios al post " + postId + " hasta la fecha de actualizaci?n: " + formateador.format(lastCheck));
                 commentsPost = this.snsObject.getClient().userFacebook_getComentsPostByTime(String.class, "\"" + postId + "\"", "'" + formateador.format(lastCheck) + "'");
@@ -285,7 +285,7 @@ public class VisitsFilterFuncionality {
         if (firstCheck) {
             userFacebook = this.snsObject.getClient().userFacebook_getStreamFacebookByUid(String.class, "'" + uidLong.toString() + "'");
         } else {
-            Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
+            Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(idFilter).getLastCheck();
             SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             String strLastCheck = formateador.format(this.snsObject.getDateTimeUtilities().formatTime(String.valueOf(lastCheckFilter.getTime())));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRankingPostFriends: Buscando entradas en el muro de Facebook hasta la fecha de actualizaci?n: " + formateador.format(lastCheck));
@@ -308,7 +308,7 @@ public class VisitsFilterFuncionality {
                             postsOfFriends = new JSONObject(this.snsObject.getClient().streamFacebook_getStreamPostByActorId(String.class, "'" + uidLong.toString() + "'", "'" + friendsWithPostArray.get(i).toString() + "'"));
                             postsOfFriendArray = postsOfFriends.getJSONArray("streamFacebook");
                         } else {
-                            Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
+                            Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(idFilter).getLastCheck();
                             SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                             postsOfFriends = new JSONObject(this.snsObject.getClient().streamFacebook_getStreamPostByActorIdAndUpdateTime(String.class, "'" + uidLong.toString() + "'", "'" + friendsWithPostArray.get(i).toString() + "'", "'" + formateador.format(lastCheck) + "'"));
                             postsOfFriendArray = postsOfFriends.getJSONArray("streamFacebook");
@@ -336,48 +336,6 @@ public class VisitsFilterFuncionality {
                 }
 
             }
-
-//            for (int i = 0; i < jsonUserStreamFacebook.length(); i++) {
-//                JSONObject jsonStream = jsonUserStreamFacebook.getJSONObject(i);
-//                int countNumberStream = 0;
-//
-//                for (int j = 0; j < jsonUserStreamFacebook.length(); j++) {
-//                    if (jsonUserStreamFacebook.getJSONObject(j).getString("actorId").equals(jsonStream.getString("actorId"))) {
-//                        countNumberStream++;
-//                    }
-//                    countNumberStream = countNumberStream + getCommentsNumberPost(jsonStream.getString("actorId"), jsonStream.getString("postId"), firstCheck);
-//                    
-//                }
-//
-//                if (!jsonStream.getString("actorId").equals(uidLong.toString())) {
-//                    JSONObject itemCount = new JSONObject();
-//                    itemCount.put("actorId", jsonStream.getString("actorId"));
-//                    itemCount.put("numbersOfPost", countNumberStream);
-//                    jsonCountElementsStream.put(itemCount);
-//                }
-//            }
-
-//            for (int i = 0; i < jsonUserStreamFacebook.length(); i++) {
-//                JSONObject jsonStream = jsonUserStreamFacebook.getJSONObject(i);
-//                int countNumberStream = 0;
-//                
-//                if(firstCheck){
-//                    countNumberStream = this.snsObject.getClient().streamFacebook_getNumberStreamPostActorId(Integer.class, "'" + uidLong.toString() + "'", "'" + jsonStream.getString("actorId") + "'");
-//                }else{
-//                    Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().getLastCheck();
-//                    SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//                    countNumberStream = this.snsObject.getClient().streamFacebook_getNumberStreamPostActorIdByUpdatedTime(Integer.class, "'" + uidLong.toString() + "'", jsonStream.getString("actorId"), "'" + formateador.format(lastCheck) + "'");
-//                }
-//                
-//                countNumberStream = countNumberStream + getCommentsNumberPost(jsonStream.getString("actorId"), jsonStream.getString("postId"), firstCheck);
-//                
-//                if (!jsonStream.getString("actorId").equals(uidLong.toString())) {
-//                    JSONObject itemCount = new JSONObject();
-//                    itemCount.put("actorId", jsonStream.getString("actorId"));
-//                    itemCount.put("numbersOfPost", countNumberStream);
-//                    jsonCountElementsStream.put(itemCount);
-//                }
-//            }
 
             HashMap<String, Integer> orderPost = shortMap(parseJsonArrayToMap(jsonCountElementsStream));
             List<String> lstKey = new ArrayList<String>(orderPost.keySet());
@@ -450,5 +408,30 @@ public class VisitsFilterFuncionality {
         }
 
         return newMap;
+    }
+
+    @Override
+    public void init(SNSAngelGuardFBManager snsObject, String id) {
+        this.snsObject = snsObject;
+        this.idFilter = id;
+    }
+
+    @Override
+    public String executeFilter(Map<String, Object> args) throws Exception {
+        return checkVisitFilter((boolean) args.get(ARGS_KEY_FIRSTCHECK), 
+                (Date) args.get(ARGS_KEY_LASTCHECK));
+    }
+
+    @Override
+    public String getId() {
+        return this.idFilter;
+    }
+
+    @Override
+    public void updateInformationFacebook() throws Exception {
+    }
+
+    @Override
+    public void getInformationFacebook() throws Exception {
     }
 }

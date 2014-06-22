@@ -15,6 +15,7 @@ import static es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity.data.Type
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
+import java.util.Iterator;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -195,7 +196,7 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
                         jsonNewAngel = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().putNewAngelFacebook(jsonNewAngel);
 
                         // Actualizo la coleccion de angeles del usuario
-                        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngel, 1, "");
+                        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setCollectionAngels(jsonNewAngel);
                     }
                     
                     // Establecemos el tipo de mensaje a mostrar en la vuelta
@@ -203,19 +204,16 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
                         
                     break;
                 case DELETE_CONTACT:
+
+                    Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+                    String keyFilter;
                     
-                    // Borramos el angel del filtro de control del lenguaje
-                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltWall().setAngels(request.getParameter("hdLstAngelsFltWall"));
-
-                    // Borramos el angel del filtro de control de amigos
-                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltFriends().setAngels(request.getParameter("hdLstAngelsFltFriends"));
-
-                    // Borramos el angel del filtro de control de privacidad
-                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltPriv().setAngels(request.getParameter("hdLstAngelsFltPriv"));
-
-                    // Borramos el angel del filtro de control de visitas
-                    this.getSnsObject().getUserSettingsDaoManager().getUserSettingsDAO().getFltVist().setAngels(request.getParameter("hdLstAngelsFltVist"));
-    
+                    // Borramos el angel para cada filtro
+                    while (itKeyFilters.hasNext()) {
+                        keyFilter = itKeyFilters.next();
+                        
+                        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setAngels(request.getParameter("hdLstAngels" + keyFilter));
+                    }
                     
                     for (int i = 0; i < this.jsonGoogleAngels.length(); i++) {
                         // Obtenemos el objeto actual

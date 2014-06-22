@@ -14,10 +14,7 @@ import es.uah.cc.ie.snsangelguardfb.sources.email.GenericEmailObject;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.clients.FacebookClientLocal;
 import es.uah.cc.ie.snsangelguardfb.sources.dao.LocaleSettingsDaoManager;
 import es.uah.cc.ie.snsangelguardfb.sources.dao.UserSettingsDaoManager;
-import es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.FriendsFilterFuncionality;
 import es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.GenericFilterFuncionality;
-import es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.VisitsFilterFuncionality;
-import es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.WallFilterFuncionality;
 import es.uah.cc.ie.snsangelguardfb.sources.snswebservicesclient.SNSdataBaseClient;
 import es.uah.cc.ie.snsangelguardfb.sources.utilities.AngelsUtilities;
 import es.uah.cc.ie.snsangelguardfb.sources.utilities.DateTimeUtilities;
@@ -65,15 +62,6 @@ public final class SNSAngelGuardFBManager {
 
     /** Objeto de Filtros Generico */
     private GenericFilterFuncionality genericFilter = new GenericFilterFuncionality(this);
-
-    /** Objeto para el Filtro de Vocabulario Ofensivo */
-    private WallFilterFuncionality wallFilterFuncionality = new WallFilterFuncionality(this);
-
-    /** Objeto para el Filtro de Amigos */
-    private FriendsFilterFuncionality friendsFilterFuncionality = new FriendsFilterFuncionality(this);
-
-    /** Objeto para el Filtro de Control de Visitas */
-    private VisitsFilterFuncionality visitsFilterFuncionality = new VisitsFilterFuncionality(this);
     
     /** Objetos de utilidad en el sistema */
     private JSONUtilities jsonUtilities = new JSONUtilities(this);
@@ -119,30 +107,6 @@ public final class SNSAngelGuardFBManager {
 
     public void setGenericFilter(GenericFilterFuncionality genericFilter) {
         this.genericFilter = genericFilter;
-    }
-
-    public WallFilterFuncionality getWallFilterFuncionality() {
-        return wallFilterFuncionality;
-    }
-
-    public void setWallFilterFuncionality(WallFilterFuncionality wallFilterFuncionality) {
-        this.wallFilterFuncionality = wallFilterFuncionality;
-    }
-
-    public FriendsFilterFuncionality getFriendsFilterFuncionality() {
-        return friendsFilterFuncionality;
-    }
-
-    public void setFriendsFilterFuncionality(FriendsFilterFuncionality friendsFilterFuncionality) {
-        this.friendsFilterFuncionality = friendsFilterFuncionality;
-    }
-
-    public VisitsFilterFuncionality getVisitsFilterFuncionality() {
-        return visitsFilterFuncionality;
-    }
-
-    public void setVisitsFilterFuncionality(VisitsFilterFuncionality visitsFilterFuncionality) {
-        this.visitsFilterFuncionality = visitsFilterFuncionality;
     }
 
     public UserSettingsDaoManager getUserSettingsDaoManager() {

@@ -6,12 +6,12 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
-import es.uah.cc.ie.snsangelguardfb.sources.dao.entity.UserSettings_SettingsFilterDAO;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.Iterator;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +29,15 @@ public class CheckNowJSPControler extends GenericJSPControler{
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(CheckNowJSPControler.class);
+        
+    /** Indicador de filtro activo */
+    private final String KEY_JSON_ACTIVE_FILTER = "hdActive";
+    
+    /** Indicador de frecuencia del filtro */
+    private final String KEY_JSON_FREC_FILTER = "hdFrec";
+    
+    /** Indicador de los angeles del filtro */
+    private final String KEY_JSON_ANGELS_FILTER = "hdLstAngels";
 
     /** Clase Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -77,7 +86,7 @@ public class CheckNowJSPControler extends GenericJSPControler{
 
             // Actualizamos la informaci?n del usuario y volvemos a la p?gina de configuraci?n
             updateInformationAndReturn();
-        } catch (Exception e) {
+        } catch (IOException | JSONException | UniformInterfaceException | MessagingException | MySQLIntegrityConstraintViolationException | InterDataBaseException | InterProcessException | InterEmailException e) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAndReturn: Excepcion capturada GenericException: " + e.getMessage());
             logger.fatal(e);
             this.snsObject.getExceptionManager().initControlException(e);
@@ -85,6 +94,24 @@ public class CheckNowJSPControler extends GenericJSPControler{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - process: Fin process...");
     }
 
+    /**
+     * Actualiza la informacion de los filtros recogida de la interaccion con el usuario.
+     */
+    private void loadInfoFilters() {
+        
+        Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String keyFilter;
+        
+        while (itKeysFilters.hasNext()) {
+            keyFilter = itKeysFilters.next();
+            
+            this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setActive(request.getParameter(KEY_JSON_ACTIVE_FILTER + keyFilter));
+            this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setFrec(request.getParameter(KEY_JSON_FREC_FILTER + keyFilter));
+            this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setAngels(request.getParameter(KEY_JSON_ANGELS_FILTER + keyFilter));
+            this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).setLastCheck(new Date());
+        }
+    }
+    
     /**
      * Carga la informacion de los filtros obtenida de la pagina de configuracion
      * para, posteriormente, ser guardada en la base de datos. Podr? lanzar excepciones del tipo UnsupportedEncodingException.
@@ -99,57 +126,39 @@ public class CheckNowJSPControler extends GenericJSPControler{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Amigos elegidos como angeles: " + sesion.getAttribute("hdAngels"));
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Angeles seleccionados de Google: " + request.getParameter("hdAngelsGoogleSelected"));
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Angeles ED: " + request.getParameter("hdAngelsEd"));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Lista de Angeles del filtro de control de lenguaje: " + request.getParameter("hdLstAngelsFltWall"));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Lista de Angeles del filtro de control de amigos: " + request.getParameter("hdLstAngelsFltFriends"));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Lista de Angeles del filtro de control de privacidad: " + request.getParameter("hdLstAngelsFltPriv"));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Lista de Angeles del filtro de control de visitas: " + request.getParameter("hdLstAngelsFltVist"));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Filtro de control de lenguaje activo: " + ("1".equals(request.getParameter("hdActiveFltWall")) ? true : false));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Filtro de control de amigos activo: " + ("1".equals(request.getParameter("hdActiveFltFriends")) ? true : false));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Filtro de control de privacidad activo: " + ("1".equals(request.getParameter("hdActiveFltPriv")) ? true : false));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Filtro de control de visitas activo: " + ("1".equals(request.getParameter("hdActiveFltVist")) ? true : false));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Frecuencia del filtro de control de lenguaje: " + getStrFrecuencyFilter(request.getParameter("hdFrecFltWall")));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Frecuencia del filtro de control de amigos: " + getStrFrecuencyFilter(request.getParameter("hdFrecFltFriends")));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Frecuencia del filtro de control de privacidad: " + getStrFrecuencyFilter(request.getParameter("hdFrecFltPriv")));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Frecuencia del filtro de control de visitas: " + getStrFrecuencyFilter(request.getParameter("hdFrecFltVist")));
 
-        // Cargamos todas las variables obtenidas de la p?gina de configuraci?n de la aplicaci?n
-
-        String hdLstAngelsFltWall = request.getParameter("hdLstAngelsFltWall");
-        String hdLstAngelsFltFriends = request.getParameter("hdLstAngelsFltFriends");
-        String hdLstAngelsFltPriv = request.getParameter("hdLstAngelsFltPriv");
-        String hdLstAngelsFltVist = request.getParameter("hdLstAngelsFltVist");
-        String hdActiveFltWall = request.getParameter("hdActiveFltWall");
-        String hdActiveFltFriends = request.getParameter("hdActiveFltFriends");
-        String hdActiveFltPriv = request.getParameter("hdActiveFltPriv");
-        String hdActiveFltVist = request.getParameter("hdActiveFltVist");
-        String hdFrecFltWall = request.getParameter("hdFrecFltWall");
-        String hdFrecFltFriends = request.getParameter("hdFrecFltFriends");
-        String hdFrecFltPriv = request.getParameter("hdFrecFltPriv");
-        String hdFrecFltVist = request.getParameter("hdFrecFltVist");
-
-        Long uidLong = (new Double(snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid())).longValue();
-
-        // Cargamos la configuraci?n del filtro de control de lenguaje
-        UserSettings_SettingsFilterDAO fltWall = new UserSettings_SettingsFilterDAO(snsObject.getUserSettingsDaoManager(), uidLong, hdFrecFltWall, hdLstAngelsFltWall, hdActiveFltWall, uidLong, new Date());
-        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltWall(fltWall);
-
-        // Cargamos la configuraci?n del filtro de control de amigos
-        UserSettings_SettingsFilterDAO fltFriends = new UserSettings_SettingsFilterDAO(snsObject.getUserSettingsDaoManager(), uidLong, hdFrecFltFriends, hdLstAngelsFltFriends, hdActiveFltFriends, uidLong, new Date());
-        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltFriends(fltFriends);
-
-        // Cargamos la configuraci?n del filtro de control de privacidad
-        UserSettings_SettingsFilterDAO fltPriv = new UserSettings_SettingsFilterDAO(snsObject.getUserSettingsDaoManager(), uidLong, hdFrecFltPriv, hdLstAngelsFltPriv, hdActiveFltPriv, uidLong, new Date());
-        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltPriv(fltPriv);
-
-        // Cargamos la configuraci?n del filtro de control de visitas
-        UserSettings_SettingsFilterDAO fltVist = new UserSettings_SettingsFilterDAO(snsObject.getUserSettingsDaoManager(), uidLong, hdFrecFltVist, hdLstAngelsFltVist, hdActiveFltVist, uidLong, new Date());
-        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setFltVist(fltVist);
-
+        // Cargamos la configuracion de los filtros
+        loadInfoFilters();
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilters: Fin loadFilters...");
     }
 
-/**
+    /**
+     * Obtiene un string con la activacion de los filtros separados por ";".
+     * 
+     * @return String 
+     */
+    private String getActiveFilters(){
+        Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        String keyFilter;
+        String activeFilters = null;
+        
+        while (itKeysFilters.hasNext()) {
+            keyFilter = itKeysFilters.next();
+            
+            activeFilters += this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive() + ";";
+        }
+        
+        // Le quitamos a la cadena el ?ltimo ";"
+        if (activeFilters != null) {
+            activeFilters = activeFilters.substring(0, activeFilters.length() - 1);
+        }
+        
+        
+        return activeFilters;
+    }
+    
+    /**
      * Actualiza la informacion del usuario y vuelve a la pagina de configuracion de la aplicacion. Podra lanzar excepciones del
      * tipo UniformInterfaceException, IOException, JSONException, NoSuchProviderException, MessagingException, MySQLIntegrityConstraintViolationException, InterDataBaseException, InterProcessException o InterEmailException.
      * 
@@ -170,11 +179,7 @@ public class CheckNowJSPControler extends GenericJSPControler{
         snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setLegalAccepted(true);
         snsObject.getUserSettingsDaoManager().getUserSettingsDAO().updateLastCheckUS();
 
-        String activeFilters = request.getParameter("hdActiveFltWall") + ";" + request.getParameter("hdActiveFltFriends")
-                + ";" + request.getParameter("hdActiveFltPriv") + ";" + request.getParameter("hdActiveFltVist");
-
-
-        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setAngelsUserSettings(activeFilters, snsObject.isNewConnection());
+        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setAngelsUserSettings(getActiveFilters(), snsObject.isNewConnection());
 
         snsObject.getUserSettingsDaoManager().getUserInfo(false);
 
@@ -184,43 +189,5 @@ public class CheckNowJSPControler extends GenericJSPControler{
         // Volvemos a la pagina de configuraci?n
         response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=1");
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAndReturn: Fin updateInformationAndReturn...");
-    }
-
-    /**
-     * Obtiene la descripcion de la frecuencia definida para un filtro.
-     * 
-     * @param frec Frecuencia definida por el usuario.
-     * @return Descripci?n de la frecuencia definida por el usuario.
-     */
-    private String getStrFrecuencyFilter(String frec) {
-        int intFrec = Integer.parseInt(frec);
-        String strFrec = "";
-
-        switch (intFrec) {
-            case 0:
-                strFrec = "Cada dia";
-                break;
-            case 1:
-                strFrec = "Cada semana";
-                break;
-            case 2:
-                strFrec = "Cada quince dias";
-                break;
-            case 3:
-                strFrec = "Cada mes";
-                break;
-            case 4:
-                strFrec = "Cada dos meses";
-                break;
-            case 5:
-                strFrec = "Cada seis meses";
-                break;
-            case 6:
-                strFrec = "Cada a?o";
-                break;
-
-        }
-
-        return strFrec;
     }
 }

@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -33,6 +31,8 @@ import javax.persistence.Table;
     @NamedQuery(name = "SettingsAngels.findByImgAngel", query = "SELECT s FROM SettingsAngels s WHERE s.imgAngel = :imgAngel"),
     @NamedQuery(name = "SettingsAngels.findByTypeAngel", query = "SELECT s FROM SettingsAngels s WHERE s.typeAngel = :typeAngel"),
     @NamedQuery(name = "SettingsAngels.findByAcceptAngel", query = "SELECT s FROM SettingsAngels s WHERE s.acceptAngel = :acceptAngel"),
+    @NamedQuery(name = "SettingsAngels.findByUserPropAngel", query = "SELECT s FROM SettingsAngels s WHERE s.userPropAngel = :userPropAngel"),
+    @NamedQuery(name = "SettingsAngels.findByConfirmAngel", query = "SELECT s FROM SettingsAngels s WHERE s.confirmAngel = :confirmAngel"),
     @NamedQuery(name = "SettingsAngels.findByIdFacebook", query = "SELECT s FROM SettingsAngels s WHERE s.idFacebook = :idFacebook")})
 public class SettingsAngels implements Serializable {
 
@@ -63,28 +63,10 @@ public class SettingsAngels implements Serializable {
     private String confirmAngel;
     @Column(name = "id_facebook")
     private String idFacebook;
-    @JoinTable(name = "settings_fltVist_has_settings_angels", joinColumns = {
-        @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")}, inverseJoinColumns = {
-        @JoinColumn(name = "settings_fltVist_user_settings_uid", referencedColumnName = "user_settings_uid")})
-    @ManyToMany
-    private Collection<SettingsfltVist> settingsfltVistCollection;
-    @JoinTable(name = "settings_fltWall_has_settings_angels", joinColumns = {
-        @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")}, inverseJoinColumns = {
-        @JoinColumn(name = "settings_fltWall_user_settings_uid", referencedColumnName = "user_settings_uid")})
-    @ManyToMany
-    private Collection<SettingsfltWall> settingsfltWallCollection;
-    @JoinTable(name = "settings_fltPriv_has_settings_angels", joinColumns = {
-        @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")}, inverseJoinColumns = {
-        @JoinColumn(name = "settings_fltPriv_user_settings_uid", referencedColumnName = "user_settings_uid")})
-    @ManyToMany
-    private Collection<SettingsfltPriv> settingsfltPrivCollection;
     @ManyToMany(mappedBy = "settingsAngelsCollection")
     private Collection<UserSettings> userSettingsCollection;
-    @JoinTable(name = "settings_fltFriends_has_settings_angels", joinColumns = {
-        @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")}, inverseJoinColumns = {
-        @JoinColumn(name = "settings_fltFriends_user_settings_uid", referencedColumnName = "user_settings_uid")})
-    @ManyToMany
-    private Collection<SettingsfltFriends> settingsfltFriendsCollection;
+    @ManyToMany(mappedBy = "settingsAngelsFilterCollection")
+    private Collection<SettingsFilter> settingsFilterCollection;
 
     public SettingsAngels() {
     }
@@ -176,28 +158,12 @@ public class SettingsAngels implements Serializable {
         this.idFacebook = idFacebook;
     }
 
-    public Collection<SettingsfltVist> getSettingsfltVistCollection() {
-        return settingsfltVistCollection;
+    public Collection<SettingsFilter> getSettingsFilterCollection() {
+        return settingsFilterCollection;
     }
 
-    public void setSettingsfltVistCollection(Collection<SettingsfltVist> settingsfltVistCollection) {
-        this.settingsfltVistCollection = settingsfltVistCollection;
-    }
-
-    public Collection<SettingsfltWall> getSettingsfltWallCollection() {
-        return settingsfltWallCollection;
-    }
-
-    public void setSettingsfltWallCollection(Collection<SettingsfltWall> settingsfltWallCollection) {
-        this.settingsfltWallCollection = settingsfltWallCollection;
-    }
-
-    public Collection<SettingsfltPriv> getSettingsfltPrivCollection() {
-        return settingsfltPrivCollection;
-    }
-
-    public void setSettingsfltPrivCollection(Collection<SettingsfltPriv> settingsfltPrivCollection) {
-        this.settingsfltPrivCollection = settingsfltPrivCollection;
+    public void setSettingsFilterCollection(Collection<SettingsFilter> settingsfltWallCollection) {
+        this.settingsFilterCollection = settingsfltWallCollection;
     }
 
     public Collection<UserSettings> getUserSettingsCollection() {
@@ -206,14 +172,6 @@ public class SettingsAngels implements Serializable {
 
     public void setUserSettingsCollection(Collection<UserSettings> userSettingsCollection) {
         this.userSettingsCollection = userSettingsCollection;
-    }
-
-    public Collection<SettingsfltFriends> getSettingsfltFriendsCollection() {
-        return settingsfltFriendsCollection;
-    }
-
-    public void setSettingsfltFriendsCollection(Collection<SettingsfltFriends> settingsfltFriendsCollection) {
-        this.settingsfltFriendsCollection = settingsfltFriendsCollection;
     }
 
     @Override

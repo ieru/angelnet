@@ -1618,10 +1618,18 @@ function saveSettings(menSave,menWait){
     }
 }
 
+function createHiddenFilters(idForm, arrayActiveFilter){
+    
+    for(var i = 0; i < arrayActiveFilter.length; i++) {
+        $(idForm).append('<input type="hidden" id="hdActive' + arrayActiveFilter[i] + '" name="hdActive' + arrayActiveFilter[i] + '" value="0" />');
+        $(idForm).append('<input type="hidden" id="hdFrec' + arrayActiveFilter[i] + '" name="hdFrec' + arrayActiveFilter[i] + '" value="0" />');
+        $(idForm).append('<input type="hidden" id="hdLstAngels' + arrayActiveFilter[i] + '" name="hdLstAngels' + arrayActiveFilter[i] + '" value="" />');
+    }
+}
+
+
 function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
-    hdLstAngelsFltWall,hdLstAngelsFltFriends,hdLstAngelsFltPriv,hdLstAngelsFltVist,
-    hdActiveFltWall,hdActiveFltFriends,hdActiveFltPriv,hdActiveFltVist,
-    hdFrecFltWall,hdFrecFltFriends,hdFrecFltPriv,hdFrecFltVist,hdAngelsAux, arrayAltAngels, nameContact, emailContact, hdConfirm, hdDelete){
+    jsonInfoFilter, hdAngelsAux, arrayAltAngels, nameContact, emailContact, hdConfirm, hdDelete){
   
     document.getElementById('hdAngels').value = decodeURIComponent(angels);
     document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
@@ -1676,9 +1684,7 @@ function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
 }
 
 function loadInicioDatesVigilants(angels,hdAngelsEd,hdAngelsGoogleSelected,
-    hdLstAngelsFltWall,hdLstAngelsFltFriends,hdLstAngelsFltPriv,hdLstAngelsFltVist,
-    hdActiveFltWall,hdActiveFltFriends,hdActiveFltPriv,hdActiveFltVist,
-    hdFrecFltWall,hdFrecFltFriends,hdFrecFltPriv,hdFrecFltVist,hdAngelsAux){
+    jsonInfoFilter, hdAngelsAux){
 
     document.getElementById('hdAngels').value = decodeURIComponent(angels);
     document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);

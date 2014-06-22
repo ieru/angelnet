@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchProviderException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -408,12 +409,14 @@ public class UserSettingsDaoManager {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Almacenando informacion de usuario...");
             this.snsObject.getClient().user_setNewUser(String.class, user);
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion de usuario almacenada!!");
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Obteniendo informacion del muro del usuario en Facebook...");
-            this.snsObject.getWallFilterFuncionality().getPostWall();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion del muro del usuario en Facebook obtenida!!");
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Obteniendo amigos de Facebook...");
-            this.snsObject.getFriendsFilterFuncionality().getUserFriends();
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Amigos de Facebook obtenidos!!");
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Obteniendo informacion de los filtros...");
+            try {
+                getInformationFilters();
+            } catch (Exception e) {
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: No se ha podido obtener la informacion de los filtros...");
+                this.snsObject.getExceptionManager().initControlException(e);
+            }
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion de los filtros obtenida!!");
         }else{
             try {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Actualizando informacion de Facebook...");
@@ -422,14 +425,12 @@ public class UserSettingsDaoManager {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Actualizando informacion de usuario...");
                 setUser_UserSettings(user, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid());
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion de usuario actualizada!!");
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Actualizando informacion del muro del usuario en Facebook...");
-                this.snsObject.getWallFilterFuncionality().updatePostWall();
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion del muro del usuario en Facebook actualizada!!");
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Actualizando amigos de Facebook...");
-                this.snsObject.getFriendsFilterFuncionality().getUserFriends();
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Amigos de Facebook actualizados!!");
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Actualizando informacion de los filtros...");
+                updateInformationFilters();
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion de los filtros correctamente actualizada");
             } catch (Exception e) {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfo: Informacion actualizada en base de datos!!");
+                this.snsObject.getExceptionManager().initControlException(e);
             }
         }
 
@@ -608,5 +609,57 @@ public class UserSettingsDaoManager {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFacebookFriendsDB: Fin con errores getFacebookFriendsDB...");
             return null;
         }
+    }
+    
+    /**
+     * Actualiza en base de datos la informacion necesaria para la ejecucion de
+     * cada filtro.
+     *
+     * @throws Exception
+     */
+    private void updateInformationFilters() throws Exception{
+        // Si tenemos filtros activos
+        if(this.snsObject.getConfigurationManager().getListActiveFilters() != null && !this.snsObject.getConfigurationManager().getListActiveFilters().isEmpty()){
+            
+            // Obtenemos el iterador
+            Iterator<String> it = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+            
+            String key;
+            
+            // Recorremos la lista de filtros activos
+            while(it.hasNext()) {
+                // Obtenemos la clave del filtro
+                key = it.next();
+                
+                // Actualizamos la informacion del filtro
+                this.snsObject.getGenericFilter().getFilterActiveMap().get(key).updateInformationFacebook();
+            }
+        }
+    }
+    
+    /**
+     * Obtiene la informacion necesaria para cada filtro y la almacena en base
+     * de datos.
+     *
+     * @throws Exception
+     */
+    private void getInformationFilters() throws Exception {
+        // Si tenemos filtros activos
+        if(this.snsObject.getConfigurationManager().getListActiveFilters() != null && !this.snsObject.getConfigurationManager().getListActiveFilters().isEmpty()){
+            
+            // Obtenemos el iterador
+            Iterator<String> it = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+            
+            String key;
+            
+            // Recorremos la lista de filtros activos
+            while(it.hasNext()) {
+                // Obtenemos la clave del filtro
+                key = it.next();
+                
+                // Obtenemos la informacion del filtro
+                this.snsObject.getGenericFilter().getFilterActiveMap().get(key).getInformationFacebook();
+            }
+        } 
     }
 }

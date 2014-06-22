@@ -14,10 +14,12 @@ import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources.SettingsSNSAn
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Clase que controla el flujo de informacion en la pagina settingsSNSAngelGuard_Vigilants.jsp
@@ -31,6 +33,18 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
     
     /** URL a la imagen de carga entre p?ginas */
     public final String PATH_IMAGE_LOADING = "https://snsangelguard.com/SNSAngelGuardFB/resources/load.gif";
+    
+    /** Indicador de filtro activo */
+    private final String KEY_JSON_ACTIVE_FILTER = "hdActive";
+    
+    /** Indicador de frecuencia del filtro */
+    private final String KEY_JSON_FREC_FILTER = "hdFrec";
+    
+    /** Indicador de los angeles del filtro */
+    private final String KEY_JSON_ANGELS_FILTER = "hdLstAngels";
+    
+    /** Indicador de la decodificacion */
+    private final String KEY_DECODE_UTF8 = "UTF-8";
     
     /** Manager principal de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
@@ -53,41 +67,11 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
     /** Angeles elegidos de contactos de Google */
     private String hdAngelsGoogleSelected;
 
-    /** Lista de angeles para el filtro de control de lenguaje */
-    private String hdLstAngelsFltWall;
+    /** Objeto JSON que contiene la informacion de todos los filtros */
+    private JSONObject jsonFiltersInfo;
     
-    /** Lista de angeles para el filtro de control de amistades */
-    private String hdLstAngelsFltFriends;
-    
-    /** Lista de angeles para el filtro de control de privacidad */
-    private String hdLstAngelsFltPriv;
-    
-    /** Lista de angeles para el filtro de control de visitas */
-    private String hdLstAngelsFltVist;
-
-    /** Indicador de si esta activo el filtro de control de lenguaje */
-    private String hdActiveFltWall;
-    
-    /** Indicador de si esta activo el filtro de control de amistades */
-    private String hdActiveFltFriends;
-    
-    /** Indicador de si esta activo el filtro de control de privacidad */
-    private String hdActiveFltPriv;
-    
-    /** Indicador de si esta activo el filtro de control de visitas */
-    private String hdActiveFltVist;
-
-    /** Frecuencia elegida para el filtro de control de lenguaje */
-    private String hdFrecFltWall;
-    
-    /** Frecuencia elegida para el filtro de control de amistades */
-    private String hdFrecFltFriends;
-    
-    /** Frecuencia elegida para el filtro de control de privacidad */
-    private String hdFrecFltPriv;
-    
-    /** Frecuencia elegida para el filtro de control de visitas */
-    private String hdFrecFltVist;
+    /** Array que contiene la lista de filtros activos */
+    private String[] listActiveFilters;
     
     /** Lista de angeles auxiliar */
     private String hdAngelsAux;
@@ -159,102 +143,6 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
         this.hdAngelsGoogleSelected = hdAngelsGoogleSelected;
     }
 
-    public String getHdLstAngelsFltWall() {
-        return hdLstAngelsFltWall;
-    }
-
-    public void setHdLstAngelsFltWall(String hdLstAngelsFltWall) {
-        this.hdLstAngelsFltWall = hdLstAngelsFltWall;
-    }
-
-    public String getHdLstAngelsFltFriends() {
-        return hdLstAngelsFltFriends;
-    }
-
-    public void setHdLstAngelsFltFriends(String hdLstAngelsFltFriends) {
-        this.hdLstAngelsFltFriends = hdLstAngelsFltFriends;
-    }
-
-    public String getHdLstAngelsFltPriv() {
-        return hdLstAngelsFltPriv;
-    }
-
-    public void setHdLstAngelsFltPriv(String hdLstAngelsFltPriv) {
-        this.hdLstAngelsFltPriv = hdLstAngelsFltPriv;
-    }
-
-    public String getHdLstAngelsFltVist() {
-        return hdLstAngelsFltVist;
-    }
-
-    public void setHdLstAngelsFltVist(String hdLstAngelsFltVist) {
-        this.hdLstAngelsFltVist = hdLstAngelsFltVist;
-    }
-
-    public String getHdActiveFltWall() {
-        return hdActiveFltWall;
-    }
-
-    public void setHdActiveFltWall(String hdActiveFltWall) {
-        this.hdActiveFltWall = hdActiveFltWall;
-    }
-
-    public String getHdActiveFltFriends() {
-        return hdActiveFltFriends;
-    }
-
-    public void setHdActiveFltFriends(String hdActiveFltFriends) {
-        this.hdActiveFltFriends = hdActiveFltFriends;
-    }
-
-    public String getHdActiveFltPriv() {
-        return hdActiveFltPriv;
-    }
-
-    public void setHdActiveFltPriv(String hdActiveFltPriv) {
-        this.hdActiveFltPriv = hdActiveFltPriv;
-    }
-
-    public String getHdActiveFltVist() {
-        return hdActiveFltVist;
-    }
-
-    public void setHdActiveFltVist(String hdActiveFltVist) {
-        this.hdActiveFltVist = hdActiveFltVist;
-    }
-
-    public String getHdFrecFltWall() {
-        return hdFrecFltWall;
-    }
-
-    public void setHdFrecFltWall(String hdFrecFltWall) {
-        this.hdFrecFltWall = hdFrecFltWall;
-    }
-
-    public String getHdFrecFltFriends() {
-        return hdFrecFltFriends;
-    }
-
-    public void setHdFrecFltFriends(String hdFrecFltFriends) {
-        this.hdFrecFltFriends = hdFrecFltFriends;
-    }
-
-    public String getHdFrecFltPriv() {
-        return hdFrecFltPriv;
-    }
-
-    public void setHdFrecFltPriv(String hdFrecFltPriv) {
-        this.hdFrecFltPriv = hdFrecFltPriv;
-    }
-
-    public String getHdFrecFltVist() {
-        return hdFrecFltVist;
-    }
-
-    public void setHdFrecFltVist(String hdFrecFltVist) {
-        this.hdFrecFltVist = hdFrecFltVist;
-    }
-
     public String getHdAngelsAux() {
         return hdAngelsAux;
     }
@@ -269,6 +157,22 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
 
     public void setArrayAngels(String[][] arrayAngels) {
         this.arrayAngels = arrayAngels;
+    }
+
+    public JSONObject getJsonFiltersInfo() {
+        return jsonFiltersInfo;
+    }
+
+    public void setJsonFiltersInfo(JSONObject jsonFiltersInfo) {
+        this.jsonFiltersInfo = jsonFiltersInfo;
+    }
+
+    public String[] getListActiveFilters() {
+        return listActiveFilters;
+    }
+
+    public void setListActiveFilters(String[] listActiveFilters) {
+        this.listActiveFilters = listActiveFilters;
     }
     
     /**
@@ -306,19 +210,7 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
             this.hdAngelsEd = URLDecoder.decode(request.getParameter("hdAngelsEd"),"UTF-8");
             this.hdAngelsAux = URLDecoder.decode(request.getParameter("hdAngelsAux"),"UTF-8");
             this.hdAngelsGoogleSelected = URLDecoder.decode(request.getParameter("hdAngelsGoogleSelected"),"UTF-8");
-            this.hdLstAngelsFltWall = URLDecoder.decode(request.getParameter("hdLstAngelsFltWall"),"UTF-8");
-            this.hdLstAngelsFltFriends = URLDecoder.decode(request.getParameter("hdLstAngelsFltFriends"),"UTF-8");
-            this.hdLstAngelsFltPriv = URLDecoder.decode(request.getParameter("hdLstAngelsFltPriv"),"UTF-8");
-            this.hdLstAngelsFltVist = URLDecoder.decode(request.getParameter("hdLstAngelsFltVist"),"UTF-8");
-            this.hdActiveFltWall = URLDecoder.decode(request.getParameter("hdActiveFltWall"),"UTF-8");
-            this.hdActiveFltFriends = URLDecoder.decode(request.getParameter("hdActiveFltFriends"),"UTF-8");
-            this.hdActiveFltPriv = URLDecoder.decode(request.getParameter("hdActiveFltPriv"),"UTF-8");
-            this.hdActiveFltVist = URLDecoder.decode(request.getParameter("hdActiveFltVist"),"UTF-8");
-            this.hdFrecFltWall = URLDecoder.decode(request.getParameter("hdFrecFltWall"),"UTF-8");
-            this.hdFrecFltFriends = URLDecoder.decode(request.getParameter("hdFrecFltFriends"),"UTF-8");
-            this.hdFrecFltPriv = URLDecoder.decode(request.getParameter("hdFrecFltPriv"),"UTF-8");
-            this.hdFrecFltVist = URLDecoder.decode(request.getParameter("hdFrecFltVist"),"UTF-8");
-
+            loadNotInitInfoFilters();
             this.snsObject.getAngelsUtilities().getAngelsSelected(hdAngels);
             this.snsObject.getAngelsUtilities().joinAngels(hdAngelsGoogleSelected,hdAngelsEd);
             this.arrayAngels = snsObject.getAngelsUtilities().getArrayAngelsSelected();
@@ -330,6 +222,40 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
         } catch (JSONException ex) {
             logger.error(CodeException.JSON_EXCEPTION, ex);
             this.snsObject.getExceptionManager().initControlException(ex);
+        }
+    }
+    
+    /**
+     * Carga la informacion en un objeto JSON de todos los filtros a mostrar
+     * cuando estamos en la navegacion entre pantallas.
+     *
+     * @throws JSONException
+     */
+    private void loadNotInitInfoFilters() throws JSONException, UnsupportedEncodingException {
+        Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        this.listActiveFilters = new String[this.snsObject.getConfigurationManager().getListActiveFilters().size()];
+        jsonFiltersInfo = new JSONObject();
+        String keyFilter;
+        int cont = 0;
+       
+        // Por cada filtro almacenamos su informacion en el JSON del objeto
+        while(itKeysFilters.hasNext()) {
+            
+            keyFilter = itKeysFilters.next();
+            
+            // A?adimos la key en la lista de filtros activos
+            this.listActiveFilters[cont] = keyFilter;
+            
+            JSONObject jsonFilter = new JSONObject();
+            jsonFilter.put(KEY_JSON_ACTIVE_FILTER + keyFilter, URLDecoder.decode(request.getParameter(KEY_JSON_ACTIVE_FILTER + keyFilter), KEY_DECODE_UTF8));
+            jsonFilter.put(KEY_JSON_FREC_FILTER + keyFilter, URLDecoder.decode(request.getParameter(KEY_JSON_FREC_FILTER + keyFilter), KEY_DECODE_UTF8));
+            jsonFilter.put(KEY_JSON_ANGELS_FILTER + keyFilter, URLDecoder.decode(request.getParameter(KEY_JSON_ANGELS_FILTER + keyFilter), KEY_DECODE_UTF8));
+            
+            // Introducimos en el JSON del objeto las propiedades del filtro
+            jsonFiltersInfo.put(keyFilter, jsonFilter);
+            
+            // Incrementamos el contador
+            cont++;
         }
     }
     

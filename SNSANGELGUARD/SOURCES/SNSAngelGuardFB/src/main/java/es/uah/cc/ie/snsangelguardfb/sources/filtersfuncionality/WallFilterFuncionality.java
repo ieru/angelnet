@@ -1,5 +1,6 @@
 package es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality;
 
+import es.uah.cc.ie.snsangelguardfb.ILifeCycleFilter;
 import bsh.ParseException;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -16,6 +17,7 @@ import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,7 +31,7 @@ import org.codehaus.jettison.json.JSONObject;
  * 
  * @author tote
  */
-public class WallFilterFuncionality {
+public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter {
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(WallFilterFuncionality.class);
@@ -42,15 +44,14 @@ public class WallFilterFuncionality {
 
     /** Clase Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
+    
+    /** Identificador del filtro */
+    private String idFilter;
 
     /**
-     * Constructor de clase. Recibe el objeto Manager de la aplicacion.
-     *
-     * @param snsObject SNSAngelGuardFBManager
+     * Constructor de clase sin par?metros.
      */
-    public WallFilterFuncionality(SNSAngelGuardFBManager snsObject) {
-        this.snsObject = snsObject;
-    }
+    public WallFilterFuncionality() { }
 
     /**
      * Obtiene el objeto Manager de la aplicacio.
@@ -480,5 +481,38 @@ public class WallFilterFuncionality {
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isBadWords: Fin isBadWords para el comentario: " + comentario);
         return isBadWordFound;
+    }
+
+    @Override
+    public String executeFilter(Map<String, Object> args) throws Exception {
+        return checkPostWall((HttpServletRequest) args.get(ARGS_KEY_REQUEST), 
+                (boolean) args.get(ARGS_KEY_FIRSTCHECK), 
+                (JSONObject) args.get(ARGS_KEY_JSONFILTER), 
+                (Date) args.get(ARGS_KEY_LASTCHECK));
+    }
+
+    @Override
+    public void init(SNSAngelGuardFBManager snsObject, String id) {
+        this.snsObject = snsObject;
+        this.idFilter = id;
+    }
+
+    @Override
+    public String getId() {
+        return this.idFilter;
+    }
+
+    @Override
+    public void updateInformationFacebook() throws Exception {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationFacebook: Inicio updateInformationFacebook...");
+        this.updatePostWall();
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationFacebook: Fin updateInformationFacebook!!");
+    }
+
+    @Override
+    public void getInformationFacebook() throws Exception {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getInformationFacebook: Inicio getInformationFacebook...");
+        this.getPostWall();
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getInformationFacebook: Fin getInformationFacebook!!");
     }
 }
