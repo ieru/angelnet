@@ -189,7 +189,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
 
                 Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
                 String keyFilter;
-                UserSettings_SettingsFilterDAO newFilter;
+               /** UserSettings_SettingsFilterDAO newFilter;
                 
                 while (itKeyFilters.hasNext()) {
                     keyFilter = itKeyFilters.next();
@@ -200,7 +200,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
                     newFilter.setAngels(FILTER_DEFAULT_ANGELS_VALUE);
                     newFilter.setFrec(FILTER_DEFAULT_FREC_VALUE);
                     newFilter.setLastCheck(new Date());
-                }
+                }*/
 
                 this.snsObject.setInicio(true);
 

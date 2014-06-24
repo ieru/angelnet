@@ -36,13 +36,13 @@ public class SettingsFilterResource {
     protected ResourceContext resourceContext;
     @Context
     protected UriInfo uriInfo;
-    protected String id;
+    protected Integer id;
   
     /** Creates a new instance of SettingsFilterResource */
     public SettingsFilterResource() {
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -80,10 +80,9 @@ public class SettingsFilterResource {
             persistenceSvc.beginTx();
             EntityManager em = persistenceSvc.getEntityManager();
             SettingsFilter entity = em.find(SettingsFilter.class, id);
-            //updateEntity(entity,data.getEntity());
-            entity.setActiveFilter(data.getEntity().getActiveFilter());
-            entity.setFrecFilter(data.getEntity().getFrecFilter());
-            entity.setLastCheck(new Date());
+            data.getEntity().setLastCheck(new Date());
+            updateEntity(entity,data.getEntity());
+            
             persistenceSvc.commitTx();
         } finally {
             persistenceSvc.close();
@@ -133,8 +132,8 @@ public class SettingsFilterResource {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
         Collection<SettingsAngels> settingsAngelsCollection = entity.getSettingsAngelsFilterCollection();
         Collection<SettingsAngels> settingsAngelsCollectionNew = newEntity.getSettingsAngelsFilterCollection();
-        Collection<UserSettings> userSettingsCollection = entity.getUserSettingsCollection();
-        Collection<UserSettings> userSettingsCollectionNew = newEntity.getUserSettingsCollection();
+        Collection<UserSettings> userSettingsCollection = entity.getSettingsFilterCollection();
+        Collection<UserSettings> userSettingsCollectionNew = newEntity.getSettingsFilterCollection();
         entity = em.merge(newEntity);
         
         for (SettingsAngels value : settingsAngelsCollection) {
@@ -148,14 +147,14 @@ public class SettingsFilterResource {
             }
         }
         
-        for (UserSettings value : userSettingsCollection) {
+         for (UserSettings value : userSettingsCollection) {
             if (!userSettingsCollectionNew.contains(value)) {
                 value.getSettingsFilterCollection().remove(entity);
             }
         }
         for (UserSettings value : userSettingsCollectionNew) {
             if (!userSettingsCollection.contains(value)) {
-                value.getSettingsFilterCollection().remove(entity);
+                value.getSettingsFilterCollection().add(entity);
             }
         }
         
@@ -174,7 +173,7 @@ public class SettingsFilterResource {
             value.getSettingsFilterCollection().remove(entity);
         }
         
-        for (UserSettings value: entity.getUserSettingsCollection()) {
+        for (UserSettings value: entity.getSettingsFilterCollection()) {
             value.getSettingsFilterCollection().remove(entity);
         }
         
@@ -241,7 +240,7 @@ public class SettingsFilterResource {
         protected Collection<UserSettings> getEntities(int start, int max, String query) {
             Collection<UserSettings> result = new java.util.ArrayList<UserSettings>();
             int index = 0;
-            for (UserSettings e : parent.getUserSettingsCollection()) {
+            for (UserSettings e : parent.getSettingsFilterCollection()) {
                 if (index >= start && (index - start) < max) {
                     result.add(e);
                 }

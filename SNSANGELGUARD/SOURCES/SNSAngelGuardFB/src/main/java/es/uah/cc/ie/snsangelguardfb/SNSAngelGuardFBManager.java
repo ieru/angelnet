@@ -61,7 +61,7 @@ public final class SNSAngelGuardFBManager {
     private ExceptionManager exceptionManager = new ExceptionManager(this);
 
     /** Objeto de Filtros Generico */
-    private GenericFilterFuncionality genericFilter = new GenericFilterFuncionality(this);
+    private GenericFilterFuncionality genericFilter;
     
     /** Objetos de utilidad en el sistema */
     private JSONUtilities jsonUtilities = new JSONUtilities(this);
@@ -249,6 +249,7 @@ public final class SNSAngelGuardFBManager {
     
     public SNSAngelGuardFBManager() throws FileNotFoundException, IOException{
         this.configurationManager = new ConfigurationManager();
+        this.genericFilter = new GenericFilterFuncionality(this);
     }
     
     

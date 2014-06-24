@@ -303,7 +303,7 @@ public class UserSettingsConverter {
      *
      * @param value the value to set
      */
-    public void setSettingsFilter(SettingsFiltersConverter value) {
+    public void setSettingsFilterCollection(SettingsFiltersConverter value) {
         entity.setSettingsFilterCollection((value != null) ? value.getEntities() : null);
     }
 

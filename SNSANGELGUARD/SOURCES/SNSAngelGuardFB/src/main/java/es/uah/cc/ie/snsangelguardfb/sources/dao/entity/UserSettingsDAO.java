@@ -45,6 +45,15 @@ import org.codehaus.jettison.json.JSONArray;
  * @author tote
  */
 public class UserSettingsDAO {
+    
+    /** Valor por defecto para el activado del filtro */
+    private final static String FILTER_DEFAULT_ACTIVE_VALUE = "0";
+    
+    /** Valor por defecto para los angeles de un filtro */
+    private final static String FILTER_DEFAULT_ANGELS_VALUE = "";
+    
+    /** Valor por defecto para la frecuencia de un filtro */
+    private final static String FILTER_DEFAULT_FREC_VALUE = "3";
    
     /** Clave unica privada para la generacion del cifrado de la clave publica de acceso */
     private static final String CF_64 = "JJMAGICFBNANYANG";
@@ -100,7 +109,10 @@ public class UserSettingsDAO {
     /**
      * Constructor sin parametros.
      */
-    public UserSettingsDAO() {
+    public UserSettingsDAO(SNSAngelGuardFBManager snsObject) {
+        this.snsObject = snsObject;
+        this.manager = this.snsObject.getUserSettingsDaoManager();
+        this.filterDaoMap = new HashMap();
     }
 
     /**
@@ -116,6 +128,8 @@ public class UserSettingsDAO {
         this.userName = userName;
         this.userEmail = userEmail;
         this.snsObject = snsObject;
+        this.manager = this.snsObject.getUserSettingsDaoManager();
+        this.filterDaoMap = new HashMap();
     }
 
     /**
@@ -451,15 +465,27 @@ public class UserSettingsDAO {
      *
      * @throws JSONException
      */
-    private void initNewFilters() throws JSONException{
+    private void initNewFilters() throws JSONException, InterDataBaseException, InterProcessException, InterEmailException{
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initNewFilters: Fin initNewFilters...");
         Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
         String keyFilter;
 
         while (itKeyFilters.hasNext()) {
             keyFilter = itKeyFilters.next();
+            
+            // Introducimos el filtro en el mapa si no existe
+            if(this.filterDaoMap.get(keyFilter) == null){
+                this.filterDaoMap.put(keyFilter, new UserSettings_SettingsFilterDAO(this.manager, keyFilter));
+                this.filterDaoMap.get(keyFilter).setActive(FILTER_DEFAULT_ACTIVE_VALUE);
+                this.filterDaoMap.get(keyFilter).setFrec(FILTER_DEFAULT_FREC_VALUE);
+            }
 
-            this.filterDaoMap.get(keyFilter).saveNewFilter();
+            try{
+                this.filterDaoMap.get(keyFilter).saveNewFilter();
+            } catch(UniformInterfaceException e) {
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Excepcion capturada Exception: " + e.getMessage());
+                this.snsObject.getExceptionManager().initControlException(e);  
+            }
         }
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - initNewFilters: Fin initNewFilters...");
@@ -521,13 +547,13 @@ public class UserSettingsDAO {
         newInstance.put("localeSettings", codeLocale);
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Nueva objeto a base de datos: " + newInstance.toString());
         try {
-            this.snsObject.getClient().userSettings_setNewEntityUserSettings(String.class, newInstance);
+            this.uid = this.snsObject.getClient().userSettings_setNewEntityUserSettings(String.class, newInstance);
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Inicializamos en base de datos los filtros...");
             initNewFilters();
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Filtros correctamente inicializados!!");
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Fin getNewInstanceUS...");
         } catch (UniformInterfaceException | JSONException e) {
-            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Excepcion capturada Exception: " + e.getMessage());
+             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getNewInstanceUS: Excepcion capturada Exception: " + e.getMessage());
             this.snsObject.getExceptionManager().initControlException(e);         
         }
         

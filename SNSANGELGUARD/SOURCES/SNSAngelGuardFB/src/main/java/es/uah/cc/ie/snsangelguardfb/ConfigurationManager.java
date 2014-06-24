@@ -32,7 +32,7 @@ public class ConfigurationManager {
     private static final String PATH_FILE_CONFIG = "/usr/local/snsangelguardfb/config/config.properties";
     
     /** Ruta al fichero de filtros activos */
-    private static final String PATH_FILE_FILTERS = "usr/local/snsangelguardfb/config/filters.xml";
+    private static final String PATH_FILE_FILTERS = "/usr/local/snsangelguardfb/config/filters.xml";
     
     /** Clave al host de la aplicacion en el fichero de configuracion */
     private static final String NAME_CONTEXT_APPLICATION = "configHostApplication";

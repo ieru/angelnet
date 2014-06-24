@@ -71,10 +71,7 @@ public class UserSettings implements Serializable {
         @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")})
     @ManyToMany
     private Collection<SettingsAngels> settingsAngelsCollection;
-    @JoinTable(name = "user_settings_has_settings_filter", joinColumns = {
-        @JoinColumn(name = "user_settings_uid", referencedColumnName = "uid")}, inverseJoinColumns = {
-        @JoinColumn(name = "settings_filter_id_filter", referencedColumnName = "id_filter")})
-    @ManyToMany
+    @ManyToMany(mappedBy = "settingsFilterCollection")
     private Collection<SettingsFilter> settingsFilterCollection;
     @JoinColumn(name = "locale_settings_id_locale", referencedColumnName = "id_locale")
     @ManyToOne(optional = false)

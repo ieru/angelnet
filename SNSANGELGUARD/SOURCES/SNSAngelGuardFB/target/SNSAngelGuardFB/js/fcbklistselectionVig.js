@@ -69,16 +69,7 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
 
     p=function(b){
         var lstAngeles;
-        
-        if ($('#hdFiltroActual').val() == '0') {
-            lstAngeles = $('#hdLstAngelsFltWall');
-        } else if ($('#hdFiltroActual').val() == '1') {
-            lstAngeles = $('#hdLstAngelsFltFriends');
-        } else if ($('#hdFiltroActual').val() == '2') {
-            lstAngeles = $('#hdLstAngelsFltPriv');
-        } else if ($('#hdFiltroActual').val() == '3') {
-            lstAngeles = $('#hdLstAngelsFltVist');
-        }
+        lstAngeles = $('#hdLstAngels' + $("#hdArrayKeysFilter")[$('#hdFiltroActual').val()]);
         var a = b.find("[type=hidden]").val();
         lstAngeles.attr("value", lstAngeles.val() + a + ";");
         return lstAngeles;

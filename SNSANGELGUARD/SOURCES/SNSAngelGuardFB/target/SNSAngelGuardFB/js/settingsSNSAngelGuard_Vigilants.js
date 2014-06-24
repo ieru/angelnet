@@ -196,29 +196,10 @@ function seleccionVig(idVigilante){
 
 function saveSelectionAngels(){
     var actualFilter = $('#hdFiltroActual').val();
-    
-    if(isAnyAngelForFilter()){
-        switch(actualFilter){
-            case '0':
-            if($('#hdActiveFltWall').val() === '1'){
-                $('#hdFrecFltWall').attr("value", $('#slcFrecuency').val());
-            }
-            break;
-            case '1':
-            if($('#hdActiveFltFriends').val() === '1'){
-                $('#hdFrecFltFriends').attr("value", $('#slcFrecuency').val());
-            }
-            break;
-            case '2':
-            if($('#hdActiveFltPriv').val() === '1'){
-                $('#hdFrecFltPriv').attr("value", $('#slcFrecuency').val());
-            }
-            break;
-            case '3':
-                if($('#hdActiveFltVist').val() === '1'){
-                $('#hdFrecFltVist').attr("value", $('#slcFrecuency').val());
-            }
-            break;
+
+    if (isAnyAngelForFilter()) {
+        if ($('#hdActive' + $("#hdArrayKeysFilter")[actualFilter]).val() === '1') {
+            $('#hdFrec+ $("#hdArrayKeysFilter")[actualFilter]').attr("value", $('#slcFrecuency').val());
         }
     }
 
@@ -243,16 +224,8 @@ function setVigActual(idContainerVig){
 }
 
 function getDesFiltroActual(){
-    switch($("#hdFiltroActual").val()){
-        case '0':
-            return 'FltWall';
-        case '1':
-            return 'FltFriends';
-        case '2':
-            return 'FltPriv';
-        case '3':
-            return 'FltVist';
-    }
+    
+    return $("#hdArrayKeysFilter")[$("#hdFiltroActual").val()];
 }
 
 function loadVigResources(nameVig, sentenceAlarm){
@@ -272,4 +245,52 @@ function loadVigResources(nameVig, sentenceAlarm){
 function loadTurnOnOffBottons(nameTurnOn, nameTurnOff){
     $("#hdTitleAltVigOn").attr("value", nameTurnOn);
     $("#hdTitleAltVigOff").attr("value", nameTurnOff);
+}
+
+function loadHTMLFilters(){
+    
+    var htmlTableVigilant ='<table id="tableContentNewVigilants" width="695px">';
+    
+    for(var i = 1 ; i <= $("#hdArrayKeysFilter").length; i++){
+        var htmlTRVigilant = '<tr>' +
+                '<td> <!--imagen del usuario del usuario--> ' +
+                '<div id="vigilantContainer' + i + 
+                '" class="vigilantContainer" onmouseover="this.className = "vigilantContainerOver"" onmouseout="this.className = "vigilantContainer"' +
+                'onclick="seleccionVig("vigilantContainer' + i +'");loadEstadoFiltro("' +$("#hdArrayKeysFilter")[i - 1] + '", "../SNSAngelGuardFB/resources/robots/robot' + i + '.png");">' +
+                '<table width="698px">' +
+                '<tr>' +
+                '<td>' +
+                '<figure class="user">' +
+                '<img id="imgContRobot' + i + '" src="../SNSAngelGuardFB/resources/robots/robot' + i + '.png" WIDTH="50" HEIGHT="72" alt="" />' +
+                '</figure>' + 
+                '<blockquote class="description arrowLeft"> <!--informacion del usuario-->' +
+                '<h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[' + i + ']%></h1>' +
+                '</blockquote>' +
+                '</td>' +
+                '<td width="35px" class="botonBox">' +
+                '<table>' +
+                '<tr>' +
+                '<td>' +
+                '<img id="imgTurnOnOff' + i + '" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />' +
+                '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>' +
+                '<img id="imgAlertNotAngels' + i + '" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />' +
+                '</td>' +
+                '</tr>' +
+                '</table>' +
+                '</td>' +
+                '</tr>' +
+                '</table>' +
+                '</div>' +
+                '</td>' +
+                '</tr>';
+        
+        htmlTableVigilant += htmlTRVigilant;
+    }
+     
+    htmlTableVigilant += '</table>'; 
+                                    
+    $("#vigilantDefinition").html(htmlTableVigilant);      
 }

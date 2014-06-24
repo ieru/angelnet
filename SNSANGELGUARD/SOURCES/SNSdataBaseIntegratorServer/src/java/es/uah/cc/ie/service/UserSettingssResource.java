@@ -83,7 +83,7 @@ public class UserSettingssResource {
             entity.setBackupCheck(new Date());
             createEntity(data.resolveEntity(em));
             persistenceSvc.commitTx();
-            return Response.created(uriInfo.getAbsolutePath().resolve(entity.getUid() + "/")).build();
+            return Response.status(Response.Status.OK).entity(entity.getUid().toString()).build();
         } finally {
             persistenceSvc.close();
         }
@@ -128,7 +128,7 @@ public class UserSettingssResource {
             localeSettings.getUserSettingsCollection().add(entity);
         }
         for (SettingsFilter value : entity.getSettingsFilterCollection()) {
-            value.getUserSettingsCollection().add(entity);
+            value.getSettingsFilterCollection().add(entity);
         }
         User user = entity.getUser();
         if (user != null) {

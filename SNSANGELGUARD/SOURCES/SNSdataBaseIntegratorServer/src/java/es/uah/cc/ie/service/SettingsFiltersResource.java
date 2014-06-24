@@ -85,7 +85,8 @@ public class SettingsFiltersResource {
             entity.setLastCheck(new Date());
             createEntity(data.resolveEntity(em));
             persistenceSvc.commitTx();
-            return Response.created(uriInfo.getAbsolutePath().resolve(entity.getIdFilter() + "/")).build();
+            
+            return Response.status(Response.Status.OK).entity(entity.getIdFilter().toString()).build();   
         } finally {
             persistenceSvc.close();
         }
@@ -97,8 +98,8 @@ public class SettingsFiltersResource {
      * @return an instance of SettingsFilterResource
      */
     @Path("{idFilter}/")
-    public SettingsFilterResource getSettingsfltWallResource(@PathParam("idFilter")
-    String id) {
+    public SettingsFilterResource getSettingsFilterResource(@PathParam("idFilter")
+    Integer id) {
         SettingsFilterResource settingsFilterResource = resourceContext.getResource(SettingsFilterResource.class);
         settingsFilterResource.setId(id);
         return settingsFilterResource;
@@ -126,7 +127,7 @@ public class SettingsFiltersResource {
             value.getSettingsFilterCollection().add(entity);
         }
 
-        for (UserSettings value : entity.getUserSettingsCollection()) {
+        for (UserSettings value : entity.getSettingsFilterCollection()) {
             value.getSettingsFilterCollection().add(entity);
         }
     }

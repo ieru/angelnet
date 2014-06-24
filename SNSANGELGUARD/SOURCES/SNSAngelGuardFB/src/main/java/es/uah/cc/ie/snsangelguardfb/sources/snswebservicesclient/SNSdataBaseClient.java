@@ -81,6 +81,10 @@ public class SNSdataBaseClient {
         return webResource.path("localeSettingss").path(uid).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T settingsFilter_getFiltersByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
+        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
     public <T> T settingsFilter_getFiltersByUserSettingsUid(Class<T> responseType, String uid) throws UniformInterfaceException {
         return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
@@ -96,7 +100,7 @@ public class SNSdataBaseClient {
     }
 
     public <T> T settingsFilter_updateFilterByIdFilter(Class<T> responseType, String idFilter, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
+        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
     }
 
     public <T> T settingsFilter_setLastCheckByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {

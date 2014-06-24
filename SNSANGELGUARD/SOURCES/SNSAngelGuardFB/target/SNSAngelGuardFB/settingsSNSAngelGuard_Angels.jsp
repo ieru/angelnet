@@ -60,7 +60,7 @@
                 createHiddenFilters("#frSNSAngels", '<%= controler.getListActiveFilters() %>');
             
                 loadInicioDatesAngels('<%= controler.getHdAngels() %>','<%= controler.getHdAngelsEd() %>','<%= controler.getHdAngelsGoogleSelected() %>',
-                '<%= controler.getJsonFiltersInfo() %>','<%= controler.getHdAngelsAux() %>','<%= controler.getJspResources().getArrayAltAngels() %>',
+                '<%= controler.getJsonFiltersInfo() %>','<%= controler.getListActiveFilters() %>', '<%= controler.getHdAngelsAux() %>','<%= controler.getJspResources().getArrayAltAngels() %>',
                 '<%= controler.getJspResources().getNameContact() %>','<%= controler.getJspResources().getEmailContact() %>',
                 '<%= controler.getJspResources().getConfirm() %>','<%= controler.getJspResources().getDelete() %>');
             });
@@ -75,6 +75,8 @@
             <input type="hidden" id="hdAngelsGoogleSelected" name="hdAngelsGoogleSelected" value="" />
             <input type="hidden" id="hdAngelsGoogleSelectedAux" name="hdAngelsGoogleSelectedAux" value="" />
             <input type="hidden" id="hdAngelsGoogleSelectedDel" name="hdAngelsGoogleSelectedDel" value="" />
+            <input type="hidden" id="hdJsonFilterInfo" name="hdJsonFilterInfo" value="" />
+            <input type="hidden" id="hdArrayKeysFilter" name="hdArrayKeysFilter" value="" />
             <input type="hidden" id="hdAngelsAux" name="hdAngelsAux" value="0" />
             <input type="hidden" id="hdAnadirContacto" name="hdAnadirContacto" value="" />
             <input type="hidden" id="hdEditarContacto" name="hdEditarContacto" value="" />

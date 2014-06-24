@@ -54,28 +54,29 @@
         <script type="text/javascript" charset="UTF-8" src="js/fcbklistselectionVig.js"></script>
 
         <script type="text/javascript" >
-          $(function() {
-                createHiddenFilters("#frSNSVigilants", '<%= controler.getListActiveFilters() %>');
-          
-                loadInicioDatesVigilants('<%= controler.getHdAngels() %>','<%= controler.getHdAngelsEd() %>','<%= controler.getHdAngelsGoogleSelected() %>',
-                    '<%= controler.getJsonFiltersInfo() %>','<%= controler.getHdAngelsAux() %>');
+            $(function() {
+                createHiddenFilters("#frSNSVigilants", '<%= controler.getListActiveFilters()%>');
 
-                loadTurnOnOffBottons('<%= controler.getJspResources().getTitleAltVigOn() %>', '<%= controler.getJspResources().getTitleAltVigOff() %>');
+                loadInicioDatesVigilants('<%= controler.getHdAngels()%>', '<%= controler.getHdAngelsEd()%>', '<%= controler.getHdAngelsGoogleSelected()%>',
+                        '<%= controler.getJsonFiltersInfo()%>', '<%= controler.getListActiveFilters()%>', '<%= controler.getHdAngelsAux()%>');
+                        
+                loadHTMLFilters();
 
-                loadVigResources('<%= controler.getJspResources().getArrayVig() %>','<%= controler.getJspResources().getTitleAlarmNoAngelsSelect() %>');    
-                    
-                loadTitleFcbList('<%= controler.getJspResources().getTitleFbList() %>','<%= controler.getJspResources().getTitleAngelSettAng() %>');
+                loadTurnOnOffBottons('<%= controler.getJspResources().getTitleAltVigOn()%>', '<%= controler.getJspResources().getTitleAltVigOff()%>');
+
+                loadVigResources('<%= controler.getJspResources().getArrayVig()%>', '<%= controler.getJspResources().getTitleAlarmNoAngelsSelect()%>');
+
+                loadTitleFcbList('<%= controler.getJspResources().getTitleFbList()%>', '<%= controler.getJspResources().getTitleAngelSettAng()%>');
                 setArrayAngels('<%= controler.getSnsObject().getStringUtilities().arrayToString(controler.getArrayAngels())%>');
-            });  
+            });
 
-            $(function(){
-                loadTitleFcbList('<%= controler.getJspResources().getTitleFbList() %>','<%= controler.getJspResources().getTitleAngelSettAng() %>');
+            $(function() {
+                loadTitleFcbList('<%= controler.getJspResources().getTitleFbList()%>', '<%= controler.getJspResources().getTitleAngelSettAng()%>');
                 setArrayAngels('<%= controler.getSnsObject().getStringUtilities().arrayToString(controler.getArrayAngels())%>');
 
-                loadStateFiltro('FltWall');
-                loadStateFiltro('FltFriends');
-                loadStateFiltro('FltPriv');
-                loadStateFiltro('FltVist');
+                for (var i = 0; $("hdArrayKeysFilter").length; i++) {
+                    loadStateFiltro($("hdArrayKeysFilter")[i]);
+                }
 
                 habilitarGuardar();
             });
@@ -94,152 +95,14 @@
             <input type="hidden" id="hdTitleAngelSettAng" name="hdTitleAngelSettAng" value="0" />
             <input type="hidden" id="hdTitleAltVigOn" name="hdTitleAltVigOn" value="" />
             <input type="hidden" id="hdTitleAltVigOff" name="hdTitleAltVigOff" value="" />
-            <input type="hidden" id="hdAlarmNotVig1" name="hdAlarmNotVig1" value="" />
-            <input type="hidden" id="hdAlarmNotVig2" name="hdAlarmNotVig2" value="" />
-            <input type="hidden" id="hdAlarmNotVig3" name="hdAlarmNotVig3" value="" />
-            <input type="hidden" id="hdAlarmNotVig4" name="hdAlarmNotVig4" value="" />
-            <input type="hidden" id="hdNameVig1" name="hdNameVig1" value="" />
-            <input type="hidden" id="hdNameVig2" name="hdNameVig2" value="" />
-            <input type="hidden" id="hdNameVig3" name="hdNameVig3" value="" />
-            <input type="hidden" id="hdNameVig4" name="hdNameVig4" value="" />
+            <input type="hidden" id="hdJsonFilterInfo" name="hdJsonFilterInfo" value="" />
+            <input type="hidden" id="hdArrayKeysFilter" name="hdArrayKeysFilter" value="" />
 
             <div id="vigilants" class="vigilants">
                 <table width="700px">
                     <tr>
                         <td>
-                            <table width="695px">
-                                <tr>
-                                    <td> <!--imagen del usuario del usuario--> 
-                                        <div id="vigilantContainer1" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
-                                             onclick="seleccionVig('vigilantContainer1');loadEstadoFiltro('FltWall','../SNSAngelGuardFB/resources/robots/robot1.png');">
-                                            <table width="698px">
-                                                <tr>
-                                                    <td>
-                                                        <figure class="user"> 
-                                                            <img id="imgContRobot1" src="../SNSAngelGuardFB/resources/robots/robot1.png" WIDTH="50" HEIGHT="72" alt="" />
-                                                        </figure> 
-                                                        <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
-                                                            <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[1]%></h1>
-                                                        </blockquote> 
-                                                    </td>
-                                                    <td width="35px" class="botonBox">
-                                                        <table>
-                                                            <tr>
-                                                                <td>
-                                                                    <img id="imgTurnOnOff1" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <img id="imgAlertNotAngels1" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </td>
-                                    <tr>
-                                        <td> <!--imagen del usuario del usuario--> 
-                                            <div id="vigilantContainer2" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
-                                                 onclick="seleccionVig('vigilantContainer2');loadEstadoFiltro('FltFriends','../SNSAngelGuardFB/resources/robots/robot2.png');">
-                                                <table width="698px">
-                                                    <tr>
-                                                        <td>
-                                                            <figure class="user"> 
-                                                                <img id="imgContRobot2" src="../SNSAngelGuardFB/resources/robots/robot2.png" WIDTH="50" HEIGHT="72" alt="" />
-                                                            </figure> 
-                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
-                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[2]%></h1>
-                                                            </blockquote> 
-                                                        </td>
-                                                        <td width="35px" class="botonBox">
-                                                            <table>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgTurnOnOff2" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgAlertNotAngels2" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> <!--imagen del usuario del usuario--> 
-                                            <div id="vigilantContainer3" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
-                                                 onclick="seleccionVig('vigilantContainer3');loadEstadoFiltro('FltPriv','../SNSAngelGuardFB/resources/robots/robot3.png');">
-                                                <table width="698px">
-                                                    <tr>
-                                                        <td>
-                                                            <figure class="user"> 
-                                                                <img id="imgContRobot3" src="../SNSAngelGuardFB/resources/robots/robot3.png" WIDTH="50" HEIGHT="72" alt="" />
-                                                            </figure> 
-                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
-                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[3]%></h1>
-                                                            </blockquote> 
-                                                        </td>
-                                                        <td width="35px" class="botonBox">
-                                                            <table>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgTurnOnOff3" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgAlertNotAngels3" style="display:none" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td> <!--imagen del usuario del usuario--> 
-                                            <div id="vigilantContainer4" class="vigilantContainer" onmouseover="this.className='vigilantContainerOver'" onmouseout="this.className='vigilantContainer'"
-                                                 onclick="seleccionVig('vigilantContainer4');loadEstadoFiltro('FltVist','../SNSAngelGuardFB/resources/robots/robot4.png');">
-                                                <table width="698px">
-                                                    <tr>
-                                                        <td>
-                                                            <figure class="user"> 
-                                                                <img id="imgContRobot4" src="../SNSAngelGuardFB/resources/robots/robot4.png" WIDTH="50" HEIGHT="72" alt="" />
-                                                            </figure> 
-                                                            <blockquote class="description arrowLeft"> <!--informacion del usuario--> 
-                                                                <h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[4]%></h1>
-                                                            </blockquote> 
-                                                        </td>
-                                                        <td width="35px" class="botonBox">
-                                                            <table>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgTurnOnOff4" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <img id="imgAlertNotAngels4" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                            </table>
+                            <div id="vigilantDefinition"></div>                            
                         </td>
                     </tr>
                     <tr>

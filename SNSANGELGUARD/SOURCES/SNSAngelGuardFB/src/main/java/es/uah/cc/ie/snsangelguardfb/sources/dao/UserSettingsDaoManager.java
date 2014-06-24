@@ -58,7 +58,7 @@ public class UserSettingsDaoManager {
      */
     public UserSettingsDaoManager(SNSAngelGuardFBManager snsObject) {
         this.snsObject = snsObject;
-        this.userSettingsDAO = new UserSettingsDAO();
+        this.userSettingsDAO = new UserSettingsDAO(snsObject);
     }
 
     /**

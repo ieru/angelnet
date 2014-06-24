@@ -921,19 +921,12 @@ function saveAngelEd(nameAngelEd,emailAngelEd){
 }
 
 function getIdFiltro(desFiltro){
-    var idCheck;
-
-    if(desFiltro == 'FltWall'){
-        idCheck = 1;
-    }else if(desFiltro == 'FltFriends'){
-        idCheck = 2;
-    }else if(desFiltro == 'FltPriv'){
-        idCheck = 3;
-    }else if(desFiltro == 'FltVist'){
-        idCheck = 4;
+    for (var i = 0; $("#hdArrayKeysFilter").length; i++) {
+       
+       if($("#hdArrayKeysFilter")[i] === desFiltro){
+           return i;
+       }
     }
-    
-    return idCheck;
 }
 
 function getAngelsListByFiltro(desFiltro){
@@ -1003,62 +996,11 @@ function habilitarCheck(desFiltro){
     }
 }
 
-function setCheckActual(idCheck){
-    if(idCheck == 'chkVig0'){
-        document.getElementById('hdFiltroActual').value = '0';
-    }else if(idCheck == 'chkVig1'){
-        document.getElementById('hdFiltroActual').value = '1';
-    }else if(idCheck == 'chkVig2'){
-        document.getElementById('hdFiltroActual').value = '2';
-    }else if(idCheck == 'chkVig3'){
-        document.getElementById('hdFiltroActual').value = '3';
-    }
-}
-
-function activarFiltro(idCheck){
-    if(idCheck == 'chkVig0'){
-        document.getElementById('hdActiveFltWall').value = '1';
-        document.getElementById('hdFiltroActual').value = '0';
-    }else if(idCheck == 'chkVig1'){
-        document.getElementById('hdActiveFltFriends').value = '1';
-        document.getElementById('hdFiltroActual').value = '1';
-    }else if(idCheck == 'chkVig2'){
-        document.getElementById('hdActiveFltPriv').value = '1';
-        document.getElementById('hdFiltroActual').value = '2';
-    }else if(idCheck == 'chkVig3'){
-        document.getElementById('hdActiveFltVist').value = '1';
-        document.getElementById('hdFiltroActual').value = '3';
-    }
-}
-
 function desactivarFltr(desFiltro){
 
     document.getElementById('hdActive' + desFiltro).value = '0';
     document.getElementById('hdFrec' + desFiltro).value = '3';
 }
-
-function desactivarFiltro(idCheck){
-    if(idCheck == 'chkVig0'){
-        desactivar('FltWall');
-    }else if(idCheck == 'chkVig1'){
-        desactivar('FltFriends');
-    }else if(idCheck == 'chkVig2'){
-        desactivar('FltPriv');
-    }else if(idCheck == 'chkVig3'){
-        desactivar('FltVist');
-    }
-}
-
-function deshabilitarCheck(idCheck){
-    document.getElementById(idCheck).disabled = "disabled";
-    document.getElementById(idCheck).onclick = "";
-
-    document.getElementById('slcFrecuency').disabled = "disabled";
-}
-
-
-
-
 
 function limpiarListaVigilantes(){
     for(var i = 1;i < 5; i++){
@@ -1103,20 +1045,6 @@ function formatLstAngelNames(){
     return auxArrayAngels;
 }
 
-function selectAllFilters(){
-    for(var i = 0;i < 4; i++){
-        var elemento = document.getElementById('chkVig'+i);
-        if(elemento){
-            if(document.getElementById('chkAllFilters').checked){
-                document.getElementById('chkVig'+i).checked = true;
-            }
-            else{
-                document.getElementById('chkVig'+i).checked = false;
-            }
-        }
-    }
-}
-
 function getDatesAngelFacebook(idAngel){
     var paramAngel = '';
     
@@ -1126,45 +1054,42 @@ function getDatesAngelFacebook(idAngel){
     return paramAngel;
 }
 
+function createJson(){
+    var jsonFilter = new Object();
+    
+    for(var i = 0; i < $("#hdArrayKeysFilter").length; i++){
+        var keyActive = "hdActive" + $("#hdArrayKeysFilter")[i];
+        var keyFrec = "hdFrec" + $("#hdArrayKeysFilter")[i];
+        var keyAngels = "hdLstAngels" + $("#hdArrayKeysFilter")[i];
+            
+        var jsonItem = new Object();
+        
+        if($("#" + keyActive).val() === "null")
+            jsonItem.keyActive = "";
+        else
+            jsonItem.keyActive = $("#" + keyActive).val();
+        
+        if($("#" + keyFrec).val() === "null")
+            jsonItem.keyFrec = "";
+        else
+            jsonItem.keyFrec = $("#" + keyFrec).val();
+        
+        if($("#" + keyAngels).val() === "null")
+            jsonItem.keyAngels = "";
+        else
+            jsonItem.keyAngels = $("#" + keyAngels).val();
+        
+        jsonFilter.$("#hdArrayKeysFilter")[1] = jsonItem;
+    }
+}
+
 function reloadAngels(){
     var paramSal = '';
 
     paramSal = 'hdAngels=' + encodeURIComponent(document.getElementById('hdAngels').value)
     + '&hdAngelsEd=' + encodeURIComponent(document.getElementById('hdAngelsEd').value)
-    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value);
-    
-    if(document.getElementById('hdLstAngelsFltWall').value === "null"){
-        paramSal = paramSal + '&hdLstAngelsFltWall=';
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltWall=' + encodeURIComponent(document.getElementById('hdLstAngelsFltWall').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltFriends').value === "null"){
-        paramSal = paramSal +  '&hdLstAngelsFltFriends=' ;
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltFriends=' + encodeURIComponent(document.getElementById('hdLstAngelsFltFriends').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltPriv').value === "null"){
-        paramSal = paramSal +  '&hdLstAngelsFltPriv=';
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltPriv=' + encodeURIComponent(document.getElementById('hdLstAngelsFltPriv').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltVist').value === "null"){
-        paramSal = paramSal + '&hdLstAngelsFltVist=';
-    }else{
-        paramSal = paramSal + '&hdLstAngelsFltVist=' + encodeURIComponent(document.getElementById('hdLstAngelsFltVist').value);
-    }    
-    
-    paramSal = paramSal + '&hdActiveFltWall=' + document.getElementById('hdActiveFltWall').value
-    + '&hdActiveFltFriends=' + document.getElementById('hdActiveFltFriends').value
-    + '&hdActiveFltPriv=' + document.getElementById('hdActiveFltPriv').value
-    + '&hdActiveFltVist=' + document.getElementById('hdActiveFltVist').value
-    + '&hdFrecFltWall=' + encodeURIComponent(document.getElementById('hdFrecFltWall').value)
-    + '&hdFrecFltFriends=' + encodeURIComponent(document.getElementById('hdFrecFltFriends').value)
-    + '&hdFrecFltPriv=' + encodeURIComponent(document.getElementById('hdFrecFltPriv').value)
-    + '&hdFrecFltVist=' + encodeURIComponent(document.getElementById('hdFrecFltVist').value)
+    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value)
+    + '&hdJsonFilterInfo=' + encodeURIComponent(createJson())
     + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value);
 
     return paramSal;
@@ -1174,57 +1099,11 @@ function loadAngels(){
     var paramSal;
     paramSal = 'hdAngels=' + encodeURIComponent(document.getElementById('hdAngels').value)
     + '&hdAngelsEd=' + encodeURIComponent(document.getElementById('hdAngelsEd').value)
-    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value);
-    
-    if(document.getElementById('hdLstAngelsFltWall').value === "null"){
-        paramSal = paramSal + '&hdLstAngelsFltWall=';
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltWall=' + encodeURIComponent(document.getElementById('hdLstAngelsFltWall').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltFriends').value === "null"){
-        paramSal = paramSal +  '&hdLstAngelsFltFriends=' ;
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltFriends=' + encodeURIComponent(document.getElementById('hdLstAngelsFltFriends').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltPriv').value === "null"){
-        paramSal = paramSal +  '&hdLstAngelsFltPriv=';
-    }else{
-        paramSal = paramSal +  '&hdLstAngelsFltPriv=' + encodeURIComponent(document.getElementById('hdLstAngelsFltPriv').value);
-    }
-    
-    if(document.getElementById('hdLstAngelsFltVist').value === "null"){
-        paramSal = paramSal + '&hdLstAngelsFltVist=';
-    }else{
-        paramSal = paramSal + '&hdLstAngelsFltVist=' + encodeURIComponent(document.getElementById('hdLstAngelsFltVist').value);
-    }    
-    
-    paramSal = paramSal + '&hdActiveFltWall=' + document.getElementById('hdActiveFltWall').value
-    + '&hdActiveFltFriends=' + document.getElementById('hdActiveFltFriends').value
-    + '&hdActiveFltPriv=' + document.getElementById('hdActiveFltPriv').value
-    + '&hdActiveFltVist=' + document.getElementById('hdActiveFltVist').value
-    + '&hdFrecFltWall=' + encodeURIComponent(document.getElementById('hdFrecFltWall').value)
-    + '&hdFrecFltFriends=' + encodeURIComponent(document.getElementById('hdFrecFltFriends').value)
-    + '&hdFrecFltPriv=' + encodeURIComponent(document.getElementById('hdFrecFltPriv').value)
-    + '&hdFrecFltVist=' + encodeURIComponent(document.getElementById('hdFrecFltVist').value)
+    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value)
+    + '&hdJsonFilterInfo=' + encodeURIComponent(createJson())
     + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value)
     
     return paramSal;
-}
-
-function obtenerFrecuencia(idSelect){
-    var objectFrec = document.getElementById(idSelect);
-
-    if(document.getElementById('vigilant0').className == 'pijama2'){
-        document.getElementById('hdFrecFltWall').value = objectFrec.value;
-    } else if(document.getElementById('vigilant1').className == 'pijama2'){
-        document.getElementById('hdFrecFltFriends').value = objectFrec.value;
-    } else if(document.getElementById('vigilant2').className == 'pijama2'){
-        document.getElementById('hdFrecFltPriv').value = objectFrec.value;
-    } else if(document.getElementById('vigilant3').className == 'pijama2'){
-        document.getElementById('hdFrecFltVist').value = objectFrec.value;
-    }
 }
 
 function lanzarPopup(url, ancho, alto) {
@@ -1419,19 +1298,15 @@ function isFilterActiveById(idActiveFilter, idAngelsFilter) {
 
 function isAnyAngelForFilter() {
 
-    if (isFilterActiveById("#hdActiveFltWall", '#hdLstAngelsFltWall'))
-        if (isFilterActiveById("#hdActiveFltFriends", '#hdLstAngelsFltFriends'))
-            if (isFilterActiveById("#hdActiveFltPriv", '#hdLstAngelsFltPriv'))
-                if (isFilterActiveById("#hdActiveFltVist", '#hdLstAngelsFltVist'))
-                    return true;
-                else
-                    return false;
-            else
-                return false;
-        else
+    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
+        var keyActive = "#hdActive" + $("#hdArrayKeysFilter")[i];
+        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+        
+        if(!isFilterActiveById(keyActive, keyAngels))
             return false;
-    else
-        return false;
+    }
+    
+    return true;
 }
 
 function isAnyAngelSave(){
@@ -1444,15 +1319,23 @@ function isAnyAngelSave(){
        }
 }
 
+function hasAngelForEachFilter() {
+
+    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
+        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+        
+        if(!$(keyAngels) === "")
+            return true;
+    }
+    
+    return false;
+}
+
 function isAnyAngelSelected(){
     if(document.getElementById('hdAngels').value != '' ||
         document.getElementById('hdAngelsGoogleSelected').value != '' ||
         document.getElementById('hdAngelsEd').value != ''){
-        if(document.getElementById('hdLstAngelsFltWall').value == '' &&
-            document.getElementById('hdLstAngelsFltFriends').value == '' &&
-            document.getElementById('hdLstAngelsFltPriv').value == '' &&
-            document.getElementById('hdLstAngelsFltVist').value == '' &&
-            document.getElementById('hdAngelsAux').value == ''){
+        if(!hasAngelForEachFilter && document.getElementById('hdAngelsAux').value == ''){
             return false;
         }else{
             return true;
@@ -1472,48 +1355,12 @@ function getDesFiltro(){
             break;
         }
     }
-
-    switch (numFiltro) {
-        case 0:
-            desFiltro = 'FltWall';
-            break;
-        case 1:
-            desFiltro = 'FltFriends';
-            break;
-        case 2:
-            desFiltro = 'FltPriv';
-            break;
-        case 3:
-            desFiltro = 'FltVist';
-            break;
-        default:
-            desFiltro = '';
-    }
-
-    return desFiltro;
+    
+    return $("#hdArrayKeysFilter")[numFiltro];
 }
 
 function getFiltro(id){
-    var desFiltro = '';
-
-    switch (id) {
-        case 0:
-            desFiltro = 'FltWall';
-            break;
-        case 1:
-            desFiltro = 'FltFriends';
-            break;
-        case 2:
-            desFiltro = 'FltPriv';
-            break;
-        case 3:
-            desFiltro = 'FltVist';
-            break;
-        default:
-            desFiltro = '';
-    }
-
-    return desFiltro;
+    return $("#hdArrayKeysFilter")[id];
 }
 
 function isAnyErrorId(idActual){
@@ -1594,18 +1441,6 @@ function saveSettings(menSave,menWait){
     document.getElementById('h1').value = encodeURIComponent(document.getElementById('hdAngels').value);
     document.getElementById('h2').value = encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value);
     document.getElementById('h3').value = encodeURIComponent(document.getElementById('hdAngelsEd').value);
-    document.getElementById('h4').value = encodeURIComponent(document.getElementById('hdLstAngelsFltWall').value);
-    document.getElementById('h5').value = encodeURIComponent(document.getElementById('hdLstAngelsFltFriends').value);
-    document.getElementById('h6').value = encodeURIComponent(document.getElementById('hdLstAngelsFltPriv').value);
-    document.getElementById('h7').value = encodeURIComponent(document.getElementById('hdLstAngelsFltVist').value);
-    document.getElementById('h8').value = encodeURIComponent(document.getElementById('hdActiveFltWall').value);
-    document.getElementById('h9').value = encodeURIComponent(document.getElementById('hdActiveFltFriends').value);
-    document.getElementById('h10').value = encodeURIComponent(document.getElementById('hdActiveFltPriv').value);
-    document.getElementById('h11').value = encodeURIComponent(document.getElementById('hdActiveFltVist').value);
-    document.getElementById('h12').value = encodeURIComponent(document.getElementById('hdFrecFltWall').value);
-    document.getElementById('h13').value = encodeURIComponent(document.getElementById('hdFrecFltFriends').value);
-    document.getElementById('h14').value = encodeURIComponent(document.getElementById('hdFrecFltPriv').value);
-    document.getElementById('h15').value = encodeURIComponent(document.getElementById('hdFrecFltVist').value);
 
     if(document.getElementById('frSNSVigilants')){
         document.getElementById('frSNSVigilants').setAttribute('action','checkNow.jsp');
@@ -1624,51 +1459,51 @@ function createHiddenFilters(idForm, arrayActiveFilter){
         $(idForm).append('<input type="hidden" id="hdActive' + arrayActiveFilter[i] + '" name="hdActive' + arrayActiveFilter[i] + '" value="0" />');
         $(idForm).append('<input type="hidden" id="hdFrec' + arrayActiveFilter[i] + '" name="hdFrec' + arrayActiveFilter[i] + '" value="0" />');
         $(idForm).append('<input type="hidden" id="hdLstAngels' + arrayActiveFilter[i] + '" name="hdLstAngels' + arrayActiveFilter[i] + '" value="" />');
+        
+        if(idForm === "#frSNSVigilants"){
+            var conVigilants = parseInt(i) + parseInt(1);
+            $(idForm).append('<input type="hidden" id="hdAlarmNotVig' + conVigilants + '" name="hdAlarmNotVig' + conVigilants +'" value="" />)');
+            $(idForm).append('<input type="hidden" id="hdNameVig' + conVigilants + '" name="hdNameVig' + conVigilants + '" value="" />');
+        }
     }
 }
 
+function loadFilterInfo(jsonInfo, arrayKeysInfo){
+    
+    for(var i=0; i < arrayKeysInfo.length; i++){
+        for(var result in jsonInfo.arrayKeysInfo[i]){
+            var keyActive = "hdActive" + arrayKeysInfo[i];
+            var keyFrec = "hdFrec" + arrayKeysInfo[i];
+            var keyAngels = "hdLstAngels" + arrayKeysInfo[i];
+            
+            if(result.keyActive === "null")
+                $("#" + keyActive).val("");
+            else
+                $("#" + keyActive).val(decodeURIComponent(result.keyActive));
+            
+            if(result.keyFrec === "null")
+                $("#" + keyFrec).val("");
+            else
+                $("#" + keyFrec).val(decodeURIComponent(result.keyFrec));
+            
+            if(result.keyAngels === "null")
+                $("#" + keyAngels).val("");
+            else
+                $("#" + keyAngels).val(decodeURIComponent(result.keyAngels));
+        }
+    }
+}
 
 function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
-    jsonInfoFilter, hdAngelsAux, arrayAltAngels, nameContact, emailContact, hdConfirm, hdDelete){
+    jsonInfoFilter, arrayKeysFilter, hdAngelsAux, arrayAltAngels, nameContact, emailContact, hdConfirm, hdDelete){
   
     document.getElementById('hdAngels').value = decodeURIComponent(angels);
     document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
     document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
+    document.getElementById('hdJsonFilterInfo').value = decodeURIComponent(jsonInfoFilter);
+    document.getElementById('hdArrayKeysFilter').value = decodeURIComponent(arrayKeysFilter);
+    loadFilterInfo(jsonInfoFilter, arrayKeysFilter);
     
-    
-    if(hdLstAngelsFltWall === "null"){
-        document.getElementById('hdLstAngelsFltWall').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltWall').value = decodeURIComponent(hdLstAngelsFltWall);
-    }
-    
-    if(hdLstAngelsFltFriends === "null"){
-        document.getElementById('hdLstAngelsFltFriends').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltFriends').value = decodeURIComponent(hdLstAngelsFltFriends);
-    }
-    
-    
-    if(hdLstAngelsFltPriv === "null"){
-        document.getElementById('hdLstAngelsFltPriv').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltPriv').value = decodeURIComponent(hdLstAngelsFltPriv);
-    }
-    
-    if(hdLstAngelsFltVist === "null"){
-        document.getElementById('hdLstAngelsFltVist').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltVist').value = decodeURIComponent(hdLstAngelsFltVist);
-    }
-    
-    document.getElementById('hdActiveFltWall').value = decodeURIComponent(hdActiveFltWall);
-    document.getElementById('hdActiveFltFriends').value = decodeURIComponent(hdActiveFltFriends);
-    document.getElementById('hdActiveFltPriv').value = decodeURIComponent(hdActiveFltPriv);
-    document.getElementById('hdActiveFltVist').value = decodeURIComponent(hdActiveFltVist);
-    document.getElementById('hdFrecFltWall').value = decodeURIComponent(hdFrecFltWall);
-    document.getElementById('hdFrecFltFriends').value = decodeURIComponent(hdFrecFltFriends);
-    document.getElementById('hdFrecFltPriv').value = decodeURIComponent(hdFrecFltPriv);
-    document.getElementById('hdFrecFltVist').value = decodeURIComponent(hdFrecFltVist);
     document.getElementById('hdAngelsAux').value = decodeURIComponent(hdAngelsAux);
 
     var arrayAlt = arrayAltAngels.split(";");
@@ -1684,45 +1519,16 @@ function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
 }
 
 function loadInicioDatesVigilants(angels,hdAngelsEd,hdAngelsGoogleSelected,
-    jsonInfoFilter, hdAngelsAux){
+    jsonInfoFilter, arrayKeysFilter, hdAngelsAux){
 
     document.getElementById('hdAngels').value = decodeURIComponent(angels);
     document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
     document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
 
-    if(hdLstAngelsFltWall === "null"){
-        document.getElementById('hdLstAngelsFltWall').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltWall').value = decodeURIComponent(hdLstAngelsFltWall);
-    }
-    
-    if(hdLstAngelsFltFriends === "null"){
-        document.getElementById('hdLstAngelsFltFriends').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltFriends').value = decodeURIComponent(hdLstAngelsFltFriends);
-    }
-    
-    
-    if(hdLstAngelsFltPriv === "null"){
-        document.getElementById('hdLstAngelsFltPriv').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltPriv').value = decodeURIComponent(hdLstAngelsFltPriv);
-    }
-    
-    if(hdLstAngelsFltVist === "null"){
-        document.getElementById('hdLstAngelsFltVist').value = "";
-    }else{
-        document.getElementById('hdLstAngelsFltVist').value = decodeURIComponent(hdLstAngelsFltVist);
-    }
-    
-    document.getElementById('hdActiveFltWall').value = decodeURIComponent(hdActiveFltWall);
-    document.getElementById('hdActiveFltFriends').value = decodeURIComponent(hdActiveFltFriends);
-    document.getElementById('hdActiveFltPriv').value = decodeURIComponent(hdActiveFltPriv);
-    document.getElementById('hdActiveFltVist').value = decodeURIComponent(hdActiveFltVist);
-    document.getElementById('hdFrecFltWall').value = decodeURIComponent(hdFrecFltWall);
-    document.getElementById('hdFrecFltFriends').value = decodeURIComponent(hdFrecFltFriends);
-    document.getElementById('hdFrecFltPriv').value = decodeURIComponent(hdFrecFltPriv);
-    document.getElementById('hdFrecFltVist').value = decodeURIComponent(hdFrecFltVist);
+    document.getElementById('hdJsonFilterInfo').value = decodeURIComponent(jsonInfoFilter);
+    document.getElementById('hdArrayKeysFilter').value = decodeURIComponent(arrayKeysFilter);
+    loadFilterInfo(jsonInfoFilter, arrayKeysFilter);
+
     document.getElementById('hdAngelsAux').value = decodeURIComponent(hdAngelsAux);
 }
 
@@ -2173,22 +1979,6 @@ function despInfScroll(idObjeto){
 
 }
 
-function getDesFiltroActivo(){
-    var des = '';  
-    
-    if(document.getElementById('vigilant0').className == 'pijama2'){
-        des = 'FltWall';
-    }else if(document.getElementById('vigilant1').className == 'pijama2'){
-        des = 'FltFriends';
-    }else if(document.getElementById('vigilant2').className == 'pijama2'){
-        des = 'FltPriv';
-    }else if(document.getElementById('vigilant3').className == 'pijama2'){
-        des = 'FltVist';
-    }
-    
-    return des;
-}
-
 function borrarItems(desFiltro){
     var itemEdBorrado = (document.getElementById("hdAngels" + desFiltro +"Aux").value).split(";");
     for(var i=0;i<itemEdBorrado.length - 1; i++){
@@ -2231,23 +2021,22 @@ function ocultarIconoAlerta(idVig){
 }
 
 function deleteAngelOfAllFilters(idItem){
-    borrarItemSelected(idItem, "#hdLstAngelsFltWall");
-    borrarItemSelected(idItem, "#hdLstAngelsFltFriends");
-    borrarItemSelected(idItem, "#hdLstAngelsFltPriv");
-    borrarItemSelected(idItem, "#hdLstAngelsFltVist");
+    
+    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
+        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+        
+        borrarItemSelected(idItem, keyAngels);
+    }
 }
 
 
 function borrarItemVigilants(idItem){
+    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
+        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
     
-    if($('#hdFiltroActual').val() === '0'){
-        borrarItemSelected(idItem, "#hdLstAngelsFltWall");
-    }else if($('#hdFiltroActual').val() === '1'){
-        borrarItemSelected(idItem, "#hdLstAngelsFltFriends");
-    }else if($('#hdFiltroActual').val() === '2'){
-        borrarItemSelected(idItem, "#hdLstAngelsFltPriv");
-    }else if($('#hdFiltroActual').val() === '3'){
-        borrarItemSelected(idItem, "#hdLstAngelsFltVist");
+        if ($('#hdFiltroActual').val() === i) {
+            borrarItemSelected(idItem, keyAngels);
+        }
     }
 
     habilitarGuardar();
