@@ -187,8 +187,6 @@ public class UserSettings_SettingsFilterDAO {
 
         if(this.uid != null){
             newObject.put("idFilter", this.uid);
-            jsonUri.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication() + "SNSdataBaseIntegratorServer/resources/userSettingss/" + this.getUid().toString() + "/");
-            newObject.put("userSettings", jsonUri);
         }
 
         logger.info(this.typeFilter + " - getObjectFilter: Fin getObjectFilter para el filtro " + typeFilter);
@@ -237,17 +235,17 @@ public class UserSettings_SettingsFilterDAO {
      * @throws ParseException
      * @throws java.text.ParseException
      */
-    public void loadSettingsFilter(JSONObject jsonFilter, JSONArray jsonArrayAngels, String des) throws JSONException, ParseException, java.text.ParseException {
-        logger.info(this.typeFilter + " - loadSettingsFilter: Inicio loadSettingsFilter para el filtro " + des);
-        this.setUid(new Double(jsonFilter.getString("userSettingsUid")).longValue());
-        this.setFrec(jsonFilter.getString("frec" + des));
-        this.setActive(jsonFilter.getString("active" + des));
+    public void loadSettingsFilter(JSONObject jsonFilter, JSONArray jsonArrayAngels) throws JSONException, ParseException, java.text.ParseException {
+        logger.info(this.typeFilter + " - loadSettingsFilter: Inicio loadSettingsFilter para el filtro " + this.typeFilter);
+        this.setUid(new Double(jsonFilter.getString("idFilter")).longValue());
+        this.setFrec(jsonFilter.getString("frecFilter"));
+        this.setActive(jsonFilter.getString("activeFilter"));
         this.setLastCheck(formatTime(jsonFilter.getString("lastCheck").replace("T", " ")));
         
         if (this.getActive().equals("1")) {
             loadAngelsFilter(jsonArrayAngels);
         }
-        logger.info(this.typeFilter + " - loadSettingsFilter: Fin loadSettingsFilter para el filtro " + des);
+        logger.info(this.typeFilter + " - loadSettingsFilter: Fin loadSettingsFilter para el filtro " + this.typeFilter);
     }
 
     /**
@@ -334,6 +332,7 @@ public class UserSettings_SettingsFilterDAO {
         jsonUserSettings.put(jsonUri);
 
         JSONObject jsonUriUserSettings = instanceFilter.getJSONObject("userSettingsCollection");
+
         jsonUriUserSettings.put("userSettings", jsonUserSettings);
 
         instanceFilter.put("userSettingsCollection", jsonUriUserSettings);
@@ -377,7 +376,7 @@ public class UserSettings_SettingsFilterDAO {
             JSONObject jsonUriUserSettings = new JSONObject();
             jsonUriUserSettings.put("settingsFilter", jsonUri);
 
-            jsonAngel.put("settingsFilterCollection", jsonUriUserSettings);
+            jsonAngel.put("settingsAngelsFilterCollection", jsonUriUserSettings);
         }
 
         // Retornamos el angel con las relaciones actualizadas

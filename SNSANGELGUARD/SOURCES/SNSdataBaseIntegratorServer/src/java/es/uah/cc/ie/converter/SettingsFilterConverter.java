@@ -186,8 +186,8 @@ public class SettingsFilterConverter {
     @XmlElement
     public UserSettingssConverter getUserSettingsCollection() {
         if (expandLevel > 0) {
-            if (entity.getSettingsFilterCollection() != null) {
-                return new UserSettingssConverter(entity.getSettingsFilterCollection(), uri.resolve("userSettingsCollection/"), expandLevel - 1);
+            if (entity.getUserSettingsCollection() != null) {
+                return new UserSettingssConverter(entity.getUserSettingsCollection(), uri.resolve("userSettingsCollection/"), expandLevel - 1);
             }
         }
         return null;
@@ -199,7 +199,7 @@ public class SettingsFilterConverter {
      * @param value the value to set
      */
     public void setUserSettingsCollection(UserSettingssConverter value) {
-        entity.setSettingsFilterCollection((value != null) ? value.getEntities() : null);
+        entity.setUserSettingsCollection((value != null) ? value.getEntities() : null);
     }
 
     /**
@@ -251,14 +251,14 @@ public class SettingsFilterConverter {
         }
         entity.setSettingsAngelsFilterCollection(newsettingsAngelsCollection);
         
-        Collection<UserSettings> userSettingsCollection = entity.getSettingsFilterCollection();
+        Collection<UserSettings> userSettingsCollection = entity.getUserSettingsCollection();
         Collection<UserSettings> newuserSettingsCollection = new java.util.ArrayList<UserSettings>();
         if (userSettingsCollection != null) {
             for(UserSettings userSettingsItem : userSettingsCollection) {
                 newuserSettingsCollection.add(em.getReference(UserSettings.class, userSettingsItem.getUid()));
             }
         }
-        entity.setSettingsFilterCollection(newuserSettingsCollection);
+        entity.setUserSettingsCollection(newuserSettingsCollection);
         
         return entity;
     }

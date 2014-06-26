@@ -1086,11 +1086,9 @@ public class UserSettingsDAO {
                                 }
                             } catch (UnsupportedEncodingException ex) {
                                 Exceptions.printStackTrace(ex);
-                            } catch (UniformInterfaceException ex) {
+                            } catch (UniformInterfaceException | MessagingException ex) {
                                 Exceptions.printStackTrace(ex);
                             } catch (IOException ex) {
-                                Exceptions.printStackTrace(ex);
-                            } catch (MessagingException ex) {
                                 Exceptions.printStackTrace(ex);
                             }
                         } catch (java.security.NoSuchProviderException ex) {
@@ -1344,19 +1342,26 @@ public class UserSettingsDAO {
         JSONArray jsonAngFilter;
         Long uidLong = (new Double(this.getUid())).longValue();
 
-        Iterator<String> itKeysFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        Iterator<String> it = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+        
         String keyFilter;
         
-        while (itKeysFilter.hasNext()) {
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Actualizando filtro " + itKeysFilter.next() + "...");
-            keyFilter = itKeysFilter.next();
+        while (it.hasNext()) {
+            keyFilter = it.next();
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Actualizando filtro " + keyFilter + "...");
             
             // Obtenemos el objeto JSON del filtro
-            newInstanceFilter = this.filterDaoMap.get(keyFilter).getObjectFilter();
+            String resultFilter = this.manager.getSnsObject().getClient().settingsFilter_getFiltersByIdFilter(String.class, this.filterDaoMap.get(keyFilter).getUid().toString());
+            JSONObject resultNewInstanceFilter = new JSONObject(resultFilter);
+            
+            // Seteamos los valores a guardar
+            resultNewInstanceFilter.put("activeFilter", this.filterDaoMap.get(keyFilter).getActive());
+            resultNewInstanceFilter.put("frecFilter", this.filterDaoMap.get(keyFilter).getFrec());
+            newInstanceFilter = this.filterDaoMap.get(keyFilter).getFilterWithRelationshipWithUserSettings(resultNewInstanceFilter, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid());
             
             try {
                 // Actualizamos la informacion del filtro en base de datos
-                this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, uidLong.toString(), newInstanceFilter);
+                this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, newInstanceFilter.getString("idFilter"), newInstanceFilter);
             } catch (UniformInterfaceException e) {
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
                 
@@ -1533,12 +1538,32 @@ public class UserSettingsDAO {
         }
     }
     
+    public JSONArray getFiltersUserFromDB(){
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFiltersUserFromDB: Inicio getFiltersUserFromDB...");
+        JSONArray resultFilters = new JSONArray();
+        
+        try {
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFiltersUserFromDB: Accediendo a base de datos para obtener los filtros...");
+            JSONObject jsonFiltersUserSettings = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid().toString()));
+            
+            resultFilters = jsonFiltersUserSettings.getJSONArray("settingsFilter");
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFiltersUserFromDB: Filtros obtenidos!!");
+        } catch (JSONException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFiltersUserFromDB: Se ha producido un error al obtener los filtros del usuario: " + ex.getCause());
+        }
+        
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getFiltersUserFromDB: Fin getFiltersUserFromDB!!");
+        return resultFilters;
+    }
+    
     /**
      * Carga toda la funcionalidad de la aplicacion para los filtros definidos.
      * 
      */
     private void loadFullFuntionalityFilter(){
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFullFuntionalityFilter: Inicio loadFullFuntionalityFilter...");
+        
+        JSONArray arrayFilters = getFiltersUserFromDB();
         
         Iterator<String> itFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
         String desFilter;
@@ -1548,7 +1573,7 @@ public class UserSettingsDAO {
             desFilter = itFilter.next();
             try {
                 // Cargamos el filtro
-                loadFilter(desFilter);
+                loadFilter(desFilter, arrayFilters);
             } catch (JSONException | ParseException | java.text.ParseException ex) {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFullFuntionalityFilter: Se ha producido un error al cargar los filtros...");
             }
@@ -1563,27 +1588,28 @@ public class UserSettingsDAO {
      * @param des Identificador de filtro.
      * @throws JSONException
      */
-    public void loadFilter(String des) throws JSONException, ParseException, java.text.ParseException {
+    public void loadFilter(String des, JSONArray arrayFilters) throws JSONException, ParseException, java.text.ParseException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Inicio loadFilter para " + des);
         JSONObject jsonFilter;
-        JSONObject jsonAngels;
         JSONArray jsonArrayAngels;
-        Long uidLong = (new Double(this.getUid())).longValue();
 
-        // Obtenemos el filtro y sus angeles de base de datos
-        jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, uidLong.toString(), des));
-        jsonAngels = new JSONObject(this.snsObject.getClient().settingsFilter_getAngelsCollectionByIdFilter(String.class, jsonFilter.getString("idFilter")));
+        for(int i = 0; i < arrayFilters.length(); i++){
+            jsonFilter = arrayFilters.getJSONObject(i);
+            
+            if(jsonFilter.getString("typeFilter").equals(des)){
 
-        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
-        jsonArrayAngels = this.getJSONArray(jsonAngels.getString("settingsAngels"));
-        logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Array de angeles: " + jsonArrayAngels.toString());
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Angeles para el filtro " + des + " cargados");
+                jsonArrayAngels = (new JSONObject(this.snsObject.getClient().settingsFilter_getAngelsCollectionByIdFilter(String.class, jsonFilter.getString("idFilter")))).getJSONArray("settingsAngels");
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Array de angeles: " + jsonArrayAngels.toString());
         
-        // Creamos el filtro y lo metemos en el mapa
-        UserSettings_SettingsFilterDAO filter = new UserSettings_SettingsFilterDAO(this.manager, des);
-        this.filterDaoMap.put(des, filter);
+                 // Creamos el filtro y lo metemos en el mapa
+                UserSettings_SettingsFilterDAO filter = new UserSettings_SettingsFilterDAO(this.manager, des);
+                this.filterDaoMap.put(des, filter);
 
-        // Cargamos el resto de caracteristicas del filtro
-        this.filterDaoMap.get(des).loadSettingsFilter(jsonFilter, jsonArrayAngels, des);
+                // Cargamos el resto de caracteristicas del filtro
+                this.filterDaoMap.get(des).loadSettingsFilter(jsonFilter, jsonArrayAngels);
+            }
+        }
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadFilter: Fin loadFilter para " + des);
     }
@@ -1607,7 +1633,7 @@ public class UserSettingsDAO {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
         }
-        jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, uidLong.toString(), desFilter));
+        jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFiltersByIdFilter(String.class, jsonFilter.getString("idFilter")));
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Fin updateFilter para " + desFilter);
         return jsonFilter;
@@ -1682,7 +1708,7 @@ public class UserSettingsDAO {
         } catch (UniformInterfaceException e) {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateLastCheckUS: Fecha BackUpCheck actualizada...");
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateLastCheckUS: Excepcion capturada UniformInterfaceException: " + e.getMessage());
-        }
+        } 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateBackUpCheckUS: Fin updateBackUpCheckUS...");
     }
 

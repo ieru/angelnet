@@ -340,13 +340,24 @@ div.vigilants{
 
 div.vigilantsContent{
     width:182px;
-    height:542px;
+    height:550px;
     overflow-y:scroll;
     border: 1px solid #CCC;
 }
 
 div.vigilantSettingsNone{
     display: none;
+}
+
+div.wrapperVigilantDefinition{
+    width:690px;
+    overflow: hidden;
+}
+
+div.vigilantDefinition{
+    width:710px;
+    height:340px;
+    overflow-y: scroll;
 }
 
 div.vigilantSettings{

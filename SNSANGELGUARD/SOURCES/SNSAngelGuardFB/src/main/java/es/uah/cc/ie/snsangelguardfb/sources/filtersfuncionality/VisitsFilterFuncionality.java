@@ -5,6 +5,7 @@ import bsh.ParseException;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FacebookUrlStadistics;
 import es.uah.cc.ie.snsangelguardfb.facebookclient.data.FriendsFacebook;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
+import es.uah.cc.ie.snsangelguardfb.sources.dao.entity.UserSettingsDAO;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -26,6 +29,9 @@ import org.openide.util.Exceptions;
  * @author tote
  */
 public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter {
+    
+    /** Imagen estandar para contactos no pertenecientes a Facebook */
+    private static final String IMG_STANDAR_ANGEL = "../SNSAngelGuardFB/resources/perfilStandar.gif";
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(VisitsFilterFuncionality.class);
@@ -87,7 +93,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkVisitFilter: Fin checkVisitFilter...");
         return result;
     }
-
+    
     /**
      * Devolvera una lista con los primeros diez contactos con los que mas contactos
      * compartimos en Facebook. Cada entrada de la lista contendra la foto del contacto
@@ -101,7 +107,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
 
         try {
 
-            String query = "SELECT name,pic_square,mutual_friend_count FROM user WHERE uid in (SELECT uid1 FROM friend WHERE uid2=me()) ORDER BY mutual_friend_count DESC ";
+            String query = "SELECT uid,name,pic_square,mutual_friend_count FROM user WHERE uid in (SELECT uid1 FROM friend WHERE uid2=me()) ORDER BY mutual_friend_count DESC ";
 
             List<FacebookUrlStadistics> visits = this.snsObject.getFacebookQueryClient().executeQuery(query, FacebookUrlStadistics.class);
 
@@ -112,10 +118,12 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                     + "</div><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr><tr><td><table width=\"97%\">";
 
             for(int i = 0; i < longComm; i++){
+                // Obtenemos la clave cifrada para el amigo
+                String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(visits.get(i).toJson().getString("uid"));
 
                 resultado = resultado + "<tr>"
-                                            + "<td width=100px><img src='" + visits.get(i).toJson().getString("pic_square") + "'/></td>"
-                                            + "<td width='286px'>" + visits.get(i).toJson().getString("name") + "</td>"
+                                            + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "'/></td>"
+                                            + "<td width='286px'>" + uidCifrada + "</td>"
                                             + "<td width='286px'>" + visits.get(i).toJson().getString("mutual_friend_count") + "</td>"
                                       + "</tr>";
             }
@@ -142,7 +150,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
 
         try {
 
-            String query = "SELECT name,pic_square,mutual_friend_count FROM user WHERE uid in (SELECT uid1 FROM friend WHERE uid2=me()) ORDER BY mutual_friend_count ASC ";
+            String query = "SELECT uid,name,pic_square,mutual_friend_count FROM user WHERE uid in (SELECT uid1 FROM friend WHERE uid2=me()) ORDER BY mutual_friend_count ASC ";
 
             List<FacebookUrlStadistics> visits = this.snsObject.getFacebookQueryClient().executeQuery(query, FacebookUrlStadistics.class);
 
@@ -153,10 +161,13 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                     + "</div><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr><tr><td><table width=\"97%\">";
 
             for(int i = 0; i < longComm; i++){
+                
+                // Obtenemos la clave cifrada para el amigo
+                String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(visits.get(i).toJson().getString("uid"));
 
                 resultado = resultado + "<tr>"
-                                            + "<td width=100px><img src='" + visits.get(i).toJson().getString("pic_square") + "'/></td>"
-                                            + "<td width='286px'>" + visits.get(i).toJson().getString("name") + "</td>"
+                                            + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "'/></td>"
+                                            + "<td width='286px'>" + uidCifrada + "</td>"
                                             + "<td width='286px'>" + visits.get(i).toJson().getString("mutual_friend_count") + "</td>"
                                       + "</tr>";
             }
@@ -351,10 +362,13 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                 String query = "SELECT uid,name,birthday_date,pic_square FROM user WHERE uid=" + lstKey.get(i);
 
                 List<FriendsFacebook> friendsFacebookList = this.snsObject.getFacebookQueryClient().executeQuery(query, FriendsFacebook.class);
+                
+                // Obtenemos la clave cifrada para el amigo
+                String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(friendsFacebookList.get(0).getUid());
 
                 resultado = resultado + "<tr>"
-                        + "<td width=100px><img src='" + friendsFacebookList.get(0).getPicSquare() + "'/></td>"
-                        + "<td width='286px'>" + friendsFacebookList.get(0).getName() + "</td>"
+                        + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "'/></td>"
+                        + "<td width='286px'>" + uidCifrada + "</td>"
                         + "<td width='286px'>" + lstVal.get(i) + "</td>"
                         + "</tr>";
             }
@@ -372,7 +386,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
      * @return HashMap con los valores del JSONArray.
      */
     private HashMap<String,Integer> parseJsonArrayToMap(JSONArray jsonArray){
-        HashMap<String, Integer> mapArray = new HashMap<String, Integer>();
+        HashMap<String, Integer> mapArray = new HashMap<>();
 
         for(int i = 0; i < jsonArray.length(); i++){
             try {

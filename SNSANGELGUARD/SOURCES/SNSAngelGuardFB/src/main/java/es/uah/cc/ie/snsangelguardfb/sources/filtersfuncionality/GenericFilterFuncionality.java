@@ -9,6 +9,7 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
+import es.uah.cc.ie.snsangelguardfb.sources.dao.entity.UserSettingsDAO;
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_DESFILTER;
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_FIRSTCHECK;
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_JSONFILTER;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -95,7 +98,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
     public boolean isActiveFilter(String desFilter) {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isActiveFilter: Comprobando si el filtro " + desFilter + " esta activo...");
         
-        boolean activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(desFilter).getFrec().equals("1");
+        boolean activeFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(desFilter).getActive().equals("1");
 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isActiveFilter: Filtro " + desFilter + " activo: " + activeFilter);
 
@@ -143,8 +146,11 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
         boolean isActiveFilter;
         String result = "";
 
+        // Obtenemos todos los filtros
+        JSONArray arrayFilters = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFiltersUserFromDB();
+        
         // Cargamos el filtro a ejecutar
-        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().loadFilter(desFilter);
+        this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().loadFilter(desFilter, arrayFilters);
         
         // Obtenemos si el filtro cargado esta activo
         try {
@@ -477,4 +483,26 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
             this.filterActiveMap.put(strFilter, iFilter);
         }
     }  
+    
+    /**
+     * Realiza el cifrado del identificador de un amigo para ser mandado por
+     * email y as? respetar su intimidad.
+     *
+     * @param uidFriend Identificador en Facebook del amigo.
+     * @return UID Cifrada en Base 64
+     */
+    public String cifrarUIDFriend(String uidFriend) {
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - cifrarUIDFriend: Inicio cifrarUIDFriend para el amigo: " + uidFriend);
+        String uidCifrada = "";
+
+        try {
+            uidCifrada = UserSettingsDAO.cifrar(uidFriend);
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - cifrarUIDFriend: UID cifrado " + uidCifrada + " para el amigo: " + uidFriend);
+        } catch (DataLengthException | IllegalStateException | InvalidCipherTextException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getMutualFriends: Excepcion capturada del tipo " + ex.getClass() + ": " + ex.getMessage());
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getMutualFriends: No se ha podido cifrar el identificador del amigo...");
+        }
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - cifrarUIDFriend: Fin cifrarUIDFriend para el amigo: " + uidFriend);
+        return uidCifrada;
+    }
 }

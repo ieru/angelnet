@@ -18,6 +18,9 @@ import org.openide.util.Exceptions;
  */
 public class FacebookUrlStadistics extends GenericDataFacebook {
 
+    @Facebook("uid")
+    String uid;
+    
     @Facebook("name")
     String name;
 
@@ -36,6 +39,7 @@ public class FacebookUrlStadistics extends GenericDataFacebook {
             JSONObject json = null;
             json = new JSONObject();
 
+            json.put("uid", this.uid);
             json.put("name", this.name);
             json.put("pic_square", this.picSquare);
             json.put("friend_count", this.friendCount);

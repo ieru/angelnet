@@ -55,11 +55,8 @@ public class SettingsFilter implements Serializable {
     @Basic(optional = false)
     @Column(name = "type_filter")
     private String typeFilter;
-    @JoinTable(name = "user_settings_has_settings_filter", joinColumns = {
-        @JoinColumn(name = "settings_filter_id_filter", referencedColumnName = "id_filter")}, inverseJoinColumns = {
-        @JoinColumn(name = "user_settings_uid", referencedColumnName = "uid")})
-    @ManyToMany
-    private Collection<UserSettings> settingsFilterCollection;
+    @ManyToMany(mappedBy = "settingsFilterCollection")
+    private Collection<UserSettings> userSettingsCollection;
     @JoinTable(name = "settings_filter_has_settings_angels", joinColumns = {
         @JoinColumn(name = "settings_filter_id_filter", referencedColumnName = "id_filter")}, inverseJoinColumns = {
         @JoinColumn(name = "settings_angels_uid_angel", referencedColumnName = "uid_angel")})
@@ -130,12 +127,12 @@ public class SettingsFilter implements Serializable {
         this.settingsAngelsFilterCollection = settingsAngelsFilterCollection;
     }
 
-    public Collection<UserSettings> getSettingsFilterCollection() {
-        return settingsFilterCollection;
+    public Collection<UserSettings> getUserSettingsCollection() {
+        return userSettingsCollection;
     }
 
-    public void setSettingsFilterCollection(Collection<UserSettings> settingsFilterCollection) {
-        this.settingsFilterCollection = settingsFilterCollection;
+    public void setUserSettingsCollection(Collection<UserSettings> settingsFilterCollection) {
+        this.userSettingsCollection = settingsFilterCollection;
     }
 
     @Override

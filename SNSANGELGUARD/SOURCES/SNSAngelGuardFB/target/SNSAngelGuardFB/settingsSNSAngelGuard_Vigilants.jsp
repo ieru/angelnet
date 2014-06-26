@@ -60,7 +60,7 @@
                 loadInicioDatesVigilants('<%= controler.getHdAngels()%>', '<%= controler.getHdAngelsEd()%>', '<%= controler.getHdAngelsGoogleSelected()%>',
                         '<%= controler.getJsonFiltersInfo()%>', '<%= controler.getListActiveFilters()%>', '<%= controler.getHdAngelsAux()%>');
                         
-                loadHTMLFilters();
+                loadHTMLFilters('<%= controler.getSnsObject().getStringUtilities().simpleArrayToString(controler.getJspResources().getArrayDes()) %>');
 
                 loadTurnOnOffBottons('<%= controler.getJspResources().getTitleAltVigOn()%>', '<%= controler.getJspResources().getTitleAltVigOff()%>');
 
@@ -74,8 +74,9 @@
                 loadTitleFcbList('<%= controler.getJspResources().getTitleFbList()%>', '<%= controler.getJspResources().getTitleAngelSettAng()%>');
                 setArrayAngels('<%= controler.getSnsObject().getStringUtilities().arrayToString(controler.getArrayAngels())%>');
 
-                for (var i = 0; $("hdArrayKeysFilter").length; i++) {
-                    loadStateFiltro($("hdArrayKeysFilter")[i]);
+                var keysFilterArray = $("#hdArrayKeysFilter").val().split(";");
+                for (var i = 1; i <= keysFilterArray.length; i++) {
+                    loadStateFiltro(keysFilterArray[parseInt(i) - parseInt(1)]);
                 }
 
                 habilitarGuardar();
@@ -99,10 +100,12 @@
             <input type="hidden" id="hdArrayKeysFilter" name="hdArrayKeysFilter" value="" />
 
             <div id="vigilants" class="vigilants">
-                <table width="700px">
+                <table width="650px">
                     <tr>
                         <td>
-                            <div id="vigilantDefinition"></div>                            
+                            <div id="wrapperVigilantDefinition" class="wrapperVigilantDefinition">
+                                <div id="vigilantDefinition" class="vigilantDefinition"></div>                            
+                            </div>
                         </td>
                     </tr>
                     <tr>

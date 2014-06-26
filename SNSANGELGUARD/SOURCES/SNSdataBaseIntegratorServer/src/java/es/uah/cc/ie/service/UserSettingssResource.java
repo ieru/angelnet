@@ -128,7 +128,7 @@ public class UserSettingssResource {
             localeSettings.getUserSettingsCollection().add(entity);
         }
         for (SettingsFilter value : entity.getSettingsFilterCollection()) {
-            value.getSettingsFilterCollection().add(entity);
+            value.getUserSettingsCollection().add(entity);
         }
         User user = entity.getUser();
         if (user != null) {

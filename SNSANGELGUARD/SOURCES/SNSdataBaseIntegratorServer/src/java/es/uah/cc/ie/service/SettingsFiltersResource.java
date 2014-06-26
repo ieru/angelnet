@@ -127,7 +127,7 @@ public class SettingsFiltersResource {
             value.getSettingsFilterCollection().add(entity);
         }
 
-        for (UserSettings value : entity.getSettingsFilterCollection()) {
+        for (UserSettings value : entity.getUserSettingsCollection()) {
             value.getSettingsFilterCollection().add(entity);
         }
     }

@@ -13,7 +13,6 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
-import es.uah.cc.ie.snsangelguardfb.sources.dao.entity.UserSettings_SettingsFilterDAO;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources.SettingsSNSAngelGuardJSPControlerResources;
 import java.io.IOException;
@@ -184,23 +183,6 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
                 // Nuevo usuario en la aplicacion
                 this.snsObject.setInicio(true);
                 String uid = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid();
-
-                Long uidLong = (new Double(uid)).longValue();
-
-                Iterator<String> itKeyFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
-                String keyFilter;
-               /** UserSettings_SettingsFilterDAO newFilter;
-                
-                while (itKeyFilters.hasNext()) {
-                    keyFilter = itKeyFilters.next();
-                    
-                    // Seteamos en cada filtro los valores por defecto
-                    newFilter = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter);
-                    newFilter.setActive(FILTER_DEFAULT_ACTIVE_VALUE);
-                    newFilter.setAngels(FILTER_DEFAULT_ANGELS_VALUE);
-                    newFilter.setFrec(FILTER_DEFAULT_FREC_VALUE);
-                    newFilter.setLastCheck(new Date());
-                }*/
 
                 this.snsObject.setInicio(true);
 

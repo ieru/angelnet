@@ -69,7 +69,9 @@ $.fcbkListSelection=function(d,h,j,k,title1,title2,title3){
 
     p=function(b){
         var lstAngeles;
-        lstAngeles = $('#hdLstAngels' + $("#hdArrayKeysFilter")[$('#hdFiltroActual').val()]);
+        var arrayKeysFilter = $("#hdArrayKeysFilter").val().split(";");
+        
+        lstAngeles = $('#hdLstAngels' + arrayKeysFilter[$('#hdFiltroActual').val()]);
         var a = b.find("[type=hidden]").val();
         lstAngeles.attr("value", lstAngeles.val() + a + ";");
         return lstAngeles;

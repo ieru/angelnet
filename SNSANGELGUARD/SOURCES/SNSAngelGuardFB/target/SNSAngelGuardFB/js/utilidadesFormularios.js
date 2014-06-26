@@ -921,10 +921,11 @@ function saveAngelEd(nameAngelEd,emailAngelEd){
 }
 
 function getIdFiltro(desFiltro){
-    for (var i = 0; $("#hdArrayKeysFilter").length; i++) {
-       
-       if($("#hdArrayKeysFilter")[i] === desFiltro){
-           return i;
+    var arrayKeys = $("#hdArrayKeysFilter").val().split(";");
+    
+    for (var i = 0; i < arrayKeys.length; i++) {
+       if(arrayKeys[i] === desFiltro){
+           return parseInt(i) + parseInt(1);
        }
     }
 }
@@ -1054,33 +1055,32 @@ function getDatesAngelFacebook(idAngel){
     return paramAngel;
 }
 
-function createJson(){
-    var jsonFilter = new Object();
-    
-    for(var i = 0; i < $("#hdArrayKeysFilter").length; i++){
-        var keyActive = "hdActive" + $("#hdArrayKeysFilter")[i];
-        var keyFrec = "hdFrec" + $("#hdArrayKeysFilter")[i];
-        var keyAngels = "hdLstAngels" + $("#hdArrayKeysFilter")[i];
-            
-        var jsonItem = new Object();
+function createJson(salida){
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
+
+    for(var i = 0; i < arrayFilters.length; i++){
+        var keyActive = "hdActive" + arrayFilters[i];
+        var keyFrec = "hdFrec" + arrayFilters[i];
+        var keyAngels = "hdLstAngels" + arrayFilters[i];
+        
         
         if($("#" + keyActive).val() === "null")
-            jsonItem.keyActive = "";
+            salida = salida + "&" + keyActive + "=";
         else
-            jsonItem.keyActive = $("#" + keyActive).val();
+            salida = salida + "&" + keyActive + "=" + encodeURIComponent($("#" + keyActive).val());
         
         if($("#" + keyFrec).val() === "null")
-            jsonItem.keyFrec = "";
+            salida = salida + "&" + keyFrec + "=";
         else
-            jsonItem.keyFrec = $("#" + keyFrec).val();
+            salida = salida + "&" + keyFrec + "=" + encodeURIComponent($("#" + keyFrec).val());
         
         if($("#" + keyAngels).val() === "null")
-            jsonItem.keyAngels = "";
+            salida = salida + "&" + keyAngels + "=";
         else
-            jsonItem.keyAngels = $("#" + keyAngels).val();
-        
-        jsonFilter.$("#hdArrayKeysFilter")[1] = jsonItem;
+            salida = salida + "&" + keyAngels + "=" + encodeURIComponent($("#" + keyAngels).val());    
     }
+    
+    return salida;
 }
 
 function reloadAngels(){
@@ -1088,9 +1088,9 @@ function reloadAngels(){
 
     paramSal = 'hdAngels=' + encodeURIComponent(document.getElementById('hdAngels').value)
     + '&hdAngelsEd=' + encodeURIComponent(document.getElementById('hdAngelsEd').value)
-    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value)
-    + '&hdJsonFilterInfo=' + encodeURIComponent(createJson())
-    + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value);
+    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value);
+    paramSal = createJson(paramSal);
+    paramSal = paramSal + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value);
 
     return paramSal;
 }
@@ -1099,10 +1099,10 @@ function loadAngels(){
     var paramSal;
     paramSal = 'hdAngels=' + encodeURIComponent(document.getElementById('hdAngels').value)
     + '&hdAngelsEd=' + encodeURIComponent(document.getElementById('hdAngelsEd').value)
-    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value)
-    + '&hdJsonFilterInfo=' + encodeURIComponent(createJson())
-    + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value)
-    
+    + '&hdAngelsGoogleSelected=' + encodeURIComponent(document.getElementById('hdAngelsGoogleSelected').value);
+    paramSal = createJson(paramSal);
+    paramSal = paramSal + '&hdAngelsAux=' + encodeURIComponent(document.getElementById('hdAngelsAux').value);
+
     return paramSal;
 }
 
@@ -1284,12 +1284,16 @@ function isDupEmail(emailTutor){
 
 function isFilterActiveById(idActiveFilter, idAngelsFilter) {
     if ($(idActiveFilter).val() === "1") {
-        if ($(idAngelsFilter).val().length > 0) {
-            return true;
-        } else {
-            return false;
-        }
 
+        if ($(idAngelsFilter).val() !== "") {
+            var arrayKeysFilter = $(idAngelsFilter).val().split(";");
+
+            if (arrayKeysFilter.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     } else if ($(idActiveFilter).val() === "0") {
         return true;
     }
@@ -1297,10 +1301,11 @@ function isFilterActiveById(idActiveFilter, idAngelsFilter) {
 
 
 function isAnyAngelForFilter() {
+    var arrayKeysFilter = $("#hdArrayKeysFilter").val().split(";");
 
-    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
-        var keyActive = "#hdActive" + $("#hdArrayKeysFilter")[i];
-        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+    for(var i = 0; i < arrayKeysFilter.length; i++){
+        var keyActive = "#hdActive" + arrayKeysFilter[i];
+        var keyAngels = "#hdLstAngels" + arrayKeysFilter[i];
         
         if(!isFilterActiveById(keyActive, keyAngels))
             return false;
@@ -1455,55 +1460,73 @@ function saveSettings(menSave,menWait){
 
 function createHiddenFilters(idForm, arrayActiveFilter){
     
-    for(var i = 0; i < arrayActiveFilter.length; i++) {
-        $(idForm).append('<input type="hidden" id="hdActive' + arrayActiveFilter[i] + '" name="hdActive' + arrayActiveFilter[i] + '" value="0" />');
-        $(idForm).append('<input type="hidden" id="hdFrec' + arrayActiveFilter[i] + '" name="hdFrec' + arrayActiveFilter[i] + '" value="0" />');
-        $(idForm).append('<input type="hidden" id="hdLstAngels' + arrayActiveFilter[i] + '" name="hdLstAngels' + arrayActiveFilter[i] + '" value="" />');
+    var arrayFilters = arrayActiveFilter.split(";");
+    
+    for(var i = 0; i < arrayFilters.length; i++) {
+        $(idForm).append('<input type="hidden" id="hdActive' + arrayFilters[i] + '" name="hdActive' + arrayFilters[i] + '" value="0" />');
+        $(idForm).append('<input type="hidden" id="hdFrec' + arrayFilters[i] + '" name="hdFrec' + arrayFilters[i] + '" value="0" />');
+        $(idForm).append('<input type="hidden" id="hdLstAngels' + arrayFilters[i] + '" name="hdLstAngels' + arrayFilters[i] + '" value="" />');
         
         if(idForm === "#frSNSVigilants"){
             var conVigilants = parseInt(i) + parseInt(1);
-            $(idForm).append('<input type="hidden" id="hdAlarmNotVig' + conVigilants + '" name="hdAlarmNotVig' + conVigilants +'" value="" />)');
+            $(idForm).append('<input type="hidden" id="hdAlarmNotVig' + conVigilants + '" name="hdAlarmNotVig' + conVigilants +'" value="" />');
             $(idForm).append('<input type="hidden" id="hdNameVig' + conVigilants + '" name="hdNameVig' + conVigilants + '" value="" />');
         }
     }
 }
 
-function loadFilterInfo(jsonInfo, arrayKeysInfo){
-    
-    for(var i=0; i < arrayKeysInfo.length; i++){
-        for(var result in jsonInfo.arrayKeysInfo[i]){
-            var keyActive = "hdActive" + arrayKeysInfo[i];
-            var keyFrec = "hdFrec" + arrayKeysInfo[i];
-            var keyAngels = "hdLstAngels" + arrayKeysInfo[i];
-            
-            if(result.keyActive === "null")
-                $("#" + keyActive).val("");
-            else
-                $("#" + keyActive).val(decodeURIComponent(result.keyActive));
-            
-            if(result.keyFrec === "null")
-                $("#" + keyFrec).val("");
-            else
-                $("#" + keyFrec).val(decodeURIComponent(result.keyFrec));
-            
-            if(result.keyAngels === "null")
-                $("#" + keyAngels).val("");
-            else
-                $("#" + keyAngels).val(decodeURIComponent(result.keyAngels));
-        }
+function loadFilterInfo(jsonInfo, arrayKeysInfo) {
+    var jsonMain = JSON.parse(jsonInfo);
+    var arrayFilters = arrayKeysInfo.split(";");
+
+    for (var i = 0; i < arrayFilters.length; i++) {
+        var key = arrayFilters[i];
+        var result = jsonMain[key];
+
+        var keyActive = "hdActive" + arrayFilters[i];
+        var keyFrec = "hdFrec" + arrayFilters[i];
+        var keyAngels = "hdLstAngels" + arrayFilters[i];
+
+        if (result[keyActive] === "null")
+            $("#" + keyActive).attr("value", "");
+        else
+            $("#" + keyActive).attr("value", decodeURIComponent(result[keyActive]));
+
+        if (result[keyFrec] === "null")
+            $("#" + keyFrec).attr("value", "");
+        else
+            $("#" + keyFrec).attr("value", decodeURIComponent(result[keyFrec]));
+
+        if (result[keyAngels] === "null")
+            $("#" + keyAngels).attr("value", "");
+        else
+            $("#" + keyAngels).attr("value", decodeURIComponent(result[keyAngels]));
+
     }
 }
 
 function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
     jsonInfoFilter, arrayKeysFilter, hdAngelsAux, arrayAltAngels, nameContact, emailContact, hdConfirm, hdDelete){
-  
-    document.getElementById('hdAngels').value = decodeURIComponent(angels);
-    document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
-    document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
+
+    if (angels === "")
+        document.getElementById('hdAngels').value = "";
+    else
+        document.getElementById('hdAngels').value = decodeURIComponent(angels);
+
+    if (hdAngelsEd === "")
+        document.getElementById('hdAngelsEd').value = "";
+    else
+        document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
+
+    if (hdAngelsGoogleSelected === "")
+        document.getElementById('hdAngelsGoogleSelected').value = "";
+    else
+        document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
+
     document.getElementById('hdJsonFilterInfo').value = decodeURIComponent(jsonInfoFilter);
     document.getElementById('hdArrayKeysFilter').value = decodeURIComponent(arrayKeysFilter);
     loadFilterInfo(jsonInfoFilter, arrayKeysFilter);
-    
+
     document.getElementById('hdAngelsAux').value = decodeURIComponent(hdAngelsAux);
 
     var arrayAlt = arrayAltAngels.split(";");
@@ -1521,9 +1544,20 @@ function loadInicioDatesAngels(angels,hdAngelsEd,hdAngelsGoogleSelected,
 function loadInicioDatesVigilants(angels,hdAngelsEd,hdAngelsGoogleSelected,
     jsonInfoFilter, arrayKeysFilter, hdAngelsAux){
 
-    document.getElementById('hdAngels').value = decodeURIComponent(angels);
-    document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
-    document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
+    if (angels === "")
+        document.getElementById('hdAngels').value = "";
+    else
+        document.getElementById('hdAngels').value = decodeURIComponent(angels);
+
+    if (hdAngelsEd === "")
+        document.getElementById('hdAngelsEd').value = "";
+    else
+        document.getElementById('hdAngelsEd').value = decodeURIComponent(hdAngelsEd);
+
+    if (hdAngelsGoogleSelected === "")
+        document.getElementById('hdAngelsGoogleSelected').value = "";
+    else
+        document.getElementById('hdAngelsGoogleSelected').value = decodeURIComponent(hdAngelsGoogleSelected);
 
     document.getElementById('hdJsonFilterInfo').value = decodeURIComponent(jsonInfoFilter);
     document.getElementById('hdArrayKeysFilter').value = decodeURIComponent(arrayKeysFilter);
@@ -2021,9 +2055,11 @@ function ocultarIconoAlerta(idVig){
 }
 
 function deleteAngelOfAllFilters(idItem){
+    var arrayKeysFilter = $("#hdArrayKeysFilter").val().split(";");
     
-    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
-        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+    
+    for(var i = 0; i < arrayKeysFilter.length; i++){
+        var keyAngels = "#hdLstAngels" + arrayKeysFilter[i];
         
         borrarItemSelected(idItem, keyAngels);
     }
@@ -2031,10 +2067,12 @@ function deleteAngelOfAllFilters(idItem){
 
 
 function borrarItemVigilants(idItem){
-    for(var i = 0; $("#hdArrayKeysFilter").length; i++){
-        var keyAngels = "#hdLstAngels" + $("#hdArrayKeysFilter")[i];
+    var arrayKeysFilter = $("#hdArrayKeysFilter").val().split(";");
     
-        if ($('#hdFiltroActual').val() === i) {
+    for(var i = 0; i < arrayKeysFilter.length; i++){
+        var keyAngels = "#hdLstAngels" + arrayKeysFilter[i];
+    
+        if (parseInt($('#hdFiltroActual').val()) === i) {
             borrarItemSelected(idItem, keyAngels);
         }
     }

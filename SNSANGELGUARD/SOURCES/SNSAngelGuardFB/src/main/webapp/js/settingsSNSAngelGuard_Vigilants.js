@@ -10,6 +10,7 @@ function setArrayAngels(arrayAngels){
 }
 
 function habilitarImgAlertAndFunction(idFiltro, angelsFiltro, numberFiltro){
+
     $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOff.png");
     $("#imgTurnOnOff" + numberFiltro).attr("title", $("#hdTitleAltVigOff").val());
 
@@ -22,6 +23,7 @@ function habilitarImgAlertAndFunction(idFiltro, angelsFiltro, numberFiltro){
 }
 
 function deshabilitarImgAlertAndFunction(idFiltro, numberFiltro){
+
     $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOn.png");
     $("#imgTurnOnOff" + numberFiltro).attr("title", $("#hdTitleAltVigOn").val());
 
@@ -34,6 +36,7 @@ function deshabilitarImgAlertAndFunction(idFiltro, numberFiltro){
 }
 
 function loadVigilantsState(idFiltro, angelsFiltro, numberFiltro) {
+
     if ($("#hdActive" + idFiltro).attr("value") === "1") {
         habilitarImgAlertAndFunction(idFiltro, angelsFiltro, numberFiltro);
     } else {
@@ -88,10 +91,9 @@ function habilitarDivSelectAngels(){
 }
 
 function loadEstadoFiltro(desFiltro, srcImg){
-    
     $("#imgCurrentVig").attr("src", srcImg);
     $("#imgCurrentVig").attr("title", $("#hdNameVig" + getIdFiltro(desFiltro)).val());
-    
+
     if($("#hdActive" + desFiltro).val() === '1'){
         if($("#hdLstAngels" + desFiltro).val() !== "null"){
             $("#hdAngelsAux").attr("value",$("#hdLstAngels" + desFiltro).val());
@@ -172,7 +174,7 @@ function loadTitleFcbList(titleFbList,titleAngelSettAng){
     $('#hdTitleAngelSettAng').attr("value",titleAngelSettAng);
 }
 
-function seleccionVig(idVigilante){
+function seleccionVig(idVigilante, posContainer){
     // Guardamos la selecci?n del angel
     saveSelectionAngels();
 
@@ -181,51 +183,42 @@ function seleccionVig(idVigilante){
 
     // Establecemos la clase del vigilante seleccionado
     $('#' + idVigilante).attr("class","vigilantContainerSelected");
-    
+ 
     $('#' + idVigilante).mouseover(function(){
             $(this).removeClass().addClass("vigilantContainerSelected");
         }).mouseout(function(){
             $(this).removeClass().addClass("vigilantContainerSelected");
         });
-        
-    $('#vigilantSettings').attr("class", "vigilantSettings");
     
+    $('#vigilantSettings').attr("class", "vigilantSettings");
+   
     // Establecemos internamente el vigilante seleccionado para guardar sus valores
-    setVigActual(idVigilante);
+    setVigActual(posContainer);
+
 }
 
 function saveSelectionAngels(){
     var actualFilter = $('#hdFiltroActual').val();
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
 
     if (isAnyAngelForFilter()) {
-        if ($('#hdActive' + $("#hdArrayKeysFilter")[actualFilter]).val() === '1') {
-            $('#hdFrec+ $("#hdArrayKeysFilter")[actualFilter]').attr("value", $('#slcFrecuency').val());
+
+        if ($('#hdActive' + arrayFilters[actualFilter]).val() === '1') {
+            $('#hdFrec' + arrayFilters[actualFilter]).attr("value", $('#slcFrecuency').val());
         }
+
     }
 
     $('#hdAngelsAux').attr("value", "");
 }
 
-function setVigActual(idContainerVig){
-    switch (idContainerVig) {
-        case 'vigilantContainer1':
-            $('#hdFiltroActual').attr("value", '0');
-            break;
-        case 'vigilantContainer2':
-            $('#hdFiltroActual').attr("value", '1');
-            break;
-        case 'vigilantContainer3':
-            $('#hdFiltroActual').attr("value", '2');
-            break;
-        case 'vigilantContainer4':
-            $('#hdFiltroActual').attr("value", '3');
-            break;
-    }
+function setVigActual(posContainer){
+    $('#hdFiltroActual').attr("value", posContainer);
 }
 
 function getDesFiltroActual(){
-    
-    return $("#hdArrayKeysFilter")[$("#hdFiltroActual").val()];
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
+    return arrayFilters[$("#hdFiltroActual").val()];
 }
 
 function loadVigResources(nameVig, sentenceAlarm){
@@ -247,24 +240,27 @@ function loadTurnOnOffBottons(nameTurnOn, nameTurnOff){
     $("#hdTitleAltVigOff").attr("value", nameTurnOff);
 }
 
-function loadHTMLFilters(){
+function loadHTMLFilters(strDesFilter){
+    var arrayDescriptionsFilter = strDesFilter.split(";");
+    var htmlTableVigilant ='<table id="tableContentNewVigilants" width="600px">';
     
-    var htmlTableVigilant ='<table id="tableContentNewVigilants" width="695px">';
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
     
-    for(var i = 1 ; i <= $("#hdArrayKeysFilter").length; i++){
+    for(var i = 1 ; i <= arrayFilters.length; i++){
+        var internPos = parseInt(i) - parseInt(1);
+        
         var htmlTRVigilant = '<tr>' +
                 '<td> <!--imagen del usuario del usuario--> ' +
-                '<div id="vigilantContainer' + i + 
-                '" class="vigilantContainer" onmouseover="this.className = "vigilantContainerOver"" onmouseout="this.className = "vigilantContainer"' +
-                'onclick="seleccionVig("vigilantContainer' + i +'");loadEstadoFiltro("' +$("#hdArrayKeysFilter")[i - 1] + '", "../SNSAngelGuardFB/resources/robots/robot' + i + '.png");">' +
-                '<table width="698px">' +
+                '<div id="vigilantContainer' + i + '" class="vigilantContainer" onmouseover="this.className=\'vigilantContainerOver\'" onmouseout="this.className=\'vigilantContainer\'"' +
+                'onclick="seleccionVig(\'vigilantContainer' + i + '\', \'' + internPos + '\');loadEstadoFiltro(\'' + arrayFilters[internPos] + '\', \'../SNSAngelGuardFB/resources/robots/robot' + i + '.png\');">' +
+                '<table width="680px">' +
                 '<tr>' +
                 '<td>' +
                 '<figure class="user">' +
-                '<img id="imgContRobot' + i + '" src="../SNSAngelGuardFB/resources/robots/robot' + i + '.png" WIDTH="50" HEIGHT="72" alt="" />' +
+                '<img id="imgContRobot' + i + '" src="..\/SNSAngelGuardFB\/resources\/robots\/robot' + i + '.png" WIDTH="50" HEIGHT="72" alt="" />' +
                 '</figure>' + 
                 '<blockquote class="description arrowLeft"> <!--informacion del usuario-->' +
-                '<h1 class="vigilantDescription"><%= controler.getJspResources().getArrayDes()[' + i + ']%></h1>' +
+                '<h1 class="vigilantDescription">' + arrayDescriptionsFilter[i] + '</h1>' +
                 '</blockquote>' +
                 '</td>' +
                 '<td width="35px" class="botonBox">' +
@@ -286,11 +282,18 @@ function loadHTMLFilters(){
                 '</div>' +
                 '</td>' +
                 '</tr>';
-        
         htmlTableVigilant += htmlTRVigilant;
     }
      
     htmlTableVigilant += '</table>'; 
                                     
     $("#vigilantDefinition").html(htmlTableVigilant);      
+}
+
+function obtenerFrecuencia(idSelect) {
+    var objectFrec = $("#" + idSelect.val());
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
+    var currentFilter = $("#hdFiltroActual").val();
+
+    $('#hdFrec' + arrayFilters[currentFilter]).attr("value", objectFrec.val());
 }

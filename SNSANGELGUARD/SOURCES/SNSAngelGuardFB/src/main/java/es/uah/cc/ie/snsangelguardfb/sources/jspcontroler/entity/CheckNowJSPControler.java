@@ -146,7 +146,9 @@ public class CheckNowJSPControler extends GenericJSPControler{
         while (itKeysFilters.hasNext()) {
             keyFilter = itKeysFilters.next();
             
-            activeFilters += this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive() + ";";
+            activeFilters = (activeFilters == null)  
+                    ? this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive() + ";"
+                    : activeFilters + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(keyFilter).getActive() + ";";
         }
         
         // Le quitamos a la cadena el ?ltimo ";"

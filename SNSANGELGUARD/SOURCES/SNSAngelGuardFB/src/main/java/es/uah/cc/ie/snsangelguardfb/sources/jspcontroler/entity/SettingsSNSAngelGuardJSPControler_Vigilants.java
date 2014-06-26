@@ -71,7 +71,7 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
     private JSONObject jsonFiltersInfo;
     
     /** Array que contiene la lista de filtros activos */
-    private String[] listActiveFilters;
+    private String listActiveFilters;
     
     /** Lista de angeles auxiliar */
     private String hdAngelsAux;
@@ -167,11 +167,11 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
         this.jsonFiltersInfo = jsonFiltersInfo;
     }
 
-    public String[] getListActiveFilters() {
+    public String getListActiveFilters() {
         return listActiveFilters;
     }
 
-    public void setListActiveFilters(String[] listActiveFilters) {
+    public void setListActiveFilters(String listActiveFilters) {
         this.listActiveFilters = listActiveFilters;
     }
     
@@ -233,18 +233,17 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
      */
     private void loadNotInitInfoFilters() throws JSONException, UnsupportedEncodingException {
         Iterator<String> itKeysFilters = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
-        this.listActiveFilters = new String[this.snsObject.getConfigurationManager().getListActiveFilters().size()];
+        this.listActiveFilters = this.snsObject.getStringUtilities().arrayListToString(this.snsObject.getConfigurationManager().getListActiveFilters());
         jsonFiltersInfo = new JSONObject();
         String keyFilter;
         int cont = 0;
+        
+        
        
         // Por cada filtro almacenamos su informacion en el JSON del objeto
         while(itKeysFilters.hasNext()) {
             
             keyFilter = itKeysFilters.next();
-            
-            // A?adimos la key en la lista de filtros activos
-            this.listActiveFilters[cont] = keyFilter;
             
             JSONObject jsonFilter = new JSONObject();
             jsonFilter.put(KEY_JSON_ACTIVE_FILTER + keyFilter, URLDecoder.decode(request.getParameter(KEY_JSON_ACTIVE_FILTER + keyFilter), KEY_DECODE_UTF8));

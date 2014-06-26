@@ -89,10 +89,8 @@ public class SNSdataBaseClient {
         return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
     
-    public <T> T settingsFilter_getFilterByType(Class<T> responseType, String uid, String typeFilter) throws UniformInterfaceException {
-        String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
-        String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT e FROM SettingsFilter e WHERE e.typeFilter = " + typeFilter};
-        return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    public <T> T settingsFilter_getFilterByType(Class<T> responseType, String uid) throws UniformInterfaceException {
+        return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T settingsFilter_setNewFilter(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
@@ -108,7 +106,7 @@ public class SNSdataBaseClient {
     }
 
     public <T> T settingsFilter_getAngelsCollectionByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
-        return webResource.path("settingsFilters").path(idFilter).path("settingsAngelsFilterCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+        return webResource.path("settingsFilters").path(idFilter).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T settingsAngels_setAngelByUid(Class<T> responseType, String uid, Object requestEntity) throws UniformInterfaceException {

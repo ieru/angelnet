@@ -159,12 +159,12 @@ public class UserSettingsResource {
         
         for (SettingsFilter value : settingsFilterCollection) {
             if (!settingsFilterCollectionNew.contains(value)) {
-                value.getSettingsFilterCollection().remove(entity);
+                value.getUserSettingsCollection().remove(entity);
             }
         }
         for (SettingsFilter value : settingsFilterCollectionNew) {
             if (!settingsFilterCollection.contains(value)) {
-                value.getSettingsFilterCollection().add(entity);
+                value.getUserSettingsCollection().add(entity);
             }
         }
         

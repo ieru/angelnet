@@ -362,7 +362,7 @@ public class FriendsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilt
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewFriend: El amigo " + friend.getString("userUid") + " no existe en la coleccion de amigos del usuario...");
                 return true;
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException | JSONException | UniformInterfaceException e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewFriend: El amigo " + friend.getString("userUid") + " no existe en la base de datos...");
             return true;
         }
@@ -381,7 +381,7 @@ public class FriendsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilt
             this.snsObject.getClient().userFacebook_isNewFriendsFacebookByUid(String.class, friend.getString("userUid"));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewInFriendsFacebook: El amigo " + friend.getString("userUid") + " existe en la base de datos...");
             return false;
-        } catch (Exception e) {
+        } catch (JSONException | UniformInterfaceException e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewInFriendsFacebook: El amigo " + friend.getString("userUid") + " no existe en la base de datos...");
             return true;
         }
@@ -414,12 +414,15 @@ public class FriendsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilt
 
         for (int i = 0; i < jsonFriendsFacebook.length(); i++) {
             JSONObject jsonFriend = jsonFriendsFacebook.getJSONObject(i);
+            
+            // Obtenemos la clave cifrada para el amigo
+            String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(jsonFriend.getString("userUid"));
 
             if (jsonFriend.get("userBirthday").toString().contains("00-00-") ||
                     jsonFriend.getString("userBirthday").substring(6, jsonFriend.getString("userBirthday").length()).equals("0000")) {
-                informe += jsonFriend.getString("userName") + menDB[6] + " <br>";
+                informe += uidCifrada + menDB[6] + " <br>";
             } else if (isAgeLimit(intFecUser, jsonFriend.getString("userBirthday").substring(6, jsonFriend.getString("userBirthday").length()))) {
-                informe += jsonFriend.getString("userName") + menDB[7] + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + ". <br>";
+                informe += uidCifrada + menDB[7] + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUserName() + ". <br>";
             }
         }
 

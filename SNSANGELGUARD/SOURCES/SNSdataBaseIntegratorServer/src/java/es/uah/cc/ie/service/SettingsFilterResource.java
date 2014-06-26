@@ -79,10 +79,8 @@ public class SettingsFilterResource {
         try {
             persistenceSvc.beginTx();
             EntityManager em = persistenceSvc.getEntityManager();
-            SettingsFilter entity = em.find(SettingsFilter.class, id);
             data.getEntity().setLastCheck(new Date());
-            updateEntity(entity,data.getEntity());
-            
+            updateEntity(getEntity(), data.resolveEntity(em));
             persistenceSvc.commitTx();
         } finally {
             persistenceSvc.close();
@@ -132,8 +130,8 @@ public class SettingsFilterResource {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
         Collection<SettingsAngels> settingsAngelsCollection = entity.getSettingsAngelsFilterCollection();
         Collection<SettingsAngels> settingsAngelsCollectionNew = newEntity.getSettingsAngelsFilterCollection();
-        Collection<UserSettings> userSettingsCollection = entity.getSettingsFilterCollection();
-        Collection<UserSettings> userSettingsCollectionNew = newEntity.getSettingsFilterCollection();
+        Collection<UserSettings> userSettingsCollection = entity.getUserSettingsCollection();
+        Collection<UserSettings> userSettingsCollectionNew = newEntity.getUserSettingsCollection();
         entity = em.merge(newEntity);
         
         for (SettingsAngels value : settingsAngelsCollection) {
@@ -147,7 +145,7 @@ public class SettingsFilterResource {
             }
         }
         
-         for (UserSettings value : userSettingsCollection) {
+        for (UserSettings value : userSettingsCollection) {
             if (!userSettingsCollectionNew.contains(value)) {
                 value.getSettingsFilterCollection().remove(entity);
             }
@@ -173,7 +171,7 @@ public class SettingsFilterResource {
             value.getSettingsFilterCollection().remove(entity);
         }
         
-        for (UserSettings value: entity.getSettingsFilterCollection()) {
+        for (UserSettings value: entity.getUserSettingsCollection()) {
             value.getSettingsFilterCollection().remove(entity);
         }
         
@@ -240,7 +238,7 @@ public class SettingsFilterResource {
         protected Collection<UserSettings> getEntities(int start, int max, String query) {
             Collection<UserSettings> result = new java.util.ArrayList<UserSettings>();
             int index = 0;
-            for (UserSettings e : parent.getSettingsFilterCollection()) {
+            for (UserSettings e : parent.getUserSettingsCollection()) {
                 if (index >= start && (index - start) < max) {
                     result.add(e);
                 }
