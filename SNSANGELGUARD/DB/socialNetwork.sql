@@ -18,40 +18,6 @@ USE `socialNetwork`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Address_openSocial`
---
-
-DROP TABLE IF EXISTS `Address_openSocial`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Address_openSocial` (
-  `id_Address_openSocial` varchar(100) NOT NULL DEFAULT '',
-  `COUNTRY` varchar(100) DEFAULT NULL,
-  `EXTENDED_ADDRESS` varchar(150) DEFAULT NULL,
-  `LATITUDE` int(11) DEFAULT NULL,
-  `LOCALITY` varchar(100) DEFAULT NULL,
-  `LONGITUDE` int(11) DEFAULT NULL,
-  `PO_BOX` varchar(10) DEFAULT NULL,
-  `POSTAL_CODE` varchar(10) DEFAULT NULL,
-  `REGION` varchar(100) DEFAULT NULL,
-  `STREET_ADDRESS` varchar(150) DEFAULT NULL,
-  `TYPE` varchar(45) DEFAULT NULL,
-  `UNSTRUCTURED` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id_Address_openSocial`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Address_openSocial`
---
-
-LOCK TABLES `Address_openSocial` WRITE;
-/*!40000 ALTER TABLE `Address_openSocial` DISABLE KEYS */;
-INSERT INTO `Address_openSocial` VALUES ('0000000000','','',0,'',0,'','','','','',NULL);
-/*!40000 ALTER TABLE `Address_openSocial` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Drinker_openSocial`
 --
 
@@ -434,15 +400,15 @@ DROP TABLE IF EXISTS `comment_facebook`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `comment_facebook` (
-  `XID` varchar(100) NOT NULL,
-  `OBJECT_ID` varchar(100) DEFAULT NULL,
-  `POST_ID` varchar(100) NOT NULL,
-  `FROMID` varchar(100) DEFAULT NULL,
+  `XID` longtext NOT NULL,
+  `OBJECT_ID` longtext,
+  `POST_ID` longtext NOT NULL,
+  `FROMID` longtext,
   `TIME_COMMENT` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `TEXT` mediumtext CHARACTER SET utf8,
-  `ID` varchar(100) NOT NULL,
+  `TEXT` longtext CHARACTER SET utf8,
+  `ID` varchar(200) NOT NULL,
   `USERNAME` varchar(100) DEFAULT NULL,
-  `REPLY_XID` varchar(100) DEFAULT NULL,
+  `REPLY_XID` longtext,
   `comments_facebook_id_comments_facebook` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `fk_comment_facebook_comments_facebook1` (`comments_facebook_id_comments_facebook`)
@@ -554,9 +520,9 @@ DROP TABLE IF EXISTS `friends_facebook`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `friends_facebook` (
   `USER_UID` varchar(45) NOT NULL,
-  `USER_NAME` varchar(45) DEFAULT NULL,
-  `USER_BIRTHDAY` varchar(45) DEFAULT NULL,
-  `USER_PIC` varchar(500) DEFAULT NULL,
+  `USER_NAME` longtext,
+  `USER_BIRTHDAY` longtext,
+  `USER_PIC` longtext,
   PRIMARY KEY (`USER_UID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -677,7 +643,7 @@ CREATE TABLE `locale_settings` (
   `titleSettVig` varchar(100) DEFAULT NULL,
   `titleVigilantSettVig` varchar(100) DEFAULT NULL,
   `titleVigSettVig` varchar(100) DEFAULT NULL,
-  `titleVigDescriptionSettVig` varchar(1000) DEFAULT NULL,
+  `titleVigDescriptionSettVig` mediumtext,
   `titleVigFrecSettVig` varchar(100) DEFAULT NULL,
   `titleVigFrecSelectSettVig` varchar(100) DEFAULT NULL,
   `titleVigAngSettVig` varchar(100) DEFAULT NULL,
@@ -703,8 +669,12 @@ CREATE TABLE `locale_settings` (
   `mailDelete` mediumtext NOT NULL,
   `mailNotification` mediumtext NOT NULL,
   `altContactsAngelsEd` mediumtext NOT NULL,
-  `titleVisitsFilterOptions` mediumtext,
-  `post_friend_facebook` mediumtext,
+  `titleVisitsFilterOptions` mediumtext NOT NULL,
+  `post_friend_facebook` mediumtext NOT NULL,
+  `titleActiveDesactiveVig` varchar(45) NOT NULL,
+  `titleTutInitHelp` varchar(45) NOT NULL,
+  `desTutInitHelp` mediumtext NOT NULL,
+  `titlePagTutInitHelp` varchar(100) NOT NULL,
   PRIMARY KEY (`id_locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -715,7 +685,7 @@ CREATE TABLE `locale_settings` (
 
 LOCK TABLES `locale_settings` WRITE;
 /*!40000 ALTER TABLE `locale_settings` DISABLE KEYS */;
-INSERT INTO `locale_settings` VALUES ('00000001','You are about to install SNSAngelGuard. Your profile data has NOT been accessed at this point. SNSAngelGuard is devised to give you support on living in social networks safely by declaring contact data of some people that you trust (e.g. your parents or relatives) that we call angels and selecting a number of guards, wich are software modules that read your profile information and inform the angels of any potential risk. Personal information on your contatcts is never forwarded to your angels, but they know that something that deserve inspection is needed and can warm and contact you.','<b>SNSAngelGuardFB Terms of Service</b>\n<br> \n<br>\n<ol> \n<li><b>You are welcome to SNSAngelGuardFB</b> </li>\n<p>Thanks for using our parental control plug-in SNSAngelGuardFB (“Application”) located at Escuela Técnica Superior de Ingeniería Informática, Campus Universitario, Carretera de Barcelona km 33.6, Alcalá de Henares, Madrid, España.</p>\n<p>Using our Application, you are agreeing to these terms. Please read them carefully. </p>\n<br>\n\n\n<li><b>Using our Application</b></li>\n<p>The Application is defined inside of Facebook’s App Center. Because this reason, we might to apply the same restrictions that Facebook does in your information.</p>\n\n<p>Using our Application does not give you ownership of any intellectual property rights in our Application or the content you access. You may use our Application if you accept the exclusive permissions of this as permitted by law. These terms do not grant you the right to use any branding or logos used in our Application. Don’t remove, obscure or alter any legal notices displayed in or along with our Application.</p>\n\n<p>Our Application displays some content that is no Facebook. This content is the sole responsibility of the entity that makes it available. We can review this content if this is not legal or broke our politics, and delete it or negate to publish this if we have any reason to considerate that the content broke our politics or the laws. However, this possibility not implies necessary that we review the content, so please don’t assume that we do.</p>\n\n<p>In connection with your use of the Application, we can sending services notifications, administrative emails and other kind of information. All the same, the Application send service notifications to others contacts, of your Facebook account or others Social Networks, like Google or others emails address that you define, sending someone information about an anomaly in your information inside your Facebook profile. These notifications and the information to third parties that the Application can be used, is the sole responsibility of the person who is titular of the Facebook account from which access to the Application. These notifications can be disabled in the control module of the Application in any time. Also, the contact that the Application send information can be disabled manually in the moment that the application send the accept terms for receiving notifications of your information.</p>\n\n<p>In this moment, our Application are not available for access from mobile devices but, in the case of in a next future would be available, shall apply all of this conditions to they which use our application in this devices. Don’t use the Application if you can distract and break traffic laws or safety.</p>\n<br>\n\n<li><b>Your Facebook account</b></li>\n<p>For using our Application is necessary that you have a Facebook account. For this, it will be necessary that you create, if you don’t have, your own account and to accept the access terms of the Application.</p>\n\n<p>To protect your Facebook account, keep your password confidential. You are responsible for the activity that happens on or through your Facebook account, like our Application. Try not to reuse your Facebook account password on third party applications or other Social Network. If you learn of any unauthorised use of your password or Facebook account, follow the instructions that Facebook put at your disposal for solve that issue. </p>\n<br>\n\n<li><b>Privacy protect and copyright</b></li>\n<p>Our Application will apply the privacy politic and data processing inside of the privacy politic of Facebook. If you use our Application, you accept that Facebook and our Application doing to use your information according of the Facebook politics. For more information of this, you must to previously read the politics about privacy and security of Facebook.</p>\n\n<p>We respond to notices of alleged copyright infringement and we’ll cancel the accounts of the users that, inside of our application, could be infring the terms of the  the spanish law of copyright, Real Decreto Legislativo 1/1996, of april 12, published in the BOE number 97, of the april 22 of 1996, and all of earlier modifications.</p>\n<br>\n\n<li><b>Your content in our Application</b></li>\n<p>Our Application allow to send notifications about the content of your personal information in Facebook (wall comments, dates of birthday of your contacts with their personal image, your relationships, familiars and personals, data about your profile, your configuration). If this information is send, you will do responsible of this information. In short, what belongs to you stays yours.</p>\n\n<p>All the information that our Application stores about you belongs you, we don´t share it with no more, and we don’t use it for fraudulent purposes, only we store your information for processing and sending to your selected contacts detected anomalies that the Application could detect in your information. So, your contacts can be informed of the attacks that you can received by Facebook’s profiles that act in this Social Network like stalkers.</p>\n\n<p>Never our Application will have any information that not be your own information in Facebook, that it\'s, our Application don’t receive data of other type that haven\'t been information that Facebook store about you and have given your acceptation for Facebook access of to these.</p>\n\n<p>For accessing of our Application to your data, you must to consent this legal terms and the permissions that Facebook give us for our Application. These permissions could be reviewed in any time in your app config on Facebook. If you don’t like some of these or you don’t want that our Application access to some information about you, you can to revoke any permission that you want and our Application will not access to this information.</p>\n\n<p>We suggest you reviews the privacy terms of Facebook for having a deep knowledge of the information that Facebook store about you and the uses that Facebook does of this.</p>\n<br>\n\n<li><b>About Software in our Application</b></li>\n<p>Our application runs inside in Facebook web environment. A part of the security context of Facebook, we have you a service, on which our application runs, that your security and the security of your information is guaranteed with a digital certificated on your web browser and you can test it in this. </p>\n\n<p>You can use our Application thanks to the license that Facebook grants you by access to their Social Network. The content of this can be found in your profile page. Our application does the next actions:\n\n<ul>\n<li>When you accept the content of this document, that you must to read it, the application downloads all information about your profile that you had given the permissions for storing this information.</li>\n\n<li>The application permits you to access a control module. You can access to this from Facebook. In this, you can do the next actions:\n<ul>\n<li>You can chose your Facebook’s friends or your Gmail contacts or contacts of others different emails, that you want they are in contact with your information inside Facebook.</li>\n\n<li>One selected, you can chose what kind of control you want to realise about your content. For each control, you can to select the contacts that you want to verify your different content and the temporal window that you want the control runs. In every moment you can to access to the control module and modify the properties of all controls.</li>\n</ul>\n</li>\n<li>Our application has a offline module that it runs regularity and it downloads all your new information in Facebook, according with your permissions, and sends notifications to your chosen contacts if the temporal window is completed. This module permits to our Application updating in every moment the information about you and your activity in Facebook for realising a more powerful control of these.</li>\n\n<li>At not point our Application will access to their personal information, that it\'s, if you give permission to our Application, we can to access to some information about your contacts, like birthday date and like profile image, always with the Facebook permission, so Facebook restrict the access of the applications to third person’s data. Never we can download wall’s information or personal information about your Facebook contacts, also it not belongs to our Application politic.</li>\n</ul>\n</p>\n<br>\n\n<li><b>Modifying and Terminating our Application</b></li>\n<p>Being a application that it runs inside Facebook, we don’t have any tool for deleting our Application in your Facebook’s profile. You must be who delete our application from your app’s configuration page inside Facebook, in your profile’s page. </p>\n\n<p>The fact that you delete our Application not involve that your data has been deleted in our store system. We can to determinate if a user has revoked permissions to access of their information but  we can’t to determinate if you have deleted our application. For your information could be delete, you must to send an email to our application’s administrators and they will delete all information about you. </p>\n\n<p>We believe that you own your data and preserving your access to such data is important. If we discontinue our Application, where reasonably possible, we will give you reasonable advance notice and a chance to get information out of our Application. </p>\n<br>\n\n<li><b>Our Warranties and Disclaimers</b></li>\n<p>Our application grants you that your information are always protect and never more can access they. Only we access to those datas which you will give us your consent to consult they. </p>\n\n<p>Your security is more important for us, so we’ll do anything for your information is completely safe in our store system. Our Application is responsible of our content and the use that we do they into Facebook. This include the responsibility that our Application achieve the terms of use of Facebook and their publicity terms. </p>\n\n<p>Facebook’s politics are achieving in this terms:\n<ul>\n\n<li>Our application only can to apply some information that it needs for it can be functional correctly, never information that doesn’t apply for their activity.</li>\n\n<li>We have a privacy politic, contents in this document, for granting and showing to our users the information that we’re going to use and what is the form that use this. </li>\n\n<li>Never, inside any concept, we’ll share your information with users or application of third-persons. </li>\n\n<li>We delete your information if you tell us, by an email or any other mechanism. We’ll contact with you and delete your information. We’ll do all for you do fine using our application. </li>\n\n<li>Never we’ll have any information about you in media. We’ll never sell to anyone your information. </li>\n\n<li>Facebook could limit our activity if detects that we aren’t doing a good use of your information. </li>\n\n<li>The user of our application will accept that your information will are processing and storing in the installations that the application will have. In this moment, this information will be processing in Spain, but, depending of the telecommunications market, this could change, being responsibility of our application. </li>\n\n<li>Is not responsibility of our application your content inside Facebook. Any data that we receive will be your responsibility. We can restrict the activity for a user in our application if we detect a not good use of our application but, for any moment is our responsibility the use that you could do of our application. </li> \n</ul>\n</p>\n<br>\n\n<li><b>Others conditions</b></li>\n<p>We can change this privacy terms if we detect any problem or Facebook changes your privacy. We can change this privacy terms if we detect any problem or Facebook changes their privacy terms. If we are any change in these terms, you will know by the mechanism that we have and you will must to accept this terms again. </p>\n</ol>','Agree','Cancel','Accepting Terms and Conditions','Settings','Settings;Angels;Vigilants;','Save','Select your Angels','Select your Angels from your Facebook Contacts','Import a contact of your Gmail account;Select others contacts;','Name','Email','Import','View All;Selected;Unselected;','Select as your Angel','Configure your Vigilants','Vigilants','Wall Control;Friends Control;Privacy Control;Visits Control;','Vigilant Description;When this control is activated, it checks the age for each facebook friend. If friend is very older for you, sends an email to your angels indicating that you have any friend that is very older for you.;When this control is activated, it checks if there are offensive language in your Facebook Wall, sending an email to your angels if the control verifies that any post is not appropiate for you.;When this control is activated, it checks if the level of privacy of your Facebook profile is too permissive. If many of your displayed information in Facebook is public and it hasn\'t some restrictions, the control sends to your angels an email with this issue.;When this control is activated, it checks the social activity of your friends in your profile. It sends an email with some stadistics about friends that share with others contacts, the contacts number of your friends and the post number that your friends have written in your wall.;','Notifications Frecuency','Once a day;Once a week;Once two weeks;Once a month;Once two months;Once six months;Once a year;','Angels','SNSAngelGuardFB: Authorisation for send notificacions',' wishes that you control his social activity in Facebook.\n\n                                    If you accept above mentioned authorization, a series of notifications will be sent in order that it could realize a personalized follow-up of his social activity.\n\n                                    If on the contrary, you cancel the authorization, it will not return to send any notification','Accept','Cancel',' is software developed in the Alcalá de Henares University, Spain.','SNSAngelGuardFB: User Identification','Name','Close','Import Contact from your Google account','Select a contact from your Google account','Login Google','Name','Email','Acept','Cancel','Need help?;Help; What is an Angel?; An Angel is a person who receives notifications of the anormal activities that it produced in your Facebook profile. For each anomalies, your Angels will receive a notification in her/his email.; What is a Vigilant?; A Vigilant is a software tool that is executing inside Facebook. These tools detect threats in your profile information, privacity, friends, wall, ..., etc and send notifications for your Angels.<br><br>Actually, there are four Vigilants: <br><br>- Wall Control: Check your post wall and send a notification to your Angels with the offensive language that could exist. <br><br>- Friends Control: Check your friends, detecting which of them have indicated his age, and if this one exceeds a certain limit.<br><br>- Privacity Control: Check your privacy configuration, detecting if your profile is too permissive to access to your personal information.<br><br>- Visits Control: Check the last visits and to whom they belong on your facebook profile.; Vigilant configuration; To configure a Vigilant it\'s necesary two actions:<br><br>1. To select an Angel or Angels to which you want them to control your activity. The Angels they are selected in the eyelash \"Angels\" and later, in the eyelash \"Vigilants\", they will be able to associate in an individual way to every filter.<br><br>2. The frequency the SNSAngelGuard will send reports to your Angels, informing them about your activity in Facebook.<br>;','You must select at least an angel;Information has stored successfully;Storing information...;Loading...;Waiting for operation to complete...;Angel correctly deleted!;Angel correctly saved!;Error;There is an error in the application… ;Details; You must introduce any email; Not valid email; There was a mistake while sharing a post. Angel did not save it;Your browser is not compatible with the application. Use one of the below list:&lt;P&gt;&lt;OL&gt;&lt;LI&gt;Firefox 5&lt;LI&gt;Google Chrome&lt;/OL&gt;&lt;/P&gt;','Information','Dates saved successfully.;User already confirmated.;Error: Non-existent Angel;','SNSAngelGuard Alert: Deleted angel; deleted you of the Angel List;','SNSAngelGuard: Activity Notification; SNSAngelGuad Notification: User ;In the comment ; of the post wall ; there is offensive language. ;There isn\'t any anomalies in the user\'s Wall.; doen\'t say his/her age ; is too old for ;There isn\'t any anomalies in the user\'s friends.;There isn\'t any anomalies in the user\'s privacity configuration.;There isn\'t any anomalies in the user\'s profile visits.;','Create new Angel;Edit;Cancel;Delete;Save;','Best ranking\'s friends with mutual contacts in your Facebook; Worst ranking\'s friends with mutual contacts in your Facebook; Post wall of your friends in your Facebook wall; ','Authorisation to send notifications;Agree with terms and conditions;The user wants you to control his or her social activity on Facebook. For more information, click on the link below.;'),('00000002','SNSAngelGuard analiza la actividad social de una persona. Si detecta alguna anomal&iacute;a, env&iacute;a un informe a la persona o tutor responsable. Este tutor habr&aacute; sido previamente designado por la persona que decide instalar, por voluntad propia, SNSAngelGuard. La aplicaci&oacute;n utiliza datos personales del perfil en cuesti&oacute;n para ser posteriormente analizados. Para proceder a su instalaci&oacute;n, rogamos lea detenidamente el Acuerdo Legal que se expone a continuaci&oacute;n. Si, por el contrario, no desea que SNSAngelGuard se ejecute, pulse el bot&oacute;n \"Cancelar\" y se proceder&aacute; a su desinstalaci&oacute;n.','<b>Condiciones de servicio de SNSAngelGuardFB</b>\n<br>\n<br>\n<ol>\n<li><b>Te damos la bienvenida a SNSAngelGuardFB</b></li>\n<p>Te agradecemos que uses la herramienta de control parental SNSAngelGuardFB (en adelante, la <b>Aplicación</b>), cuyo dominio social está ubicado en la Escuela Técnica Superior de Ingeniería Informática, Campus Universitario, Carretera de Barcelona km 33.6, Alcalá de Hernares, Madrid, España.</p>\n<p>El uso de nuestra Aplicación implica la aceptación de éstas condiciones. Te recomendamos que las leas detenidamente.</p>\n<br>\n<li><b>Uso de nuestra Aplicación</b></li>\n<p>La aplicación se encuentra dentro del dominio de ejecución de aplicaciones de Facebook, por lo que las restricciones que dicha Red Social ejecute sobre tus datos son los mismos que nuestra Aplicación ejecutará a éstos.</p>\n<p>El uso de nuestra Aplicación no te convierte en el titular de ninguno de los derechos de propiedad intelectual de los mismos ni del contenido al que accedes. Solo podrás acceder a la Aplicación si consientes la aceptación de sus permisos o si está permitido por la ley. Estas condiciones no te otorgan el derecho a usar las marcas ni los logotipos utilizados en nuestra Aplicación. Presta mucha atención a los avisos legales que se muestran en nuestra Aplicación.</p>\n<p>Nuestra Aplicación muestra contenidos que no pertenecen a Facebook. Este contenido es responsabilidad exclusiva de la entidad que lo haya puesto a disposición del usuario. Podremos revisar el contenido para determinar si es ilegal o infringe nuestras políticas, y eliminarlo o negarnos a publicarlo si tenemos razones suficientes para considerar que infringe nuestras políticas o la ley. Sin embargo, esta posibilidad no implica necesariamente que revisemos el contenido, por lo que no debes dar por sentado que vayamos a hacerlo.</p>\n<p>En relación al uso de la Aplicación, podremos enviarte notificaciones de servicio, mensajes administrativos y otro tipo de información. A parte de los mensajes que tu puedes recibir, la aplicación envía notificaciones de servicio a aquellos contactos, de Facebook o de otras Redes Sociales, como Google u otras direcciones de correo, a los cuales tu hayas dado acceso a examinar los contenidos de tu perfil en Facebook, enviándoles cualquier tipo de notificación si se detecta algún tipo de anomalía en los controles que ejecuta la aplicación. Estas notificaciones y los datos a terceros de los que puede hacer uso la Aplicación son responsabilidad propia del titular de la cuenta de Facebook a través de la cual se accede a nuestra Aplicación. Estas notificaciones pueden ser desactivadas en el módulo de control de la Aplicación en cualquier instante. También el propio contacto puede desactivarlas manualmente en el momento en el que se le envía la aceptación de términos para recibir las notificaciones de tu información.</p>\n<p>De momento, nuestra Aplicación no está disponible para acceso desde dispositivos móviles, pero, en el caso de que en un futuro próximo, a corto plazo, estuviera disponible, se aplicarán todas las condiciones de éste documento a su uso en dichos dispositivos. No utilices la Aplicación de un modo que pueda distraerte y que te impida cumplir las leyes de tráfico o de seguridad.</p>\n<br>\n<li><b>Tu cuenta de Facebook</b></li>\n<p>Para utilizar nuestra Aplicación es necesario que tengas una cuenta en Facebook. Para ello, será necesario que crees tu mismo, en caso de no estar en disposición de una, tu propia cuenta y aceptar los permisos de acceso a la Aplicación.</p>\n<p>Para proteger tu cuenta de Facebook, mantén la confidencialidad de tu contraseña. Eres responsable de la actividad que se desarrolle en tu cuenta de Facebook o través de ella, tal es el caso de nuestra Aplicación. Intenta no reutilizar la contraseña de tu cuenta de Facebook en otro tipo de aplicaciones a terceros o en alguna otra Red Social. Si detectas cualquier tipo de uso no autorizado de tu cuenta de Facebook, sigue las instrucciones que pone Facebook a tu disposición para solucionarlo lo antes posible.</p>\n<br>\n<li><b>Protección de la privacidad y de los derechos de autor</b></li>\n<p>Nuestra Aplicación aplicará la política de privacidad y de tratamiento de datos personales enmarcada en las políticas de privacidad de Facebook. Si usas nuestra aplicación, aceptas que Facebook y nuestra Aplicación use tus datos totalmente conforme con a sus políticas de privacidad. Para más información, consulta previamente las políticas de privacidad y de seguridad de Facebook.</p>\n<p>Respondemos a las notificaciones de presuntas infracciones de los derechos de autor y cancelamos las cuentas de los usuarios que, dentro de nuestra Aplicación, comentan infracciones reiteradas de acuerdo con el proceso establecido en la ley española de propiedad intelectual, Real Decreto Legislativo 1/1996, de 12 de abril, publicado en el BOE num. 97, del 22 de abril de 1996, y todas sus modificaciones anteriores.</p>\n<br>\n<li><b>Tu contenido en nuestra Aplicación</b></li>\n<p>Nuestra Aplicación te permite enviar notificaciones sobre el contenido de tu información personal de Facebook (información publicada en tu muro, fechas de nacimiento de tus contactos junto con su imagen de perfil, información registrada en tu perfil acerca de tus relaciones, tanto familiares como personales, datos de tu perfil, configuración de tu cuenta). Si esta información es enviada, seguirás siendo el titular de éstos datos, es decir, lo que te pertenece es tuyo. </p>\n<p>Toda la información que nuestra Aplicación almacena sobre ti es tuya, no vamos a compartirla con nadie más, ni vamos a hacer un uso fraudulento de la misma. Únicamente la almacenamos para poder procesarla y enviar a los contactos que tu selecciones las anomalías que la Aplicación detecte en tus datos. Así, tus contactos podrán estar convenientemente informados de los posibles ataques que puedas recibir por parte de perfiles de Facebook que actúan en ésta Red Social como acosadores. </p>\n<p>En ningún momento nuestra Aplicación contendrá información que no sea la propia de Facebook, es decir, la aplicación no recibe datos de otro tipo que no sean los propios que Facebook almacena sobre ti y, sobre los cuales, tu has dado consentimiento para que ésta acceda a ellos. </p>\n<p>Para que nuestra Aplicación pueda acceder a tus datos, deberás consentir este acuerdo legal y los permisos que Facebook pone a nuestra disposición, los cuales pueden ser revisados en tu página de configuración de aplicaciones de Facebook. Si alguno de éstos permisos no son de tu agrado o no deseas que accedamos a cierta información que tu consideres que no es necesario que revisemos, bastará con que desactives los permisos en dicha página que no desees que la Aplicación tenga sobre tu información.</p>\n<p>Te recomendamos que revises la política de privacidad de Facebook para que puedas tener un conocimiento más profundo de los datos que se almacenan en tu perfil y de los usos que Facebook puede hacer con ellos.</p>\n<br>\n<li><b>Acerca del software de nuestra Aplicación</b></li>\n<p>Nuestra aplicación se ejecuta en el entorno Web de Facebook. A parte de los controles de Seguridad de Facebook, nosotros ponemos a tu disposición un servicio, sobre el cual se ejecuta la aplicación, en el que tu seguridad y la seguridad de tus datos está garantizada mediante certificados digitales que así lo atestiguan y que tú mismo podrás comprobar en la barra de direcciones de tu navegador.</p>\n<p>Podrás utilizar nuestra Aplicación gracias a la licencia que te concede Facebook para utilizar su Red Social. El contenido de la misma puede ser consultada en tu página de perfil.</p>\n<p>Nuestra aplicación realiza una serie de acciones:\n<ul> \n<li>Cuando aceptas el contenido de éste documento, el cual recomendamos profundamente sea leido en su totalidad, la Aplicación descarga todos los datos de tu perfil, a los cuales tu hayas dado los permisos necesarios para que los podamos almacenar, a sus sistemas de almacenamiento.</li>\n<li>La Aplicación pone a tu disposición un módulo de control, al cual sólo se podrá acceder desde Facebook, en el cual podrás realizar las siguientes acciones:\n<ul><li>Puedes seleccionar de tus contactos de Facebook, de tu cuenta de Gmail, o de otras cuentas de correo electrónico, aquellos que desees que controlen tu información dentro de Facebook.</li>\n<li>Una vez seleccionados, podrás determinar qué tipo de control quieres que se realice sobre tu contenido. Por cada control podrás seleccionar los contactos que verifiquen tu información y el intervalo regular de tiempo sobre el cual se ejecutarán estos controles y enviarán notificaciones a tus contactos en caso de que se detecten anomalías.</li>\n<li>En cualquier momento que tu desees podrás acceder al módulo de control y modificar las propiedades de los controles de la forma que desees, controlando en todo momento el contenido que se quieres que se verifique y que tus contactos puedan observar.</li></ul></li>\n<li>La Aplicación cuenta con un módulo offline que se ejecutará diariamente y que descargará toda tu nueva información registrada en Facebook, de acuerdo con tus permisos, y enviará notificaciones a tus contactos seleccionados si se cumple el intervalo de tiempo bajo el cual has definido la ejecución de tus controles en la Aplicación. Este módulo permitirá a la Aplicación tener actualizada en todo momento tu información y hacer análisis más precisos sobre tu actividad.</li></ul></p>\n<p>En ningún momento nuestra Aplicación accederá a datos de terceras personas, es decir, si tu das consentimiento a la Aplicación, nosotros podemos acceder a los datos de tus contactos que Facebook pone a disposición de las aplicaciones, por lo que los datos a terceros están restringidos a las políticas que Facebook administra sobre ellos. En ningún momento podremos descargar contenido de sus muros o su información personal, ya que no forma parte de la política de la Aplicación.</p>\n<br>\n<li><b>Como modificar y cancelar nuestra Aplicación</b></li>\n<p>Al ser una aplicación que se ejecuta dentro del marco de aplicaciones de Facebook, no disponemos de mecanismos para eliminar la Aplicación en tu perfil. Deberás ser tu el que elimine nuestra aplicación desde la configuración de aplicaciones que Facebook pone a tu disposición en tu página de perfil.</p>\n<p>El hecho de que elimines de tu perfil de tu actividad no implica que tus datos sean borrados de nuestro sistema de almacenamiento. Podemos determinar si un usuario nos ha denegado permisos para acceder a su información pero no podemos determinar con exactitud si ha eliminado la aplicación. Para que tus datos sean borrados de nuestra aplicación, deberás ponerte en contacto con los administradores de nuestra Aplicación y ellos se ocuparán de eliminar toda tu información.</p>\n<p>Consideramos que eres el propietario de todos tus datos en nuestra Aplicación, por lo que, si interrumpimos alguna vez nuestra Aplicación, serás avisado convenientemente y tus datos serán eliminados de nuestra Aplicación para que nadie pueda hacer un uso indebido de ellos.</p>\n<br>\n<li><b>Nuestras garantías y renuncias de responsabilidad</b></li>\n<p>La Aplicación te garantiza que tus datos estén siempre protegidos y que nadie más acceda a ellos. Sólo se accederá a aquellos datos a los cuales tu hayas dado consentimiento formal para que sean consultados. </p>\n<p>Tu seguridad es muy importante para nosotros, por lo que haremos todo lo que esté en nuestra mano para que tus datos estén totalmente seguros en nuestros sistemas de almacenamiento.</p>\n<p>Nuestra Aplicación es responsable de nuestro contenido, de sus datos y del uso que hagamos de ellos dentro de Facebook. Esto incluye la obligación de asegurar que nuestra aplicación o su uso cumpla las normas de Facebook y sus normas de publicidad. </p>\n<p>La política de Facebook para sus aplicaciones se cumplirá de la siguiente forma:\n<ul>\n<li>Nuestra Aplicación sólo podrá solicitar los datos que necesite para que sea correctamente funcional, nunca datos que no apliquen para el desarrollo de su actividad.</li>\n<li>Disponemos de una politica de privacidad, contenida en éste documento, para garantizar e indicar a nuestros usuarios los datos que vamos a utilizar y de qué forma los utilizaremos.</li>\n<li>Nunca, bajo ningún concepto, compartiremos tus datos con usuarios ni aplicaciones a terceros.</li>\n<li>Eliminaremos tus datos si nos lo pides, mediante contacto con nuestros administradores de la Aplicación o con cualquier otro mecanismo, poniéndonos previamente en contacto contigo y facilitándote, en la medida de lo posible, éste trámite. Haremos todo lo posible para que estés a gusto utilizando nuestra Aplicación.</li>\n<li>No pondremos ninguna información tuya públicamente ni en ningún medio de comunicación.\n<li>No venderemos tus datos a nadie, sería nuestro fin!</li>\n<li>Facebook podrá limitar nuestra actividad de forma unilateral si comprueba que no estamos haciendo un buen uso de tus datos.\n</li></ul></p>\n<p>El usuario de la aplicación aceptará que sus datos serán procesados y almacenados en las instalaciones que la Aplicación ponga a su disposición. Actualmente, estos datos serán procesados en España, aunque dependiendo de las características del mercado de las telecomunicaciones a nivel mundial, esto podría cambiar, siendo responsabilidad de la Aplicación su total mantenimiento. Si en cualquier momento pudiera producirse un cambio de éstas características, serías convenientemente informado de toda la información referida a éste respecto. </p>\n<p>La aplicación no se hace responsable de tu contenido de Facebook. Cualquier dato que recibamos de Facebook será responsabilidad de éste y, por consiguiente, del usuario del cual lo recibamos. Podemos restringir la actividad de un usuario en nuestra Aplicación si detectamos un uso indebido de la misma, pero en ningún momento será nuestra responsabilidad el uso que se haga de la misma. </p>\n<br>\n<li><b>Otras condiciones</b></li>\n<p>Podemos cambiar esta Política de Privacidad si detectamos cualquier tipo de agujero legal o Facebook cambia su política con respecto a las aplicaciones contenidas. Si hacemos cualquier cambio en éste acuerdo, serás convenientemente informado por los mecanismos que disponemos y deberás de nuevo aceptar dichos cambios. </p></ol>','Aceptar','Cancelar','Condiciones y T&eacute;rminos de Aceptaci&oacute;n','Configuraci&oacute;n','Configuracion;Angeles;Vigilantes;','Guardar','Selecciona tus Angeles','Elige tus Angeles de entre tus contactos en Facebook','Importa un contacto de tu cuenta Gmail;Añade otros contactos;','Nombre','Email','Importar ','Ver Todos;Seleccionados;No seleccionados','Eligele como tu Angel','Configura tus Vigilantes','Vigilantes','Control de Muro;Control de Amigos;Control de Privacidad;Control de Visitas;','Descripcion del Vigilante;Cuando est&aacute activado, realiza un control de las edades de cada amigo, enviando cualquier incidencia al Tutor de la aplicaci&oacuten;Cuando est&aacute activado, comprueba que no exista lenguaje ofensivo en los mensajes del muro, enviando cualquier incidencia al Tutor de la aplicaci&oacuten;Cuando est&aacute activado, comprueba que el nivel de privacidad del usuario no sea demasiado permisivo, enviando cualquier incidencia al Tutor de la aplicaci&oacuten;Cuando est&aacute activado, comprueba el nivel de visitas que ha tenido el perfil del usuario durante el periodo de tiempo transcurrido desde la &uacuteltima comprobaci&oacuten del perfil, enviando cualquier incidencia al Tutor de la aplicaci&oacuten;','Frecuencia de Notificaciones','Cada día;Cada semana;Cada dos semanas;Cada mes;Cada dos meses;Cada seis meses;Cada año;','Angeles','SNSAngelGuardFB: Autorización para el envío de notificaciones','desea que ústed controle su actividad social en Facebook.\n\n                                    Si acepta dicha autorización, se le enviará una serie de notificaciones para que pueda realizar un seguimiento personalizado de su actividad social.\n\n                                    Si por el contrario, cancela la autorización, no se le volverá a enviar ninguna notificación.','Aceptar','Cancelar',' es una herramienta software desarrollada por la Universidad de Alcalá de Henares, España.','SNSAngelGuardFB: Identificación de Usuario','Nombre','Cerrar','Importar un contacto de tu cuenta Google','Selecciona un contacto de tu cuenta Google','Iniciar Sesion Google','Nombre','Email','Aceptar','Cancelar','Necesitas ayuda?;Ayuda; ¿Qué es un Angel?;Un Ángel es una persona que recibe informes de la actividad que usted genera en Facebook. Cada vez que se produzca una anomalía en la información de su Perfil Social, su Ángel recibirá detalladamente los datos de ésta.; ¿Qué es un Vigilante?;Un Vigilante en una herramienta software que se ejecuta dentro de Facebook. Detecta las posibles amenazas dentro de su perfil y elabora informes que enviará a sus Angeles para que éstos tengan constancia de su actividad social.<br><br>Actualmente, existen cuatro Vigilantes: <br><br>- Filtro de Control de Muro: Realiza un control sobre los mensajes del muro del usuario en cuestión, detectando el vocabulario ofensivo que pudiera existir. <br><br>- Filtro de Control de Amigos: Realiza un control sobre los amigos del usuario en cuestión, detectando cuales de ellos han indicado su edad, y si ésta sobrepasa un límite determinado.<br><br>- Filtro de Control de Privacidad: Realiza un control sobre la configuración de la privacidad del usuario, detectando si su perfil es demasiado permisivo para acceder a su información personal. <br><br>- Filtro de Control de Visitas: Realiza un control sobre las últimas visitas y a quién pertenecen, sobre el perfil del usuario.; Configuración de un Vigilante;Para configurar un Vigilante son necesarias dos acciones<br><br>1. Seleccionar un Ángel o Ángeles a los que quieres que controlen tu actividad. Los Ángeles son seleccionados en la pestaña \"Ángeles\" y posteriormente, en la pestaña \"Vigilantes\", se podrán asociar de manera individual a cada filtro.<br><br>2. Configurar la frecuencia a la que SNSAngelGuard enviará informes a tus Ángeles, informándoles de tu actividad en Facebook.<br>;','Debes elegir al menos un angel;Datos guardados correctamente;Guardando datos...;Cargando datos...;Espere, por favor...;Angel correctamente eliminado!;Angel correctamente guardado!;Error;Se ha producido un error en la aplicacion... ;Detalles; Debe introducir un email; Email no valido; No se ha podido compartir el post con tu amigo. El angel no ha sido guardado;Su navegador web no es compatible con la aplicacion. Para que todas las funciones se ejecuten correctamente, por favor, utilice alguno de los siguientes navegadores:<P><OL><LI>Firefox 5<LI>Google Chrome</OL></P>','Información','Datos guardados correctamente;Usuario ya confirmado anteriormente;Error: Angel no existente;','SNSAngelGuard Aviso: Angel Eliminado; le ha borrado de su lista de Angeles;','SNSAngelGuard: Notificación de Actividad; SNSAngelGuad Notificación: Usuario ;En el comentario ; del post ; existe lenguaje ofensivo. ;No se han encontrado anomalías en el muro del usuario.; no ha especificado su fecha de nacimiento. ; es demasiado mayor para ;No se han encontrado anomalías en las amistades del usuario.;No se han encontrado anomalías en la configuración de Privacidad del usuario.;No se han encontrado anomalías en las últimas visitas al perfil del usuario.;','Añadir nuevo Angel;Editar;Cancelar;Eliminar;Guardar;','Ranking de tus amigos de Facebook con los que compartes más contactos;Ranking de tus amigos de Facebook con los que compartes menos contactos;Numero de mensajes de tus amigos en tu muro de Facebook;','Autorización para el envio de notificaciones;Términos de uso;El usuario quiere que usted controle su actividad social en Facebook. Para más información, haga click en el título de éste post.;');
+INSERT INTO `locale_settings` VALUES ('00000001','You are about to install SNSAngelGuard. Your profile data has NOT been accessed at this point. SNSAngelGuard is devised to give you support on living in social networks safely by declaring contact data of some people that you trust (e.g. your parents or relatives) that we call angels and selecting a number of guards, wich are software modules that read your profile information and inform the angels of any potential risk. Personal information on your contatcts is never forwarded to your angels, but they know that something that deserve inspection is needed and can warm and contact you.','<b>SNSAngelGuardFB Terms of Service</b>\n<br> \n<br>\n<ol> \n<li><b>You are welcome to SNSAngelGuardFB</b> </li>\n<p>Thanks for using our parental control plug-in SNSAngelGuardFB (“Application”) located at Escuela Técnica Superior de Ingeniería Informática, Campus Universitario, Carretera de Barcelona km 33.6, Alcalá de Henares, Madrid, España.</p>\n<p>Using our Application, you are agreeing to these terms. Please read them carefully. </p>\n<br>\n\n\n<li><b>Using our Application</b></li>\n<p>The Application is defined inside of Facebook’s App Center. Because this reason, we might to apply the same restrictions that Facebook does in your information.</p>\n\n<p>Using our Application does not give you ownership of any intellectual property rights in our Application or the content you access. You may use our Application if you accept the exclusive permissions of this as permitted by law. These terms do not grant you the right to use any branding or logos used in our Application. Don’t remove, obscure or alter any legal notices displayed in or along with our Application.</p>\n\n<p>Our Application displays some content that is no Facebook. This content is the sole responsibility of the entity that makes it available. We can review this content if this is not legal or broke our politics, and delete it or negate to publish this if we have any reason to considerate that the content broke our politics or the laws. However, this possibility not implies necessary that we review the content, so please don’t assume that we do.</p>\n\n<p>In connection with your use of the Application, we can sending services notifications, administrative emails and other kind of information. All the same, the Application send service notifications to others contacts, of your Facebook account or others Social Networks, like Google or others emails address that you define, sending someone information about an anomaly in your information inside your Facebook profile. These notifications and the information to third parties that the Application can be used, is the sole responsibility of the person who is titular of the Facebook account from which access to the Application. These notifications can be disabled in the control module of the Application in any time. Also, the contact that the Application send information can be disabled manually in the moment that the application send the accept terms for receiving notifications of your information.</p>\n\n<p>In this moment, our Application are not available for access from mobile devices but, in the case of in a next future would be available, shall apply all of this conditions to they which use our application in this devices. Don’t use the Application if you can distract and break traffic laws or safety.</p>\n<br>\n\n<li><b>Your Facebook account</b></li>\n<p>For using our Application is necessary that you have a Facebook account. For this, it will be necessary that you create, if you don’t have, your own account and to accept the access terms of the Application.</p>\n\n<p>To protect your Facebook account, keep your password confidential. You are responsible for the activity that happens on or through your Facebook account, like our Application. Try not to reuse your Facebook account password on third party applications or other Social Network. If you learn of any unauthorised use of your password or Facebook account, follow the instructions that Facebook put at your disposal for solve that issue. </p>\n<br>\n\n<li><b>Privacy protect and copyright</b></li>\n<p>Our Application will apply the privacy politic and data processing inside of the privacy politic of Facebook. If you use our Application, you accept that Facebook and our Application doing to use your information according of the Facebook politics. For more information of this, you must to previously read the politics about privacy and security of Facebook.</p>\n\n<p>We respond to notices of alleged copyright infringement and we’ll cancel the accounts of the users that, inside of our application, could be infring the terms of the  the spanish law of copyright, Real Decreto Legislativo 1/1996, of april 12, published in the BOE number 97, of the april 22 of 1996, and all of earlier modifications.</p>\n<br>\n\n<li><b>Your content in our Application</b></li>\n<p>Our Application allow to send notifications about the content of your personal information in Facebook (wall comments, dates of birthday of your contacts with their personal image, your relationships, familiars and personals, data about your profile, your configuration). If this information is send, you will do responsible of this information. In short, what belongs to you stays yours.</p>\n\n<p>All the information that our Application stores about you belongs you, we don´t share it with no more, and we don’t use it for fraudulent purposes, only we store your information for processing and sending to your selected contacts detected anomalies that the Application could detect in your information. So, your contacts can be informed of the attacks that you can received by Facebook’s profiles that act in this Social Network like stalkers.</p>\n\n<p>Never our Application will have any information that not be your own information in Facebook, that it\'s, our Application don’t receive data of other type that haven\'t been information that Facebook store about you and have given your acceptation for Facebook access of to these.</p>\n\n<p>For accessing of our Application to your data, you must to consent this legal terms and the permissions that Facebook give us for our Application. These permissions could be reviewed in any time in your app config on Facebook. If you don’t like some of these or you don’t want that our Application access to some information about you, you can to revoke any permission that you want and our Application will not access to this information.</p>\n\n<p>We suggest you reviews the privacy terms of Facebook for having a deep knowledge of the information that Facebook store about you and the uses that Facebook does of this.</p>\n<br>\n\n<li><b>About Software in our Application</b></li>\n<p>Our application runs inside in Facebook web environment. A part of the security context of Facebook, we have you a service, on which our application runs, that your security and the security of your information is guaranteed with a digital certificated on your web browser and you can test it in this. </p>\n\n<p>You can use our Application thanks to the license that Facebook grants you by access to their Social Network. The content of this can be found in your profile page. Our application does the next actions:\n\n<ul>\n<li>When you accept the content of this document, that you must to read it, the application downloads all information about your profile that you had given the permissions for storing this information.</li>\n\n<li>The application permits you to access a control module. You can access to this from Facebook. In this, you can do the next actions:\n<ul>\n<li>You can chose your Facebook’s friends or your Gmail contacts or contacts of others different emails, that you want they are in contact with your information inside Facebook.</li>\n\n<li>One selected, you can chose what kind of control you want to realise about your content. For each control, you can to select the contacts that you want to verify your different content and the temporal window that you want the control runs. In every moment you can to access to the control module and modify the properties of all controls.</li>\n</ul>\n</li>\n<li>Our application has a offline module that it runs regularity and it downloads all your new information in Facebook, according with your permissions, and sends notifications to your chosen contacts if the temporal window is completed. This module permits to our Application updating in every moment the information about you and your activity in Facebook for realising a more powerful control of these.</li>\n\n<li>At not point our Application will access to their personal information, that it\'s, if you give permission to our Application, we can to access to some information about your contacts, like birthday date and like profile image, always with the Facebook permission, so Facebook restrict the access of the applications to third person’s data. Never we can download wall’s information or personal information about your Facebook contacts, also it not belongs to our Application politic.</li>\n</ul>\n</p>\n<br>\n\n<li><b>Modifying and Terminating our Application</b></li>\n<p>Being a application that it runs inside Facebook, we don’t have any tool for deleting our Application in your Facebook’s profile. You must be who delete our application from your app’s configuration page inside Facebook, in your profile’s page. </p>\n\n<p>The fact that you delete our Application not involve that your data has been deleted in our store system. We can to determinate if a user has revoked permissions to access of their information but  we can’t to determinate if you have deleted our application. For your information could be delete, you must to send an email to our application’s administrators and they will delete all information about you. </p>\n\n<p>We believe that you own your data and preserving your access to such data is important. If we discontinue our Application, where reasonably possible, we will give you reasonable advance notice and a chance to get information out of our Application. </p>\n<br>\n\n<li><b>Our Warranties and Disclaimers</b></li>\n<p>Our application grants you that your information are always protect and never more can access they. Only we access to those datas which you will give us your consent to consult they. </p>\n\n<p>Your security is more important for us, so we’ll do anything for your information is completely safe in our store system. Our Application is responsible of our content and the use that we do they into Facebook. This include the responsibility that our Application achieve the terms of use of Facebook and their publicity terms. </p>\n\n<p>Facebook’s politics are achieving in this terms:\n<ul>\n\n<li>Our application only can to apply some information that it needs for it can be functional correctly, never information that doesn’t apply for their activity.</li>\n\n<li>We have a privacy politic, contents in this document, for granting and showing to our users the information that we’re going to use and what is the form that use this. </li>\n\n<li>Never, inside any concept, we’ll share your information with users or application of third-persons. </li>\n\n<li>We delete your information if you tell us, by an email or any other mechanism. We’ll contact with you and delete your information. We’ll do all for you do fine using our application. </li>\n\n<li>Never we’ll have any information about you in media. We’ll never sell to anyone your information. </li>\n\n<li>Facebook could limit our activity if detects that we aren’t doing a good use of your information. </li>\n\n<li>The user of our application will accept that your information will are processing and storing in the installations that the application will have. In this moment, this information will be processing in Spain, but, depending of the telecommunications market, this could change, being responsibility of our application. </li>\n\n<li>Is not responsibility of our application your content inside Facebook. Any data that we receive will be your responsibility. We can restrict the activity for a user in our application if we detect a not good use of our application but, for any moment is our responsibility the use that you could do of our application. </li> \n</ul>\n</p>\n<br>\n\n<li><b>Others conditions</b></li>\n<p>We can change this privacy terms if we detect any problem or Facebook changes your privacy. We can change this privacy terms if we detect any problem or Facebook changes their privacy terms. If we are any change in these terms, you will know by the mechanism that we have and you will must to accept this terms again. </p>\n</ol>','Agree','Cancel','Accepting Terms and Conditions','Settings','Settings;Angels;Vigilants;','Save','Select your Angels','Select your Angels from your Facebook Contacts','Import a contact of your Gmail account;Select others contacts;','Name','Email','Import','View All;Selected;Unselected;','Select as your Angel','Configure your Vigilants','Vigilants','Zeus;Hermes;Apollo;Poseidon','Vigilant Description;Hi!! I\'m [1]!! If you activate me, I\'ll control all of the offensive post inside your Facebook\'s Wall and then, I\'ll send to your Angels an email explaining that something has happened!;Hi!! I\'m [1]!! If you activate me, I\'ll control the age of your friends in Facebook, seeing if anyone is very older for you and for your friends, and then, I\'ll send to your Angels an email explaining that you have got some friend in your Facebook\'s profile that is very older for you.;Hi!! I\'m [1]!! If you activate me, I\'ll check your Facebook\'s configuration to confirm that your Facebook\'s Profile is really secure. If it\'s not true, I\'ll send to your Angels an email  informing that your Facebook\'s Profile is not secure.;Hi!! I\'m [1]!! If you activate me, I\'ll do a ranking with your best friends in Facebook. The friends that write more posts in your Facebook\'s Wall, the friends that you share more friends and the friends that you haven\'t got any friends in common with them. Then, I\'ll send to your Angels this information. ','Notifications Frecuency','Once a day;Once a week;Once two weeks;Once a month;Once two months;Once six months;Once a year;','Angels','SNSAngelGuardFB: Authorisation for send notificacions',' wishes that you control his social activity in Facebook.\n\n                                    If you accept above mentioned authorization, a series of notifications will be sent in order that it could realize a personalized follow-up of his social activity.\n\n                                    If on the contrary, you cancel the authorization, it will not return to send any notification','Accept','Cancel',' is software developed in the Alcalá de Henares University, Spain.','SNSAngelGuardFB: User Identification','Name','Close','Import Contact from your Google account','Select a contact from your Google account','Login Google','Name','Email','Accept','Cancel','Need help?;Help; What is an Angel?; An Angel is a person who receives notifications of the anormal activities that it produced in your Facebook profile. For each anomalies, your Angels will receive a notification in her/his email.; What is a Vigilant?; A Vigilant is a software tool that is executing inside Facebook. These tools detect threats in your profile information, privacity, friends, wall, ..., etc and send notifications for your Angels.<br><br>Actually, there are four Vigilants: <br><br>- Wall Control: Check your post wall and send a notification to your Angels with the offensive language that could exist. <br><br>- Friends Control: Check your friends, detecting which of them have indicated his age, and if this one exceeds a certain limit.<br><br>- Privacity Control: Check your privacy configuration, detecting if your profile is too permissive to access to your personal information.<br><br>- Visits Control: Check the last visits and to whom they belong on your facebook profile.; Vigilant configuration; To configure a Vigilant it\'s necesary two actions:<br><br>1. To select an Angel or Angels to which you want them to control your activity. The Angels they are selected in the eyelash \"Angels\" and later, in the eyelash \"Vigilants\", they will be able to associate in an individual way to every filter.<br><br>2. The frequency the SNSAngelGuard will send reports to your Angels, informing them about your activity in Facebook.<br>;','You must select at least an angel;Information has stored successfully;Storing information...;Loading...;Waiting for operation to complete...;Angel correctly deleted!;Angel correctly saved!;Error;There is an error in the application… ;Details; You must introduce any email; Not valid email; There was a mistake while sharing a post. Angel did not save it;Your browser is not compatible with the application. Use one of the below list:<P><OL><LI>Firefox 5<LI>Google Chrome</OL></P>;You have not choosen any angel for ','Information','Dates saved successfully.;User already confirmated.;Error: Non-existent Angel;','SNSAngelGuard Alert: Deleted angel; deleted you of the Angel List;','SNSAngelGuard: Activity Notification; SNSAngelGuad Notification: User ;In the comment ; of the post wall ; there is offensive language. ;There isn\'t any anomalies in the user\'s Wall.; doen\'t say his/her age ; is too old for ;There isn\'t any anomalies in the user\'s friends.;There isn\'t any anomalies in the user\'s privacity configuration.;There isn\'t any anomalies in the user\'s profile visits.;','Create new Angel;Edit;Cancel;Delete;Save;','Best ranking\'s friends with mutual contacts in your Facebook; Worst ranking\'s friends with mutual contacts in your Facebook; Post wall of your friends in your Facebook wall; ','Authorisation to send notifications;Agree with terms and conditions;The user wants you to control his or her social activity on Facebook. For more information, click on the link below.;','Turn on; Turn off','First steps in SNSAngelGuardFB','Hi!! This tutorial is directed for new users of SNSAngelGuardFB!! This is our main screen. In this, you can see two important figures, the Ángels, that they are figures that they recibe information about the posibles menaces that they can to put in danger your Facebook profile, and the Vigilants, that they are robots which analize the information about you and they send notifications to your Ángels.;For starting to use our application, you have to access from your Facebook Profile and you have to click in the  application icon, that it is in the left side of your screen, in the Applications’s Area:;When you’ll get into the application, you’ll can see the main screen, in the Angels\'s tab.  Beforehand, we’ve talked about that what is an Angel. You can to select from Facebook or from Gmail or introducing an email that the person can to use as an Angel. Now, we’re going to click over a Facebook’s contact:;We can see a message for posting in a Facebook’s Wall of our Angel. In this message will display a link. In this link, your Angel have to introduce the email where want to recibe the notifications about your activity. Write some message in the post and do click in the “Share” botton.;For using Gmail’s contacts as Angels, you have to click in the “Import” botton in the main screen. You’ll see other screen and just do click in the “Login Google” botton. Then, the Login screen of Google will appear:;Now, you have to introduce your Google account credentials and just do click in the “Login” botton:;You’ll can see your contacts in the screen now. You have to select the Angels that you want and click the “Accept” botton.  The screen will close and you’ll see your Gmail’s contacts in the main screen:;You also can add anyone kind of contact. For this, you just need to introduce the name and the email of the Angel.  You have to click in the “Edit” botton for a new Angel:;You’ll can see the enabled text box where you have to introduce the Angel’s information. Then, you have to click in the “Save” icon for saving the Angel or click in the “Cancel” icon for not saving the Angel.;For each Angel that you had added, you’ll can see this informative message. You’ll can see this message when you saved any kind of Angel:;For editing the Angels, you’ll can click in the “Edit” icon or, if you want to delete the angel, you’ll want to click in the “Delete” icon.  For adding more Angels, you’ll have to click in the “+” icon and the main screen will display a new row for you:;When you had selected your angels, you’ll have to configurate the Vigilants. For this, you do click in the Vigilants’s tab and the main screen will display you the description for each robots and their functionality:;For configuring a robot, first you have to actívate it. In the right side of the screen, you’ll can see a icon for to activate or deactivate the robot. In this case, we have to click in the “Activate” icon:;You’ll can see the robot and the angels that you can to select for the angels will recibe notifications. You’ll can to select the angels that you want and they can be different for each robot. Also, you have to define the notifications’s frecuency of the robot:;If you have any doubts sometime, you’ll always can to consult the application’s help doing click in the link:;When you had configurated the vigilants, do click in the “Save” botton and your configuration will be saved!!;Always you need it, you’ll can to access to the application and reconfiguring it. We hope that you enjoy using our SNSAngelGuardFB!!','First;Previous;Next;Last'),('00000002','SNSAngelGuard analiza la actividad social de una persona. Si detecta alguna anomal&iacute;a, env&iacute;a un informe a la persona o tutor responsable. Este tutor habr&aacute; sido previamente designado por la persona que decide instalar, por voluntad propia, SNSAngelGuard. La aplicaci&oacute;n utiliza datos personales del perfil en cuesti&oacute;n para ser posteriormente analizados. Para proceder a su instalaci&oacute;n, rogamos lea detenidamente el Acuerdo Legal que se expone a continuaci&oacute;n. Si, por el contrario, no desea que SNSAngelGuard se ejecute, pulse el bot&oacute;n \"Cancelar\" y se proceder&aacute; a su desinstalaci&oacute;n.','<b>Condiciones de servicio de SNSAngelGuardFB</b>\n<br>\n<br>\n<ol>\n<li><b>Te damos la bienvenida a SNSAngelGuardFB</b></li>\n<p>Te agradecemos que uses la herramienta de control parental SNSAngelGuardFB (en adelante, la <b>Aplicación</b>), cuyo dominio social está ubicado en la Escuela Técnica Superior de Ingeniería Informática, Campus Universitario, Carretera de Barcelona km 33.6, Alcalá de Hernares, Madrid, España.</p>\n<p>El uso de nuestra Aplicación implica la aceptación de éstas condiciones. Te recomendamos que las leas detenidamente.</p>\n<br>\n<li><b>Uso de nuestra Aplicación</b></li>\n<p>La aplicación se encuentra dentro del dominio de ejecución de aplicaciones de Facebook, por lo que las restricciones que dicha Red Social ejecute sobre tus datos son los mismos que nuestra Aplicación ejecutará a éstos.</p>\n<p>El uso de nuestra Aplicación no te convierte en el titular de ninguno de los derechos de propiedad intelectual de los mismos ni del contenido al que accedes. Solo podrás acceder a la Aplicación si consientes la aceptación de sus permisos o si está permitido por la ley. Estas condiciones no te otorgan el derecho a usar las marcas ni los logotipos utilizados en nuestra Aplicación. Presta mucha atención a los avisos legales que se muestran en nuestra Aplicación.</p>\n<p>Nuestra Aplicación muestra contenidos que no pertenecen a Facebook. Este contenido es responsabilidad exclusiva de la entidad que lo haya puesto a disposición del usuario. Podremos revisar el contenido para determinar si es ilegal o infringe nuestras políticas, y eliminarlo o negarnos a publicarlo si tenemos razones suficientes para considerar que infringe nuestras políticas o la ley. Sin embargo, esta posibilidad no implica necesariamente que revisemos el contenido, por lo que no debes dar por sentado que vayamos a hacerlo.</p>\n<p>En relación al uso de la Aplicación, podremos enviarte notificaciones de servicio, mensajes administrativos y otro tipo de información. A parte de los mensajes que tu puedes recibir, la aplicación envía notificaciones de servicio a aquellos contactos, de Facebook o de otras Redes Sociales, como Google u otras direcciones de correo, a los cuales tu hayas dado acceso a examinar los contenidos de tu perfil en Facebook, enviándoles cualquier tipo de notificación si se detecta algún tipo de anomalía en los controles que ejecuta la aplicación. Estas notificaciones y los datos a terceros de los que puede hacer uso la Aplicación son responsabilidad propia del titular de la cuenta de Facebook a través de la cual se accede a nuestra Aplicación. Estas notificaciones pueden ser desactivadas en el módulo de control de la Aplicación en cualquier instante. También el propio contacto puede desactivarlas manualmente en el momento en el que se le envía la aceptación de términos para recibir las notificaciones de tu información.</p>\n<p>De momento, nuestra Aplicación no está disponible para acceso desde dispositivos móviles, pero, en el caso de que en un futuro próximo, a corto plazo, estuviera disponible, se aplicarán todas las condiciones de éste documento a su uso en dichos dispositivos. No utilices la Aplicación de un modo que pueda distraerte y que te impida cumplir las leyes de tráfico o de seguridad.</p>\n<br>\n<li><b>Tu cuenta de Facebook</b></li>\n<p>Para utilizar nuestra Aplicación es necesario que tengas una cuenta en Facebook. Para ello, será necesario que crees tu mismo, en caso de no estar en disposición de una, tu propia cuenta y aceptar los permisos de acceso a la Aplicación.</p>\n<p>Para proteger tu cuenta de Facebook, mantén la confidencialidad de tu contraseña. Eres responsable de la actividad que se desarrolle en tu cuenta de Facebook o través de ella, tal es el caso de nuestra Aplicación. Intenta no reutilizar la contraseña de tu cuenta de Facebook en otro tipo de aplicaciones a terceros o en alguna otra Red Social. Si detectas cualquier tipo de uso no autorizado de tu cuenta de Facebook, sigue las instrucciones que pone Facebook a tu disposición para solucionarlo lo antes posible.</p>\n<br>\n<li><b>Protección de la privacidad y de los derechos de autor</b></li>\n<p>Nuestra Aplicación aplicará la política de privacidad y de tratamiento de datos personales enmarcada en las políticas de privacidad de Facebook. Si usas nuestra aplicación, aceptas que Facebook y nuestra Aplicación use tus datos totalmente conforme con a sus políticas de privacidad. Para más información, consulta previamente las políticas de privacidad y de seguridad de Facebook.</p>\n<p>Respondemos a las notificaciones de presuntas infracciones de los derechos de autor y cancelamos las cuentas de los usuarios que, dentro de nuestra Aplicación, comentan infracciones reiteradas de acuerdo con el proceso establecido en la ley española de propiedad intelectual, Real Decreto Legislativo 1/1996, de 12 de abril, publicado en el BOE num. 97, del 22 de abril de 1996, y todas sus modificaciones anteriores.</p>\n<br>\n<li><b>Tu contenido en nuestra Aplicación</b></li>\n<p>Nuestra Aplicación te permite enviar notificaciones sobre el contenido de tu información personal de Facebook (información publicada en tu muro, fechas de nacimiento de tus contactos junto con su imagen de perfil, información registrada en tu perfil acerca de tus relaciones, tanto familiares como personales, datos de tu perfil, configuración de tu cuenta). Si esta información es enviada, seguirás siendo el titular de éstos datos, es decir, lo que te pertenece es tuyo. </p>\n<p>Toda la información que nuestra Aplicación almacena sobre ti es tuya, no vamos a compartirla con nadie más, ni vamos a hacer un uso fraudulento de la misma. Únicamente la almacenamos para poder procesarla y enviar a los contactos que tu selecciones las anomalías que la Aplicación detecte en tus datos. Así, tus contactos podrán estar convenientemente informados de los posibles ataques que puedas recibir por parte de perfiles de Facebook que actúan en ésta Red Social como acosadores. </p>\n<p>En ningún momento nuestra Aplicación contendrá información que no sea la propia de Facebook, es decir, la aplicación no recibe datos de otro tipo que no sean los propios que Facebook almacena sobre ti y, sobre los cuales, tu has dado consentimiento para que ésta acceda a ellos. </p>\n<p>Para que nuestra Aplicación pueda acceder a tus datos, deberás consentir este acuerdo legal y los permisos que Facebook pone a nuestra disposición, los cuales pueden ser revisados en tu página de configuración de aplicaciones de Facebook. Si alguno de éstos permisos no son de tu agrado o no deseas que accedamos a cierta información que tu consideres que no es necesario que revisemos, bastará con que desactives los permisos en dicha página que no desees que la Aplicación tenga sobre tu información.</p>\n<p>Te recomendamos que revises la política de privacidad de Facebook para que puedas tener un conocimiento más profundo de los datos que se almacenan en tu perfil y de los usos que Facebook puede hacer con ellos.</p>\n<br>\n<li><b>Acerca del software de nuestra Aplicación</b></li>\n<p>Nuestra aplicación se ejecuta en el entorno Web de Facebook. A parte de los controles de Seguridad de Facebook, nosotros ponemos a tu disposición un servicio, sobre el cual se ejecuta la aplicación, en el que tu seguridad y la seguridad de tus datos está garantizada mediante certificados digitales que así lo atestiguan y que tú mismo podrás comprobar en la barra de direcciones de tu navegador.</p>\n<p>Podrás utilizar nuestra Aplicación gracias a la licencia que te concede Facebook para utilizar su Red Social. El contenido de la misma puede ser consultada en tu página de perfil.</p>\n<p>Nuestra aplicación realiza una serie de acciones:\n<ul> \n<li>Cuando aceptas el contenido de éste documento, el cual recomendamos profundamente sea leido en su totalidad, la Aplicación descarga todos los datos de tu perfil, a los cuales tu hayas dado los permisos necesarios para que los podamos almacenar, a sus sistemas de almacenamiento.</li>\n<li>La Aplicación pone a tu disposición un módulo de control, al cual sólo se podrá acceder desde Facebook, en el cual podrás realizar las siguientes acciones:\n<ul><li>Puedes seleccionar de tus contactos de Facebook, de tu cuenta de Gmail, o de otras cuentas de correo electrónico, aquellos que desees que controlen tu información dentro de Facebook.</li>\n<li>Una vez seleccionados, podrás determinar qué tipo de control quieres que se realice sobre tu contenido. Por cada control podrás seleccionar los contactos que verifiquen tu información y el intervalo regular de tiempo sobre el cual se ejecutarán estos controles y enviarán notificaciones a tus contactos en caso de que se detecten anomalías.</li>\n<li>En cualquier momento que tu desees podrás acceder al módulo de control y modificar las propiedades de los controles de la forma que desees, controlando en todo momento el contenido que se quieres que se verifique y que tus contactos puedan observar.</li></ul></li>\n<li>La Aplicación cuenta con un módulo offline que se ejecutará diariamente y que descargará toda tu nueva información registrada en Facebook, de acuerdo con tus permisos, y enviará notificaciones a tus contactos seleccionados si se cumple el intervalo de tiempo bajo el cual has definido la ejecución de tus controles en la Aplicación. Este módulo permitirá a la Aplicación tener actualizada en todo momento tu información y hacer análisis más precisos sobre tu actividad.</li></ul></p>\n<p>En ningún momento nuestra Aplicación accederá a datos de terceras personas, es decir, si tu das consentimiento a la Aplicación, nosotros podemos acceder a los datos de tus contactos que Facebook pone a disposición de las aplicaciones, por lo que los datos a terceros están restringidos a las políticas que Facebook administra sobre ellos. En ningún momento podremos descargar contenido de sus muros o su información personal, ya que no forma parte de la política de la Aplicación.</p>\n<br>\n<li><b>Como modificar y cancelar nuestra Aplicación</b></li>\n<p>Al ser una aplicación que se ejecuta dentro del marco de aplicaciones de Facebook, no disponemos de mecanismos para eliminar la Aplicación en tu perfil. Deberás ser tu el que elimine nuestra aplicación desde la configuración de aplicaciones que Facebook pone a tu disposición en tu página de perfil.</p>\n<p>El hecho de que elimines de tu perfil de tu actividad no implica que tus datos sean borrados de nuestro sistema de almacenamiento. Podemos determinar si un usuario nos ha denegado permisos para acceder a su información pero no podemos determinar con exactitud si ha eliminado la aplicación. Para que tus datos sean borrados de nuestra aplicación, deberás ponerte en contacto con los administradores de nuestra Aplicación y ellos se ocuparán de eliminar toda tu información.</p>\n<p>Consideramos que eres el propietario de todos tus datos en nuestra Aplicación, por lo que, si interrumpimos alguna vez nuestra Aplicación, serás avisado convenientemente y tus datos serán eliminados de nuestra Aplicación para que nadie pueda hacer un uso indebido de ellos.</p>\n<br>\n<li><b>Nuestras garantías y renuncias de responsabilidad</b></li>\n<p>La Aplicación te garantiza que tus datos estén siempre protegidos y que nadie más acceda a ellos. Sólo se accederá a aquellos datos a los cuales tu hayas dado consentimiento formal para que sean consultados. </p>\n<p>Tu seguridad es muy importante para nosotros, por lo que haremos todo lo que esté en nuestra mano para que tus datos estén totalmente seguros en nuestros sistemas de almacenamiento.</p>\n<p>Nuestra Aplicación es responsable de nuestro contenido, de sus datos y del uso que hagamos de ellos dentro de Facebook. Esto incluye la obligación de asegurar que nuestra aplicación o su uso cumpla las normas de Facebook y sus normas de publicidad. </p>\n<p>La política de Facebook para sus aplicaciones se cumplirá de la siguiente forma:\n<ul>\n<li>Nuestra Aplicación sólo podrá solicitar los datos que necesite para que sea correctamente funcional, nunca datos que no apliquen para el desarrollo de su actividad.</li>\n<li>Disponemos de una politica de privacidad, contenida en éste documento, para garantizar e indicar a nuestros usuarios los datos que vamos a utilizar y de qué forma los utilizaremos.</li>\n<li>Nunca, bajo ningún concepto, compartiremos tus datos con usuarios ni aplicaciones a terceros.</li>\n<li>Eliminaremos tus datos si nos lo pides, mediante contacto con nuestros administradores de la Aplicación o con cualquier otro mecanismo, poniéndonos previamente en contacto contigo y facilitándote, en la medida de lo posible, éste trámite. Haremos todo lo posible para que estés a gusto utilizando nuestra Aplicación.</li>\n<li>No pondremos ninguna información tuya públicamente ni en ningún medio de comunicación.\n<li>No venderemos tus datos a nadie, sería nuestro fin!</li>\n<li>Facebook podrá limitar nuestra actividad de forma unilateral si comprueba que no estamos haciendo un buen uso de tus datos.\n</li></ul></p>\n<p>El usuario de la aplicación aceptará que sus datos serán procesados y almacenados en las instalaciones que la Aplicación ponga a su disposición. Actualmente, estos datos serán procesados en España, aunque dependiendo de las características del mercado de las telecomunicaciones a nivel mundial, esto podría cambiar, siendo responsabilidad de la Aplicación su total mantenimiento. Si en cualquier momento pudiera producirse un cambio de éstas características, serías convenientemente informado de toda la información referida a éste respecto. </p>\n<p>La aplicación no se hace responsable de tu contenido de Facebook. Cualquier dato que recibamos de Facebook será responsabilidad de éste y, por consiguiente, del usuario del cual lo recibamos. Podemos restringir la actividad de un usuario en nuestra Aplicación si detectamos un uso indebido de la misma, pero en ningún momento será nuestra responsabilidad el uso que se haga de la misma. </p>\n<br>\n<li><b>Otras condiciones</b></li>\n<p>Podemos cambiar esta Política de Privacidad si detectamos cualquier tipo de agujero legal o Facebook cambia su política con respecto a las aplicaciones contenidas. Si hacemos cualquier cambio en éste acuerdo, serás convenientemente informado por los mecanismos que disponemos y deberás de nuevo aceptar dichos cambios. </p></ol>','Aceptar','Cancelar','Condiciones y T&eacute;rminos de Aceptaci&oacute;n','Configuraci&oacute;n','Configuracion;Angeles;Vigilantes;','Guardar','Selecciona tus Angeles','Elige tus Angeles de entre tus contactos en Facebook','Importa un contacto de tu cuenta Gmail;Añade otros contactos;','Nombre','Email','Importar ','Ver Todos;Seleccionados;No seleccionados','Eligele como tu Angel','Configura tus Vigilantes','Vigilantes','Zeus;Hermes;Apolo;Poseidón','Descripcion del Vigilante;Hola!! Soy [1]! Si me activas, controlaré todo el vocabulario ofensivo para ti dentro de tu perfil y mandaré un email a tus Ángeles informándoles de lo sucedido!;Hola!! Soy [1]! Si me activas, controlaré las edades de tus amigos, viendo cuales de ellos son muy mayores para ti o no han especificado su edad en Facebook, mandándoles un email a tus Angeles informándoles de ello.;Hola!! Soy [1]! Si me activas, revisaré tu configuración para comprobar que tu perfil es realmente seguro. Si no lo es, enviaré un email a tus Ángeles informándoles de tu situación.;Hola!! Soy [1]! Si me activas, elaboraré un ranking de tus mejores amigos, los que más escriben en tu muro de Facebook y con los que compartes más o menos amigos y enviaré un email a tus Ángeles informándoles de tu situación.;','Frecuencia de Notificaciones','Cada día;Cada semana;Cada dos semanas;Cada mes;Cada dos meses;Cada seis meses;Cada año;','Angeles','SNSAngelGuardFB: Autorización para el envío de notificaciones','desea que ústed controle su actividad social en Facebook.\n\n                                    Si acepta dicha autorización, se le enviará una serie de notificaciones para que pueda realizar un seguimiento personalizado de su actividad social.\n\n                                    Si por el contrario, cancela la autorización, no se le volverá a enviar ninguna notificación.','Aceptar','Cancelar',' es una herramienta software desarrollada por la Universidad de Alcalá de Henares, España.','SNSAngelGuardFB: Identificación de Usuario','Nombre','Cerrar','Importar un contacto de tu cuenta Google','Selecciona un contacto de tu cuenta Google','Iniciar Sesion Google','Nombre','Email','Aceptar','Cancelar','Necesitas ayuda?;Ayuda; ¿Qué es un Angel?;Un Ángel es una persona que recibe informes de la actividad que usted genera en Facebook. Cada vez que se produzca una anomalía en la información de su Perfil Social, su Ángel recibirá detalladamente los datos de ésta.; ¿Qué es un Vigilante?;Un Vigilante en una herramienta software que se ejecuta dentro de Facebook. Detecta las posibles amenazas dentro de su perfil y elabora informes que enviará a sus Angeles para que éstos tengan constancia de su actividad social.<br><br>Actualmente, existen cuatro Vigilantes: <br><br>- Filtro de Control de Muro: Realiza un control sobre los mensajes del muro del usuario en cuestión, detectando el vocabulario ofensivo que pudiera existir. <br><br>- Filtro de Control de Amigos: Realiza un control sobre los amigos del usuario en cuestión, detectando cuales de ellos han indicado su edad, y si ésta sobrepasa un límite determinado.<br><br>- Filtro de Control de Privacidad: Realiza un control sobre la configuración de la privacidad del usuario, detectando si su perfil es demasiado permisivo para acceder a su información personal. <br><br>- Filtro de Control de Visitas: Realiza un control sobre las últimas visitas y a quién pertenecen, sobre el perfil del usuario.; Configuración de un Vigilante;Para configurar un Vigilante son necesarias dos acciones<br><br>1. Seleccionar un Ángel o Ángeles a los que quieres que controlen tu actividad. Los Ángeles son seleccionados en la pestaña \"Ángeles\" y posteriormente, en la pestaña \"Vigilantes\", se podrán asociar de manera individual a cada filtro.<br><br>2. Configurar la frecuencia a la que SNSAngelGuard enviará informes a tus Ángeles, informándoles de tu actividad en Facebook.<br>;','Debes elegir al menos un angel;Datos guardados correctamente;Guardando datos...;Cargando datos...;Espere, por favor...;Angel correctamente eliminado!;Angel correctamente guardado!;Error;Se ha producido un error en la aplicacion... ;Detalles; Debe introducir un email; Email no valido; No se ha podido compartir el post con tu amigo. El angel no ha sido guardado;Su navegador web no es compatible con la aplicacion. Para que todas las funciones se ejecuten correctamente, por favor, utilice alguno de los siguientes navegadores:<P><OL><LI>Firefox 5<LI>Google Chrome</OL></P>;No has elegido ningún angel para ','Información','Datos guardados correctamente;Usuario ya confirmado anteriormente;Error: Angel no existente;','SNSAngelGuard Aviso: Angel Eliminado; le ha borrado de su lista de Angeles;','SNSAngelGuard: Notificación de Actividad; SNSAngelGuad Notificación: Usuario ;En el comentario ; del post ; existe lenguaje ofensivo. ;No se han encontrado anomalías en el muro del usuario.; no ha especificado su fecha de nacimiento. ; es demasiado mayor para ;No se han encontrado anomalías en las amistades del usuario.;No se han encontrado anomalías en la configuración de Privacidad del usuario.;No se han encontrado anomalías en las últimas visitas al perfil del usuario.;','Añadir nuevo Angel;Editar;Cancelar;Eliminar;Guardar;','Ranking de tus amigos de Facebook con los que compartes más contactos;Ranking de tus amigos de Facebook con los que compartes menos contactos;Numero de mensajes de tus amigos en tu muro de Facebook;','Autorización para el envio de notificaciones;Términos de uso;El usuario quiere que usted controle su actividad social en Facebook. Para más información, haga click en el título de éste post.;','Activar;Desactivar','Primeros pasos en SNSAngelGuardFB','Hola!! Este tutorial va dirigido para los nuevos usuarios de la aplicación SNSAngelGuardFB! Esta es nuestra pantalla principal. En ella puedes ver dos figuras importantes, los Ángeles, que son figuras que reciben información de posibles amenazas en tu perfil, y los Vigilantes, que son robots que analizan tu información y, según su configuración, envían varios tipos de informes a tus Ángeles. ;Para acceder a la aplicación,  únicamente  tienes que acceder desde tu página de inicio de Facebook y pulsar el icono de nuestra aplicación, que se sitúa en la parte izquierda de la pantalla, en el área de Aplicaciones.;Una vez dentro, se muestra la pantalla principal, en la pantalla de Ángeles. Como hemos dicho antes, un Ángel es cualquier persona que queramos que le lleguen informes, en forma de email, para que controle las posibles amenazas en tu perfil. Aquí podemos elegirlos tanto de contactos de Facebook, como de contactos de Gmail como cualquier otro  que no sea ni de uno ni de otro. Vamos a elegir un contacto y pinchamos sobre el:;Automáticamente, nos sale un mensaje para escribir en su muro indicándole que quieres que sea tu Ángel, junto con un enlace que le llevará a una pantalla en la que podrá introducir su email para que le lleguen notificaciones. Escribimos el mensaje y le damos al botón “Share” para compartirlo en el muro de nuestro Ángel.;También podemos importar contactos desde Gmail. Pulsamos el botón “Importar” de la pantalla principal y nos aparecerá la siguiente pantalla. En ésta, lo único que  tenemos que hacer es pulsar el botón “Iniciar Sesion Google” y nos aparecerá la pantalla de login de nuestro correo:; Ahora introducimos nuestras credenciales de la cuenta de Google y pulsamos el botón “Iniciar sesión”;Automáticamente nos aparecen nuestros contactos cargados en la pagina anterior. Seleccionamos a aquellos que queramos y pulsamos el botón “Aceptar”.  Tras esto, se cerrará la pantalla y los contactos que hayamos seleccionado aparecerán en el área de contactos de Gmail.;También podemos añadir cualquier otro tipo de contacto. Para ello, solamente necesitamos introducir su nombre y el email donde recibirá los informes. Nos vamos a la parte inferior de la pantalla y pulsamos el botón “Editar” para introducir un nuevo Ángel:;Se nos habilitan las cajas de texto donde  introduciremos la información. Después, podremos pulsar el botón “Guardar” para almacenar el contacto o, por el contrario, podemos pulsar el botón  “Cancelar” y se volverá al estado inicial:;Una vez guardado, nos aparecerá este mensaje informativo. También aparecerá cuando guardemos contactos de Facebook o de Gmail.;Una vez guardado, podremos volver a editar el contacto o borrarlo mediante sus dos botones. Para añadir más contactos, bastará con pulsar el botón “+”  y se habilitará una nueva fila para que puedas introducir un nuevo Ángel:;Una vez seleccionados los Ángeles, pasamos a seleccionar y configurar los vigilantes. Para ello, pulsamos en la pestaña “Vigilantes” y nos aparecerá la descripción de cada uno de los robots y su funcionalidad:;Para configurar un vigilante, primero debemos activarlo. A la derecha de cada vigilante aparecerá un botón de activado o desactivado. En éste caso, pulsamos el botón para activarlo:;Tras pulsar el botón, nos aparecerá el robot junto con los ángeles que podemos seleccionar para que le envíe los informes. Podrás enviar los informes a quien quieras. Puedes seleccionar Ángeles distintos para cada Vigilante. También podrás definir la frecuencia con que quieres que se envíen los informes mediante la selección de frecuencia:;Si alguna vez te surgen dudas, siempre podrás consultar la ayuda de la aplicación pulsando en su correspondiente enlace:;Una vez configurados los vigilantes, pulsamos el botón “Guardar” y nuestra configuración será almacenada!;Siempre que lo necesites podrás acceder a la aplicación y volver a configurarla según tus necesidades. Esperamos que disfrutes utilizando SNSAngelGuardFB!','Primera página;Anterior;Siguiente;Última página');
 /*!40000 ALTER TABLE `locale_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -882,15 +852,15 @@ DROP TABLE IF EXISTS `settings_angels`;
 CREATE TABLE `settings_angels` (
   `uid_angel` int(11) NOT NULL AUTO_INCREMENT,
   `id_angel` varchar(100) NOT NULL,
-  `name_angel` varchar(200) NOT NULL,
-  `img_angel` varchar(200) NOT NULL,
+  `name_angel` longtext NOT NULL,
+  `img_angel` longtext NOT NULL,
   `type_angel` varchar(10) NOT NULL,
   `accept_angel` varchar(1) NOT NULL,
   `user_prop_angel` varchar(100) NOT NULL,
   `confirm_angel` varchar(1) NOT NULL,
   `id_facebook` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`uid_angel`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -903,211 +873,56 @@ LOCK TABLES `settings_angels` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `settings_fltFriends`
+-- Table structure for table `settings_filter`
 --
 
-DROP TABLE IF EXISTS `settings_fltFriends`;
+DROP TABLE IF EXISTS `settings_filter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltFriends` (
-  `user_settings_uid` varchar(100) NOT NULL,
-  `frec_fltFriends` varchar(10) NOT NULL,
-  `active_fltFriends` varchar(1) NOT NULL,
+CREATE TABLE `settings_filter` (
+  `id_filter` int(11) NOT NULL AUTO_INCREMENT,
+  `frec_filter` varchar(100) NOT NULL,
+  `active_filter` varchar(1) NOT NULL,
   `last_check` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_settings_uid`) USING BTREE,
-  CONSTRAINT `fk_settings_fltFriends_user_settings_uid` FOREIGN KEY (`user_settings_uid`) REFERENCES `user_settings` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `type_filter` varchar(200) NOT NULL,
+  PRIMARY KEY (`id_filter`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=213 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `settings_fltFriends`
+-- Dumping data for table `settings_filter`
 --
 
-LOCK TABLES `settings_fltFriends` WRITE;
-/*!40000 ALTER TABLE `settings_fltFriends` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltFriends` ENABLE KEYS */;
+LOCK TABLES `settings_filter` WRITE;
+/*!40000 ALTER TABLE `settings_filter` DISABLE KEYS */;
+/*!40000 ALTER TABLE `settings_filter` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `settings_fltFriends_has_settings_angels`
+-- Table structure for table `settings_filter_has_settings_angels`
 --
 
-DROP TABLE IF EXISTS `settings_fltFriends_has_settings_angels`;
+DROP TABLE IF EXISTS `settings_filter_has_settings_angels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltFriends_has_settings_angels` (
-  `settings_fltFriends_user_settings_uid` varchar(100) NOT NULL,
+CREATE TABLE `settings_filter_has_settings_angels` (
+  `settings_filter_id_filter` int(11) NOT NULL,
   `settings_angels_uid_angel` int(11) NOT NULL,
-  PRIMARY KEY (`settings_fltFriends_user_settings_uid`,`settings_angels_uid_angel`) USING BTREE,
-  KEY `fk_settings_fltFriends_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
-  CONSTRAINT `fk_settings_fltFriends_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`),
-  CONSTRAINT `fk_settings_fltFriends_has_settings_angels_user_settings_uid` FOREIGN KEY (`settings_fltFriends_user_settings_uid`) REFERENCES `settings_fltFriends` (`user_settings_uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltFriends_has_settings_angels`
---
-
-LOCK TABLES `settings_fltFriends_has_settings_angels` WRITE;
-/*!40000 ALTER TABLE `settings_fltFriends_has_settings_angels` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltFriends_has_settings_angels` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltPriv`
---
-
-DROP TABLE IF EXISTS `settings_fltPriv`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltPriv` (
-  `user_settings_uid` varchar(100) NOT NULL,
-  `frec_fltPriv` varchar(10) NOT NULL,
-  `active_fltPriv` varchar(1) NOT NULL,
-  `last_check` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_settings_uid`) USING BTREE,
-  CONSTRAINT `fk_settings_fltPriv_user_settings_uid` FOREIGN KEY (`user_settings_uid`) REFERENCES `user_settings` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltPriv`
---
-
-LOCK TABLES `settings_fltPriv` WRITE;
-/*!40000 ALTER TABLE `settings_fltPriv` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltPriv` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltPriv_has_settings_angels`
---
-
-DROP TABLE IF EXISTS `settings_fltPriv_has_settings_angels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltPriv_has_settings_angels` (
-  `settings_fltPriv_user_settings_uid` varchar(100) NOT NULL,
-  `settings_angels_uid_angel` int(11) NOT NULL,
-  PRIMARY KEY (`settings_fltPriv_user_settings_uid`,`settings_angels_uid_angel`) USING BTREE,
-  KEY `fk_settings_fltPriv_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
-  CONSTRAINT `fk_settings_fltPriv_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`),
-  CONSTRAINT `fk_settings_fltPriv_has_settings_angels_user_settings_uid` FOREIGN KEY (`settings_fltPriv_user_settings_uid`) REFERENCES `settings_fltPriv` (`user_settings_uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltPriv_has_settings_angels`
---
-
-LOCK TABLES `settings_fltPriv_has_settings_angels` WRITE;
-/*!40000 ALTER TABLE `settings_fltPriv_has_settings_angels` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltPriv_has_settings_angels` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltVist`
---
-
-DROP TABLE IF EXISTS `settings_fltVist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltVist` (
-  `user_settings_uid` varchar(100) NOT NULL,
-  `frec_fltVist` varchar(10) NOT NULL,
-  `active_fltVist` varchar(1) NOT NULL,
-  `last_check` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_settings_uid`) USING BTREE,
-  CONSTRAINT `fk_settings_fltVist_user_settings_uid` FOREIGN KEY (`user_settings_uid`) REFERENCES `user_settings` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltVist`
---
-
-LOCK TABLES `settings_fltVist` WRITE;
-/*!40000 ALTER TABLE `settings_fltVist` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltVist` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltVist_has_settings_angels`
---
-
-DROP TABLE IF EXISTS `settings_fltVist_has_settings_angels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltVist_has_settings_angels` (
-  `settings_fltVist_user_settings_uid` varchar(100) NOT NULL,
-  `settings_angels_uid_angel` int(11) NOT NULL,
-  PRIMARY KEY (`settings_fltVist_user_settings_uid`,`settings_angels_uid_angel`) USING BTREE,
-  KEY `fk_settings_fltVist_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
-  CONSTRAINT `fk_settings_fltVist_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`),
-  CONSTRAINT `fk_settings_fltVist_has_settings_angels_user_settings_uid` FOREIGN KEY (`settings_fltVist_user_settings_uid`) REFERENCES `settings_fltVist` (`user_settings_uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltVist_has_settings_angels`
---
-
-LOCK TABLES `settings_fltVist_has_settings_angels` WRITE;
-/*!40000 ALTER TABLE `settings_fltVist_has_settings_angels` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltVist_has_settings_angels` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltWall`
---
-
-DROP TABLE IF EXISTS `settings_fltWall`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltWall` (
-  `user_settings_uid` varchar(100) NOT NULL,
-  `frec_fltWall` varchar(100) NOT NULL,
-  `active_fltWall` varchar(1) NOT NULL,
-  `last_check` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_settings_uid`) USING BTREE,
-  CONSTRAINT `fk_settings_fltWall_user_settings_uid` FOREIGN KEY (`user_settings_uid`) REFERENCES `user_settings` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `settings_fltWall`
---
-
-LOCK TABLES `settings_fltWall` WRITE;
-/*!40000 ALTER TABLE `settings_fltWall` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltWall` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `settings_fltWall_has_settings_angels`
---
-
-DROP TABLE IF EXISTS `settings_fltWall_has_settings_angels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `settings_fltWall_has_settings_angels` (
-  `settings_fltWall_user_settings_uid` varchar(100) NOT NULL,
-  `settings_angels_uid_angel` int(11) NOT NULL,
-  PRIMARY KEY (`settings_fltWall_user_settings_uid`,`settings_angels_uid_angel`) USING BTREE,
+  PRIMARY KEY (`settings_filter_id_filter`,`settings_angels_uid_angel`) USING BTREE,
   KEY `fk_settings_fltWall_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
-  CONSTRAINT `fk_settings_fltWall_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`),
-  CONSTRAINT `fk_settings_fltWall_has_settings_angels_user_settings_uid` FOREIGN KEY (`settings_fltWall_user_settings_uid`) REFERENCES `settings_fltWall` (`user_settings_uid`)
+  KEY `fk_settings_filter_has_settings_angels_user_settings_uid_idx` (`settings_filter_id_filter`),
+  CONSTRAINT `fk_settings_filter_has_settings_angels_id_filter` FOREIGN KEY (`settings_filter_id_filter`) REFERENCES `settings_filter` (`id_filter`),
+  CONSTRAINT `fk_settings_filter_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `settings_fltWall_has_settings_angels`
+-- Dumping data for table `settings_filter_has_settings_angels`
 --
 
-LOCK TABLES `settings_fltWall_has_settings_angels` WRITE;
-/*!40000 ALTER TABLE `settings_fltWall_has_settings_angels` DISABLE KEYS */;
-/*!40000 ALTER TABLE `settings_fltWall_has_settings_angels` ENABLE KEYS */;
+LOCK TABLES `settings_filter_has_settings_angels` WRITE;
+/*!40000 ALTER TABLE `settings_filter_has_settings_angels` DISABLE KEYS */;
+/*!40000 ALTER TABLE `settings_filter_has_settings_angels` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1119,19 +934,19 @@ DROP TABLE IF EXISTS `stream_facebook`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stream_facebook` (
   `post_id` varchar(100) NOT NULL,
-  `viewer_id` varchar(100) DEFAULT NULL,
-  `app_id` varchar(100) DEFAULT NULL,
-  `source_id` varchar(100) DEFAULT NULL,
+  `viewer_id` longtext,
+  `app_id` longtext,
+  `source_id` longtext,
   `updated_time` timestamp NULL DEFAULT NULL,
   `created_time` timestamp NULL DEFAULT NULL,
-  `filter_key` varchar(100) DEFAULT NULL,
-  `attribution` varchar(100) DEFAULT NULL,
-  `actor_id` varchar(100) DEFAULT NULL,
-  `target_id` varchar(100) DEFAULT NULL,
-  `message` mediumtext CHARACTER SET utf8,
-  `app_data` text,
-  `attachment` text,
-  `type` varchar(100) DEFAULT NULL,
+  `filter_key` longtext,
+  `attribution` longtext,
+  `actor_id` longtext,
+  `target_id` longtext,
+  `message` longtext CHARACTER SET utf8,
+  `app_data` longtext,
+  `attachment` longtext,
+  `type` varchar(500) DEFAULT NULL,
   `permalink` varchar(300) DEFAULT NULL,
   `xid` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`post_id`)
@@ -1231,19 +1046,19 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_settings_uid` varchar(100) NOT NULL,
   `SEX` varchar(45) DEFAULT NULL,
-  `RELIGION` text,
-  `RELATIONSHIP_STATUS` text,
-  `POLITICAL` text,
-  `ACTIVITIES` text,
-  `INTERESTS` text,
+  `RELIGION` longtext,
+  `RELATIONSHIP_STATUS` longtext,
+  `POLITICAL` longtext,
+  `ACTIVITIES` longtext,
+  `INTERESTS` longtext,
   `IS_APP_USER` tinyint(1) DEFAULT NULL,
-  `MUSIC` text,
-  `TV` text,
-  `MOVIES` text,
-  `BOOKS` text,
-  `ABOUT_ME` text,
-  `STATUS` text,
-  `QUOTES` text,
+  `MUSIC` longtext,
+  `TV` longtext,
+  `MOVIES` longtext,
+  `BOOKS` longtext,
+  `ABOUT_ME` longtext,
+  `STATUS` longtext,
+  `QUOTES` longtext,
   `user_facebook_id_user_facebook` varchar(100) NOT NULL,
   `user_openSocial_id_user_openSocial` varchar(100) NOT NULL,
   PRIMARY KEY (`user_settings_uid`),
@@ -1274,44 +1089,44 @@ DROP TABLE IF EXISTS `user_facebook`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_facebook` (
   `id_user_facebook` varchar(100) NOT NULL,
-  `FIRST_NAME` varchar(100) DEFAULT NULL,
-  `MIDDLE_NAME` varchar(100) DEFAULT NULL,
-  `LAST_NAME` varchar(100) DEFAULT NULL,
-  `NAME` varchar(200) DEFAULT NULL,
-  `PIC_SMALL` varchar(450) DEFAULT NULL,
-  `PIC_BIG` varchar(450) DEFAULT NULL,
-  `PIC_SQUARE` varchar(450) DEFAULT NULL,
-  `PIC` varchar(450) DEFAULT NULL,
+  `FIRST_NAME` longtext,
+  `MIDDLE_NAME` longtext,
+  `LAST_NAME` longtext,
+  `NAME` longtext,
+  `PIC_SMALL` longtext,
+  `PIC_BIG` longtext,
+  `PIC_SQUARE` longtext,
+  `PIC` longtext,
   `PROFILE_UPDATE_TIME` time DEFAULT NULL,
-  `BIRTHDAY` varchar(450) DEFAULT NULL,
-  `BIRTHDAY_DATE` varchar(450) DEFAULT NULL,
-  `SIGNIFICANT_OTHER_ID` varchar(450) DEFAULT NULL,
-  `HS1_NAME` varchar(450) DEFAULT NULL,
-  `HS2_NAME` varchar(450) DEFAULT NULL,
+  `BIRTHDAY` longtext,
+  `BIRTHDAY_DATE` longtext,
+  `SIGNIFICANT_OTHER_ID` longtext,
+  `HS1_NAME` longtext,
+  `HS2_NAME` longtext,
   `GRAD_YEAR` int(11) DEFAULT NULL,
-  `HS1_ID` varchar(450) DEFAULT NULL,
-  `HS2_ID` varchar(450) DEFAULT NULL,
+  `HS1_ID` longtext,
+  `HS2_ID` longtext,
   `NOTES_COUNT` int(11) DEFAULT NULL,
   `WALL_COUNT` int(11) DEFAULT NULL,
-  `ONLINE_PRESENCE` varchar(450) DEFAULT NULL,
-  `LOCALE` varchar(450) DEFAULT NULL,
-  `PROXIED_EMAIL` varchar(450) DEFAULT NULL,
-  `PROFILE_URL` varchar(450) DEFAULT NULL,
-  `EMAIL_HASHES` varchar(450) DEFAULT NULL,
-  `PIC_SMALL_WITH_LOGO` varchar(450) DEFAULT NULL,
-  `PIC_BIG_WITH_LOGO` varchar(450) DEFAULT NULL,
-  `PIC_SQUARE_WITH_LOGO` varchar(450) DEFAULT NULL,
-  `PIC_WITH_LOGO` varchar(450) DEFAULT NULL,
-  `ALLOWED_RESTRICTIONS` varchar(450) DEFAULT NULL,
+  `ONLINE_PRESENCE` longtext,
+  `LOCALE` longtext,
+  `PROXIED_EMAIL` longtext,
+  `PROFILE_URL` longtext,
+  `EMAIL_HASHES` longtext,
+  `PIC_SMALL_WITH_LOGO` longtext,
+  `PIC_BIG_WITH_LOGO` longtext,
+  `PIC_SQUARE_WITH_LOGO` longtext,
+  `PIC_WITH_LOGO` longtext,
+  `ALLOWED_RESTRICTIONS` longtext,
   `VERIFIED` tinyint(1) DEFAULT NULL,
-  `PROFILE_BLURB` varchar(450) DEFAULT NULL,
-  `USERNAME` varchar(450) DEFAULT NULL,
-  `WEBSITE` varchar(450) DEFAULT NULL,
+  `PROFILE_BLURB` longtext,
+  `USERNAME` longtext,
+  `WEBSITE` longtext,
   `IS_BLOCKED` tinyint(1) DEFAULT NULL,
-  `CONTACT_EMAIL` varchar(450) DEFAULT NULL,
-  `EMAIL` varchar(450) DEFAULT NULL,
-  `MEETING_FOR` varchar(45) DEFAULT NULL,
-  `MEETING_SEX` varchar(45) DEFAULT NULL,
+  `CONTACT_EMAIL` longtext,
+  `EMAIL` longtext,
+  `MEETING_FOR` longtext,
+  `MEETING_SEX` longtext,
   PRIMARY KEY (`id_user_facebook`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1603,13 +1418,13 @@ DROP TABLE IF EXISTS `user_settings`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_settings` (
   `uid` varchar(100) NOT NULL,
-  `user_name` varchar(100) DEFAULT NULL,
-  `user_email` varchar(200) DEFAULT NULL,
+  `user_name` longtext,
+  `user_email` longtext,
   `legal_accepted` varchar(1) DEFAULT NULL,
   `last_check` timestamp NULL DEFAULT NULL,
-  `uid_public` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `uid_public` longtext CHARACTER SET utf8,
   `app_activated` varchar(1) DEFAULT NULL,
-  `user_session` varchar(400) DEFAULT NULL,
+  `user_session` longtext,
   `locale_settings_id_locale` varchar(100) NOT NULL,
   `backup_check` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`uid`),
@@ -1680,6 +1495,32 @@ LOCK TABLES `user_settings_has_settings_angels` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_settings_has_settings_filter`
+--
+
+DROP TABLE IF EXISTS `user_settings_has_settings_filter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_settings_has_settings_filter` (
+  `user_settings_uid` varchar(100) NOT NULL,
+  `settings_filter_id_filter` int(11) NOT NULL,
+  PRIMARY KEY (`user_settings_uid`,`settings_filter_id_filter`),
+  KEY `fk_user_settings_has_settings_filter_id_filter` (`settings_filter_id_filter`),
+  CONSTRAINT `fk_user_settings_has_settings_filter_id_filter` FOREIGN KEY (`settings_filter_id_filter`) REFERENCES `settings_filter` (`id_filter`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_settings_has_settings_filter_uid` FOREIGN KEY (`user_settings_uid`) REFERENCES `user_settings` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_settings_has_settings_filter`
+--
+
+LOCK TABLES `user_settings_has_settings_filter` WRITE;
+/*!40000 ALTER TABLE `user_settings_has_settings_filter` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_settings_has_settings_filter` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `work_history_facebook`
 --
 
@@ -1719,4 +1560,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-04 19:26:27
+-- Dump completed on 2014-06-26 23:46:49

@@ -1,0 +1,6 @@
+<filterList>
+    <filter idFilter="FltWall" valueClass="es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.WallFilterFuncionality" />
+    <filter idFilter="FltFriends" valueClass="es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.FriendsFilterFuncionality" />
+    <filter idFilter="FltPriv" valueClass="es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.PrivacyFilterFuncionality" />
+    <filter idFilter="FltVist" valueClass="es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.VisitsFilterFuncionality" />
+</filterList>
