@@ -909,8 +909,8 @@ CREATE TABLE `settings_filter_has_settings_angels` (
   `settings_filter_id_filter` int(11) NOT NULL,
   `settings_angels_uid_angel` int(11) NOT NULL,
   PRIMARY KEY (`settings_filter_id_filter`,`settings_angels_uid_angel`) USING BTREE,
-  KEY `fk_settings_fltWall_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
-  KEY `fk_settings_filter_has_settings_angels_user_settings_uid_idx` (`settings_filter_id_filter`),
+  KEY `fk_settings_filter_has_settings_angels_uid_angel` (`settings_angels_uid_angel`),
+  KEY `fk_settings_filter_has_settings_angels_filter_id` (`settings_filter_id_filter`),
   CONSTRAINT `fk_settings_filter_has_settings_angels_id_filter` FOREIGN KEY (`settings_filter_id_filter`) REFERENCES `settings_filter` (`id_filter`),
   CONSTRAINT `fk_settings_filter_has_settings_angels_uid_angel` FOREIGN KEY (`settings_angels_uid_angel`) REFERENCES `settings_angels` (`uid_angel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1560,4 +1560,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-26 23:46:49
+-- Dump completed on 2014-06-27  0:13:10
