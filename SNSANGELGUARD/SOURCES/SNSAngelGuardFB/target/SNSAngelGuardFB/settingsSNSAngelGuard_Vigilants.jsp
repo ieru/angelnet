@@ -60,7 +60,7 @@
                 loadInicioDatesVigilants('<%= controler.getHdAngels()%>', '<%= controler.getHdAngelsEd()%>', '<%= controler.getHdAngelsGoogleSelected()%>',
                         '<%= controler.getJsonFiltersInfo()%>', '<%= controler.getListActiveFilters()%>', '<%= controler.getHdAngelsAux()%>');
                         
-                loadHTMLFilters('<%= controler.getSnsObject().getStringUtilities().simpleArrayToString(controler.getJspResources().getArrayDes()) %>');
+                loadHTMLFilters('<%= controler.getSnsObject().getStringUtilities().escaparComSimples(controler.getSnsObject().getStringUtilities().simpleArrayToString(controler.getJspResources().getArrayDes()))%>');
 
                 loadTurnOnOffBottons('<%= controler.getJspResources().getTitleAltVigOn()%>', '<%= controler.getJspResources().getTitleAltVigOff()%>');
 

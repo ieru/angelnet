@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity.data.ThProcessCheckFilter"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterProcessException"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterEmailException"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException"%>
@@ -57,42 +58,24 @@
             snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
             snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
 
+            // Logueamos offline al usuario de la aplicacion
             snsObject.getLoginAppOffline(request, response);
             snsObject.setClient(new SNSdataBaseClient(snsObject.getConfigurationManager().getConfigHostRESTFullWS()));
 
-
+            // Obtenemos el angel
             JSONObject jsonAngel = snsObject.getAngelsUtilities().getJsonAngel(idAngel, jsonUser.getString("uid"));
 
             if (!jsonAngel.toString().equals("{}")) {
                 if (jsonAngel.getString("confirmAngel").equals("0")) {
 
                     jsonAngel.put("confirmAngel", "1");
-                    if (accept) {
-                        jsonAngel.put("acceptAngel", "1");
-
-                        if (typeAngel != null && typeAngel.equals("F")) {
-                            String emailAngel = request.getParameter("par5");
-
-                            jsonAngel.put("idAngel", emailAngel);
-                        }
-
-                        // Guardamos la configuracion del angel
-                        snsObject.getAngelsUtilities().setJsonAngel(jsonAngel);
-
-                        // Se realiza el primer chequeo de información
-                        snsObject.getGenericFilter().firstCheckAngelConfirmation(request, jsonAngel);
-                        
-                        // Guardamos la información de configuración
-                        snsObject.getUserSettingsDaoManager().checkAngelConfirmation(jsonUser);
-                        
-                    } else {
-                        // Eliminamos las posibles relaciones con los filtros de la aplicacion del angel
-                        snsObject.getUserSettingsDaoManager().getUserSettingsDAO().deleteAngelFiltersRelationship(jsonAngel);
-
-                        // Eliminamos el angel de base de datos
-                        snsObject.getClient().settingsAngels_delAngelByUid(jsonAngel.getString("uidAngel"));
-                    }
-
+                    
+                    // Creamos el hilo para actualizar la informacion en el servidor
+                    ThProcessCheckFilter thProcess = new ThProcessCheckFilter(snsObject, request, jsonAngel, accept, typeAngel, jsonUser);
+                    
+                    // Lanzamos el hilo
+                    thProcess.start();
+                    
                     // Mensaje de Confirmacion
                     response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=0&par2=" + uidPublic);
                 } else {

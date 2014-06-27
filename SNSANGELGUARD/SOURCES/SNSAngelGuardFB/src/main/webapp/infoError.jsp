@@ -37,6 +37,7 @@
         details = "Detalles";
         message = request.getParameter("errorMessage").toString();
         e = URLDecoder.decode(request.getParameter("exception").toString(), "UTF-8");
+        btnAceptar = "Aceptar";
     }
 
 %>

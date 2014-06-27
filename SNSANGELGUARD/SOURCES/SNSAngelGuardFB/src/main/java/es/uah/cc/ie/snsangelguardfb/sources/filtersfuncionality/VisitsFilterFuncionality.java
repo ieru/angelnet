@@ -28,7 +28,7 @@ import org.openide.util.Exceptions;
 public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter {
     
     /** Imagen estandar para contactos no pertenecientes a Facebook */
-    private static final String IMG_STANDAR_ANGEL = "../SNSAngelGuardFB/resources/perfilStandar.gif";
+    private static final String IMG_STANDAR_ANGEL = "SNSAngelGuardFB/resources/perfilStandar.gif";
 
     /** Logger Class */
     private static Logger logger = Logger.getLogger(VisitsFilterFuncionality.class);
@@ -119,7 +119,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                 String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(visits.get(i).toJson().getString("uid"));
 
                 resultado = resultado + "<tr>"
-                                            + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
+                                            + "<td width=100px><img src='" + this.snsObject.getConfigurationManager().getConfigHostApplicationSSL() + IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
                                             + "<td width='286px'>" + uidCifrada + "</td>"
                                             + "<td width='286px'>" + visits.get(i).toJson().getString("mutual_friend_count") + "</td>"
                                       + "</tr>";
@@ -163,7 +163,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                 String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(visits.get(i).toJson().getString("uid"));
 
                 resultado = resultado + "<tr>"
-                                            + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
+                                            + "<td width=100px><img src='" + this.snsObject.getConfigurationManager().getConfigHostApplicationSSL() +  IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
                                             + "<td width='286px'>" + uidCifrada + "</td>"
                                             + "<td width='286px'>" + visits.get(i).toJson().getString("mutual_friend_count") + "</td>"
                                       + "</tr>";
@@ -364,7 +364,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                 String uidCifrada = this.snsObject.getGenericFilter().cifrarUIDFriend(friendsFacebookList.get(0).getUid());
 
                 resultado = resultado + "<tr>"
-                        + "<td width=100px><img src='" + IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
+                        + "<td width=100px><img src='" + this.snsObject.getConfigurationManager().getConfigHostApplicationSSL() + IMG_STANDAR_ANGEL + "' WIDTH=\"50\" HEIGHT=\"50\" /></td>"
                         + "<td width='286px'>" + uidCifrada + "</td>"
                         + "<td width='286px'>" + lstVal.get(i) + "</td>"
                         + "</tr>";

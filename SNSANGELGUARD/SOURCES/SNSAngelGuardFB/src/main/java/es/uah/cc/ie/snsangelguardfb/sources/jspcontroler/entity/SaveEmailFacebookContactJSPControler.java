@@ -230,7 +230,7 @@ public class SaveEmailFacebookContactJSPControler extends GenericJSPControler {
                 // Mensaje de Error ("El angel indicado ha sido borrado por el usuario")
                 response.sendRedirect(request.getContextPath() + "/informationMessage.jsp?par1=2&par2=" + this.uidPublicUser);
             }
-        } catch (JSONException | ParseException | UnsupportedEncodingException ex) {
+        } catch (JSONException | UnsupportedEncodingException ex) {
             this.snsObject.getExceptionManager().initControlException(ex);
         } catch (IOException ex) {
             this.snsObject.getExceptionManager().initControlException(ex);

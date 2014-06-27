@@ -30,7 +30,6 @@
 
             // Obtener informaci√≥n de userSettings por su uidPublic
             JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
-            System.out.println("JSON USER ANGEL: " + jsonUser.toString());
 
             snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
             snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
@@ -52,7 +51,7 @@
             String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e.getException());
 
             response.sendRedirect(request.getContextPath() + "/infoError.jsp?errorMessage=" + e.getMessageException() + "&exception=" + exceptionAsString);
-        }
+        } 
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"

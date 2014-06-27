@@ -151,4 +151,14 @@ public class StringUtilities {
         
         return result;
     }
+    
+    /**
+     * Escapa todas las comillas simples de una cadena, para ser mostradas por pantalla.
+     * 
+     * @param cadena
+     * @return String con las comillas simples escapadas. 
+     */
+    public String escaparComSimples(String cadena){
+        return cadena.replaceAll("'", "&#39");
+    }
 }

@@ -32,6 +32,7 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.openide.util.Exceptions;
 
 /**
  * Clase Manager que controla toda la gestion de base de datos referente a las
@@ -110,13 +111,27 @@ public class UserSettingsDaoManager {
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public void loadUser(JSONObject user) throws JSONException, ParseException, bsh.ParseException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUser: Inicio loadUser...");
-        this.snsObject.getUserSettingsDaoManager().setUserSettingsDAO(this.userSettingsDAO = new UserSettingsDAO(this, user.getString("uid"), user.getString("userName"),
-                user.getString("userEmail"), user.getString("legalAccepted").equals("1"), this.snsObject.getDateTimeUtilities().formatTime(user.getString("lastCheck").replace("T", " ")),
-                user.getString("uidPublic"), user.getString("appActivated").equals("1"),
-                user.getString("userSession"), this.snsObject.getDateTimeUtilities().formatTime(user.getString("backupCheck").replace("T", " ")), this.snsObject));
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUser: Fin loadUser...");
+    public void loadUser(JSONObject user) throws InterDataBaseException, InterProcessException, InterEmailException {
+        try {
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUser: Inicio loadUser...");
+            this.snsObject.getUserSettingsDaoManager().setUserSettingsDAO(this.userSettingsDAO = new UserSettingsDAO(this, 
+                    // Uid no puede ser nulo
+                    user.getString("uid"), 
+                    !user.isNull("userName") ? user.getString("userName") : "",
+                    !user.isNull("userEmail") ? user.getString("userEmail") : "", 
+                    !user.isNull("legalAccepted") ? user.getString("legalAccepted").equals("1") : false, 
+                    !user.isNull("lastCheck") ? this.snsObject.getDateTimeUtilities().formatTime(user.getString("lastCheck").replace("T", " ")) : new Date(),
+                    !user.isNull("uidPublic") ? user.getString("uidPublic") : UserSettingsDAO.cifrar(user.getString("uid")), 
+                    !user.isNull("appActivated") ? user.getString("appActivated").equals("1") : false,
+                    // User Session no puede ser nulo
+                    user.getString("userSession"), 
+                    !user.isNull("backupCheck") ? this.snsObject.getDateTimeUtilities().formatTime(user.getString("backupCheck").replace("T", " ")) : new Date(), 
+                    this.snsObject));
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUser: Fin loadUser...");
+        } catch (JSONException | ParseException | DataLengthException | IllegalStateException | InvalidCipherTextException ex) {
+            logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUser: Se ha producido una excepci?n del tipo " + ex.getClass() + ": " + ex.getMessage());
+            this.snsObject.getExceptionManager().initControlException(ex);
+        }
     }
 
     /**
@@ -129,7 +144,7 @@ public class UserSettingsDaoManager {
      * @throws JSONException
      * @throws bsh.ParseException
      */
-    public void loadSettings() throws ParseException, JSONException, bsh.ParseException {
+    public void loadSettings() throws ParseException, JSONException, bsh.ParseException, InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadSettings: Inicio loadSettings...");
         if (this.userSettingsDAO.getUid() == null) {
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadSettings: Error en UID de usuario: UID Nulo");
@@ -152,12 +167,9 @@ public class UserSettingsDaoManager {
             setNewUserConnected();
             this.userSettingsDAO.setLegalAccepted(false);
         } else {
-            try {
-                loadUserConnected(jsonObject);
-            } catch (JSONException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadSettings: Error al cargar los datos de usuario. Excepcion: " + ex.getMessage());
-            }
+            loadUserConnected(jsonObject);
         }
+
 
         // Cargamos el idioma del usuario
         this.snsObject.getLocaleSettingsDaoManager().loadLocaleSettings();
@@ -175,7 +187,7 @@ public class UserSettingsDaoManager {
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public void loadUserConnected(JSONObject settings) throws JSONException, ParseException, bsh.ParseException {
+    public void loadUserConnected(JSONObject settings) throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUserConnected: Inicio loadUserConnected...");
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - loadUserConnected: Datos de Usuario obtenidos de la base de datos: " + settings);
         loadUser(settings);
@@ -260,7 +272,7 @@ public class UserSettingsDaoManager {
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public void getUserInfoSimple() throws JSONException, ParseException, bsh.ParseException {
+    public void getUserInfoSimple() throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfoSimple: Inicio getUserInfoSimple...");
         JSONObject jsonUserInfo = null;
 
@@ -271,6 +283,7 @@ public class UserSettingsDaoManager {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfoSimple: Datos del usuario: " + jsonUserInfo);
         } catch (Exception e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfoSimple: El usuario introducido no existe en la base de datos...");
+            this.snsObject.getExceptionManager().initControlException(e);
         }
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUserInfoSimple: Cargando el usuario en la aplicacion...");
         loadUser(jsonUserInfo);
@@ -293,7 +306,7 @@ public class UserSettingsDaoManager {
      * @throws MessagingException
      * @throws bsh.ParseException
      */
-    public void checkAngelConfirmation(JSONObject jsonUser) throws ParseException, JSONException, MySQLIntegrityConstraintViolationException, NoSuchProviderException, FileNotFoundException, MessagingException, bsh.ParseException {
+    public void checkAngelConfirmation(JSONObject jsonUser) throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkAngelConfirmation: Inicio checkAngelConfirmation...");
         this.loadUserConnected(jsonUser);
 
@@ -302,10 +315,9 @@ public class UserSettingsDaoManager {
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkAngelConfirmation: Actualizando fecha de ultima conexi?n...");
                 this.userSettingsDAO.updateLastCheckUS();
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkAngelConfirmation: Fecha de ultima conexi?n actualizada!!");
-            } catch (UniformInterfaceException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - checkAngelConfirmation: Excepci?n capturada UniformInterfaceException: " + ex.getMessage());
-            } catch (IOException ex) {
-                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - checkAngelConfirmation: Excepci?n capturada IOException: " + ex.getMessage());
+            } catch (UniformInterfaceException | IOException | JSONException ex) {
+                logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid()+ " - checkAngelConfirmation: Excepcin capturada " + ex.getClass() + ": " + ex.getMessage());
+                this.snsObject.getExceptionManager().initControlException(ex);
             }
         }
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkAngelConfirmation: Fin checkAngelConfirmation...");
@@ -566,21 +578,21 @@ public class UserSettingsDaoManager {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getUser: Inicio getUser...");
         JSONObject user = new JSONObject();
 
-        user.put("userSettingsUid", userAux.get("uid"));
-        user.put("sex", userAux.get("sex"));
-        user.put("religion", userAux.get("religion"));
-        user.put("relationshipStatus", userAux.get("relationship_status"));
-        user.put("political", userAux.get("political"));
-        user.put("activities", userAux.get("activities"));
-        user.put("interests", userAux.get("interests"));
-        user.put("isAppUser", userAux.get("is_app_user"));
-        user.put("music", userAux.get("music"));
-        user.put("tv", userAux.get("tv"));
-        user.put("movies", userAux.get("movies"));
-        user.put("books", userAux.get("books"));
-        user.put("aboutMe", userAux.get("about_me"));
-        user.put("status", userAux.get("status"));
-        user.put("quotes", userAux.get("quotes"));
+        user.put("userSettingsUid", userAux.get("uid")) ;
+        user.put("sex", (userAux.get("sex") != null) ? userAux.get("sex") : "");
+        user.put("religion", (!userAux.isNull("religion")) ? userAux.get("religion") : "");
+        user.put("relationshipStatus", (!userAux.isNull("relationship_status")) ? userAux.get("relationship_status") : "");
+        user.put("political", !userAux.isNull("political") ? userAux.get("political") : "");
+        user.put("activities", !userAux.isNull("activities") ? userAux.get("activities") : "");
+        user.put("interests", !userAux.isNull("interests") ? userAux.get("interests") : "");
+        user.put("isAppUser", !userAux.isNull("is_app_user") ? userAux.get("is_app_user") : "");
+        user.put("music", !userAux.isNull("music") ? userAux.get("music") : "");
+        user.put("tv", !userAux.isNull("tv") ? userAux.get("tv") : "");
+        user.put("movies", !userAux.isNull("movies") ? userAux.get("movies") : "");
+        user.put("books", !userAux.isNull("books") ? userAux.get("books") : "");
+        user.put("aboutMe", !userAux.isNull("about_me") ? userAux.get("about_me") : "");
+        user.put("status", !userAux.isNull("status") ? userAux.get("status") : "");
+        user.put("quotes", !userAux.isNull("quotes") ? userAux.get("quotes") : "");
         user.put("userFacebook", userFacebook);
         user.put("useropenSocial", userOpenSocial);
 

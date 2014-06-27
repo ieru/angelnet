@@ -490,13 +490,17 @@ public class InfoUserFacebook extends GenericDataFacebook {
             json.put("email", this.email);
 
             String metting = "";
-            if (!this.meetingFor.equals("") && !this.meetingFor.equals("{}") && !this.meetingFor.equals("[]")) {
-                metting = this.meetingFor.substring(2, this.meetingFor.length() - 2);
+            if(this.meetingFor != null){
+                if (!this.meetingFor.equals("") && !this.meetingFor.equals("{}") && !this.meetingFor.equals("[]")) {
+                    metting = this.meetingFor.substring(2, this.meetingFor.length() - 2);
+                }
             }
             json.put("meetingForFacebook", metting);
 
-            if (!this.meetingSex.equals("") && !this.meetingSex.equals("{}") && !this.meetingSex.equals("[]")) {
-                metting = this.meetingSex.substring(2, this.meetingSex.length() - 2);
+            if (this.meetingSex != null) {
+                if (!this.meetingSex.equals("") && !this.meetingSex.equals("{}") && !this.meetingSex.equals("[]")) {
+                    metting = this.meetingSex.substring(2, this.meetingSex.length() - 2);
+                }
             }
             json.put("meetingSexFacebook", metting);
             

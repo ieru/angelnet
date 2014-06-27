@@ -406,7 +406,7 @@ public class FriendsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilt
         Long uidLong = (new Double(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid().toString())).longValue();
 
         JSONObject jsonUserFacebook = new JSONObject(this.snsObject.getClient().userFacebook_getUserFacebookByUid(String.class, uidLong.toString()));
-        String userBirthday = jsonUserFacebook.getString("birthdayDate");
+        String userBirthday = !jsonUserFacebook.isNull("birthdayDate") ? jsonUserFacebook.getString("birthdayDate") : "00-00-0000";
         int intFecUser = Integer.parseInt(userBirthday.substring(6, userBirthday.length()));
 
 

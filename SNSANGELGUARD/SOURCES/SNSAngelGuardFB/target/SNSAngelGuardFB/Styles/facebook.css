@@ -553,8 +553,9 @@ div.divFilter{
 }
 
 select.slcFrecuency{
+    -prefix-appearance: none;
     -webkit-appearance: none;
-    -moz-appearance: none; 
+    -moz-appearance: none;
     text-indent: 0.01px; 
     border-radius:5px; 
     text-overflow: ""; 

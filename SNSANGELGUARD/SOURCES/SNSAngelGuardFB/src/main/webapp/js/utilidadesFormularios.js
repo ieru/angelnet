@@ -160,6 +160,7 @@ function showDialog(url, ancho, alto) {
     
     dialogDiv.html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
             .dialog({
+        title: "",
         height: alto,
         maxheight: alto, 
         width: ancho,
@@ -793,17 +794,7 @@ function cerrarInfoModal(){
 }
 
 function cerrarInfoError(uidPublic){
-    $(function(){
-        var url = '';
-        
-        if(uidPublic != null){
-            url = '../SNSAngelGuardFB/presentationApp.jsp?par1=' + uidPublic;
-        } else{
-            url = '../SNSAngelGuardFB/presentationApp.jsp';
-        }
-        
-        $(location).attr('href', url);
-    });
+    backToFacebok();
 }
 
 function backToFacebok(){
