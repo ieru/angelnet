@@ -344,7 +344,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
             
             try {
                 JSONObject jsonAngel = angelsUser.getJSONObject(j);
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Iniciando chequeo para: " + jsonAngel.getString("idAngel"));
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Iniciando chequeo para el angel de entrada!!");
 
                 List<String> resultFilterList = new ArrayList();
                 String keyFilter;
@@ -369,7 +369,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
                 if (jsonAngel.getString("acceptAngel").equals("1")) {
                     this.snsObject.getEmailObject().sendEmailCheck(resultFilterList, jsonAngel);
                 }
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Fin chequeo para: " + jsonAngel.getString("idAngel"));
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Fin chequeo para el angel de entrada!!");
             } catch (Exception ex) {
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Excepcion capturada Exception: " + ex.getMessage());
                 this.snsObject.getExceptionManager().initControlException(ex);
