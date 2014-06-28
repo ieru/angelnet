@@ -66,11 +66,7 @@ public class ThProcessCheckFilter extends Thread {
             logger.info("ThProcessCheckFilter - run: Inicio run...");
             if (isAceptApp) {
                 logger.info("ThProcessCheckFilter - run: El angel ha aceptado la aplicacion: Inicio...");
-                jsonAngel.put("acceptAngel", "1");
-
-                if (typeAngel != null && typeAngel.equals("F")) 
-                    jsonAngel.put("idAngel", request.getParameter("par5"));
-                
+                jsonAngel.put("acceptAngel", "1");                
 
                 // Guardamos la configuracion del angel
                 logger.info("ThProcessCheckFilter - run: - run: Guardando los datos del angel...");

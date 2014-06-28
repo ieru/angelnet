@@ -201,7 +201,7 @@ public class GenericEmailObject {
      * @throws IOException
      */
     public void sendEmailCheck(List<String> resultFilterList, JSONObject jsonAngel) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
-        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Inicio sendEmailCheck para el angel: " + jsonAngel.getString("idAngel"));
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Inicio sendEmailCheck para el angel: " + jsonAngel.getString("uidAngel"));
         String menDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getMailNotification());
         String titleVigDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
         String title = menDB[1];
@@ -254,12 +254,12 @@ public class GenericEmailObject {
                 + "</div></div></div></form></body></html>";
 
         if (isTimeToSendEmail) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Enviando email al usuario: " + jsonAngel.getString("idAngel"));
+            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Enviando email al usuario: " + jsonAngel.getString("uidAngel"));
             this.email.sendEmail(menDB[0], bodyEmail, jsonAngel.getString("idAngel"));
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Email enviado!!");
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Fin sendEmailCheck...");
         }else{
-            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Fin sendEmailCheck para el angel: " + jsonAngel.getString("idAngel"));
+            logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Fin sendEmailCheck para el angel: " + jsonAngel.getString("uidAngel"));
         }
     }
 }

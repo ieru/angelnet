@@ -70,6 +70,10 @@
 
                     jsonAngel.put("confirmAngel", "1");
                     
+                    // Si el angel es de Facebook, almacenamos su direccion de correo
+                    if (typeAngel != null && typeAngel.equals("F")) 
+                        jsonAngel.put("idAngel", request.getParameter("par5"));
+                    
                     // Creamos el hilo para actualizar la informacion en el servidor
                     ThProcessCheckFilter thProcess = new ThProcessCheckFilter(snsObject, request, jsonAngel, accept, typeAngel, jsonUser);
                     
