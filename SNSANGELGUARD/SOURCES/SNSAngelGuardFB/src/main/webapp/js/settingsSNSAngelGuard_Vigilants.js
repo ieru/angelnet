@@ -45,7 +45,6 @@ function loadVigilantsState(idFiltro, angelsFiltro, numberFiltro) {
 }
 
 function habilitarAlertNotAngels(numberFiltro){
-    alert(1 + ": " + numberFiltro)
     $("#imgAlertNotAngels" + numberFiltro).attr("style", "");
     $("#imgAlertNotAngels" + numberFiltro).attr("title", $("#hdAlarmNotVig" + numberFiltro).val());
 }
@@ -93,7 +92,7 @@ function habilitarDivSelectAngels(){
 
 function loadEstadoFiltro(desFiltro, srcImg){
     $("#imgCurrentVig").attr("src", srcImg);
-    $("#imgCurrentVig").attr("title", $("#hdNameVig" + getIdFiltro(desFiltro)).val());
+    $("#imgCurrentVig").attr("title", $("#hdNameVig" + desFiltro).val());
 
     if($("#hdActive" + desFiltro).val() === '1'){
         if($("#hdLstAngels" + desFiltro).val() !== "null"){
@@ -229,16 +228,32 @@ function loadVigResources(nameVig, sentenceAlarm){
     for(var i = 0; i < arrayFilters.length; i++){
         var keyActive = arrayFilters[i];
         
-        $("#hdNameVig" + nameVig[keyActive]).attr("value", jsonNameVig[keyActive]);
-        $("#imgContRobot" + nameVig[keyActive]).attr("title", jsonNameVig[keyActive]);
-        $("#hdAlarmNotVig" + nameVig[keyActive]).attr("value", sentenceAlarm + jsonNameVig[keyActive]);
-        $("#imgAlertNotAngels" + nameVig[keyActive]).attr("title", $("#hdAlarmNotVig" + jsonNameVig[keyActive]).val());
+        $("#hdNameVig" + keyActive).attr("value", jsonNameVig[keyActive]);
+        $("#imgContRobot" + keyActive).attr("title", jsonNameVig[keyActive]);
+        $("#hdAlarmNotVig" + keyActive).attr("value", sentenceAlarm + jsonNameVig[keyActive]);
+        $("#imgAlertNotAngels" + keyActive).attr("title", $("#hdAlarmNotVig" + jsonNameVig[keyActive]).val());
     }
 }
 
 function loadTurnOnOffBottons(nameTurnOn, nameTurnOff){
     $("#hdTitleAltVigOn").attr("value", nameTurnOn);
     $("#hdTitleAltVigOff").attr("value", nameTurnOff);
+}
+
+function limpiarListaVigilantes(){
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
+    
+    for(var i = 0;i < arrayFilters.length; i++){
+        var idVig = '#vigilantContainer' + arrayFilters[i];
+        
+        $(idVig).attr("class","vigilantContainer");
+        
+        $(idVig).mouseover(function(){
+            $(this).removeClass().addClass("vigilantContainerOver");
+        }).mouseout(function(){
+            $(this).removeClass().addClass("vigilantContainer");
+        });
+    }
 }
 
 function loadHTMLFilters(strDesFilter){

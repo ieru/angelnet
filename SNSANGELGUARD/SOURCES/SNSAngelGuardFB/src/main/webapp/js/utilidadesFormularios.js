@@ -994,20 +994,6 @@ function desactivarFltr(desFiltro){
     document.getElementById('hdFrec' + desFiltro).value = '3';
 }
 
-function limpiarListaVigilantes(){
-    for(var i = 1;i < 5; i++){
-        var idVig = '#vigilantContainer' + i;
-        
-        $(idVig).attr("class","vigilantContainer");
-        
-        $(idVig).mouseover(function(){
-            $(this).removeClass().addClass("vigilantContainerOver");
-        }).mouseout(function(){
-            $(this).removeClass().addClass("vigilantContainer");
-        });
-    }
-}
-
 function setError(idFiltro){
     idFiltro.attr("class","inputTextError");
     deshabilitarBtnGuardar();
@@ -2011,8 +1997,6 @@ function borrarItems(desFiltro){
 }
 
 function borrarItemSelected(idItem, idLista){
-    alert(idItem)
-    alert(idLista)
     var lstAux = '';
     var arrayLstAngels = '';
     
