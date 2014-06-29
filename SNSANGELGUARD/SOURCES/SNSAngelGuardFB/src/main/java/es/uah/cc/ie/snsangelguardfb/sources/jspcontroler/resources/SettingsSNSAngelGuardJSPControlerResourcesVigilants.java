@@ -176,8 +176,8 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
         this.titleSettVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleSettVig();
         this.titleFbList = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFbListSettAng();
         this.titleAngelSettAng = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getSubTitleAngelSettAng();
-        this.arrayVig = new JSONObject(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
-        this.arrayDes = replaceVigInDesc(new JSONObject(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig()));
+        this.arrayVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig();
+        this.arrayDes = replaceVigInDesc(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig());
         this.arrayFrc = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigFrecSelectSettVig());
         this.titleVigAngSettVig = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigAngSettVig();
         this.titleAltVigOn = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleActiveDesactiveVig().split(";")[0];

@@ -4,6 +4,8 @@
  */
 package es.uah.cc.ie.snsangelguardfb.sources.dao.entity;
 
+import org.codehaus.jettison.json.JSONObject;
+
 
 /**
  * Carga todos los recursos de idioma para un usuario dependiendo de su
@@ -32,8 +34,8 @@ public class LocaleSettingsDAO {
     private String subTitleAngelSettAng;
     private String titleSettVig;
     private String titleVigilantSettVig;
-    private String titleVigSettVig;
-    private String titleVigDescriptionSettVig;
+    private JSONObject titleVigSettVig;
+    private JSONObject titleVigDescriptionSettVig;
     private String titleVigFrecSettVig;
     private String titleVigFrecSelectSettVig;
     private String titleVigAngSettVig;
@@ -335,28 +337,28 @@ public class LocaleSettingsDAO {
     /**
      * @return the titleVigSettVig
      */
-    public String getTitleVigSettVig() {
+    public JSONObject getTitleVigSettVig() {
         return titleVigSettVig;
     }
 
     /**
      * @param titleVigSettVig the titleVigSettVig to set
      */
-    public void setTitleVigSettVig(String titleVigSettVig) {
+    public void setTitleVigSettVig(JSONObject titleVigSettVig) {
         this.titleVigSettVig = titleVigSettVig;
     }
 
     /**
      * @return the titleVigDescriptionSettVig
      */
-    public String getTitleVigDescriptionSettVig() {
+    public JSONObject getTitleVigDescriptionSettVig() {
         return titleVigDescriptionSettVig;
     }
 
     /**
      * @param titleVigDescriptionSettVig the titleVigDescriptionSettVig to set
      */
-    public void setTitleVigDescriptionSettVig(String titleVigDescriptionSettVig) {
+    public void setTitleVigDescriptionSettVig(JSONObject titleVigDescriptionSettVig) {
         this.titleVigDescriptionSettVig = titleVigDescriptionSettVig;
     }
 
@@ -872,7 +874,7 @@ public class LocaleSettingsDAO {
      * @param desTutInitHelp
      * @param titlePagTutInitHelp 
      */
-    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, String titleVigSettVig, String titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions, String postFriendFacebook, String titleActiveDesactiveVig, String titleTutInitHelp, String desTutInitHelp, String titlePagTutInitHelp) {
+    public LocaleSettingsDAO(String idLocale, String acceptingTerms, String legalAccepted, String btnAgreeAT, String btnCancelAT, String titleAT, String titleSettings, String titleMenSettings, String btnSaveCheckSettings, String titleSettAng, String titleFriendsContentSettAng, String titleFriendsImportSettAng, String txtNameTutorSettAng, String txtEmailTutorSettAng, String btnImportSettAng, String titleFbListSettAng, String subTitleAngelSettAng, String titleSettVig, String titleVigilantSettVig, JSONObject titleVigSettVig, JSONObject titleVigDescriptionSettVig, String titleVigFrecSettVig, String titleVigFrecSelectSettVig, String titleVigAngSettVig, String titleAngConfirm, String desInfoAngConfirm, String aceptConfAngConfirm, String cancelConfAngConfirm, String infoAngGuard, String titleAngUser, String nameUserAngUser, String btnCloseAngUser, String titleGoogleCont, String titleContGoogleCont, String btnLogGoogleCont, String titleNameContactGoogleCont, String titleEmailContactGoogleCont, String btnAceptGoogleCont, String btnCancelGoogleCont, String helpMe, String warnings, String titleInformationMessage, String informationMessage, String mailDelete, String mailNotification, String altContactsAngelsEd, String titleVisitsFilterOptions, String postFriendFacebook, String titleActiveDesactiveVig, String titleTutInitHelp, String desTutInitHelp, String titlePagTutInitHelp) {
         this.idLocale = idLocale;
         this.acceptingTerms = acceptingTerms;
         this.legalAccepted = legalAccepted;

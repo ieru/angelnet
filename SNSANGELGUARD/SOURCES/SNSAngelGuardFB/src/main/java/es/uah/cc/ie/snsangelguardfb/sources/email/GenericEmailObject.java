@@ -200,10 +200,10 @@ public class GenericEmailObject {
      * @throws UniformInterfaceException
      * @throws IOException
      */
-    public void sendEmailCheck(List<String> resultFilterList, JSONObject jsonAngel) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
+    public void sendEmailCheck(Map<String, String> resultFilterList, JSONObject jsonAngel) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Inicio sendEmailCheck para el angel: " + jsonAngel.getString("uidAngel"));
         String menDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getMailNotification());
-        String titleVigDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
+        JSONObject titleVigDB = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig();
         String title = menDB[1];
         String[] titleHelp = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getHelpMe());
         
@@ -223,22 +223,25 @@ public class GenericEmailObject {
         
         if(resultFilterList != null && !resultFilterList.isEmpty()){
             
-            Iterator<String> it = resultFilterList.iterator();
+            Iterator<String> it = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+            String keyFilter;
             String filterResult;
             
             while(it.hasNext()){
             
                 // Obtenemos el resultado del filtro
-                filterResult = it.next();
+                keyFilter = it.next();
+                        
+                filterResult = resultFilterList.get(keyFilter);
                 
-                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificacion filtro " + titleVigDB[filterCounter] + ": " + filterResult);
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sendEmailCheck: Resultado notificacion filtro " + titleVigDB.getString(keyFilter) + ": " + filterResult);
                 
                 if(!filterResult.equals("")){
                     
                     // Si es distinto de vacio, enviaremos el resultado
                     isTimeToSendEmail = true;
                 
-                    bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB[filterCounter] + "</div><tr><td width=\"95%\"><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
+                    bodyEmail += "<tr><td width=\"95%\"><br><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:15px;color: #3b5998;margin:5px;\">" + titleVigDB.getString(keyFilter) + "</div><tr><td width=\"95%\"><hr style=\"background:#d9d9d9;border-width:0;color:#d9d9d9;height:1px;margin:2px;\" /></td></tr>"
                         + "<tr><td><div id=\"divFilterWall\" style=\"height: auto;margin:10px;width:90%;margin:10px;padding:10px 20px;background:#f7f7f7;border:1px solid #CCC;\"><div style=\"font-family:\"lucida grande\",tahoma,verdana,arial,sans-serif;font-size:12px;text-align:justify;color:#808080;padding:10px 10px 10px;\">" + filterResult + "</div>"
                         + "</div></td></tr>";
                

@@ -247,7 +247,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - firstCheckAngelConfirmation: Inicio firstCheckAngelConfirmation...");
 
         // Inicializamos la lista para almacenar el resultado de la ejecucion de los filtros
-        List<String> resultFilterList = new ArrayList<>();
+        Map<String, String> resultFilterList = new HashMap<>();
         
         // Inicializamos las variables para los filtros
         String desFilter;
@@ -266,7 +266,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
                 resultFilter = this.checkFilter(request, desFilter, true, true, jsonAngel, null);
                 
                 // A?adimos el resultado a la lista
-                resultFilterList.add(resultFilter);
+                resultFilterList.put(desFilter, resultFilter);
             }
 
             // Mandamos email de confirmacion
@@ -346,7 +346,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
                 JSONObject jsonAngel = angelsUser.getJSONObject(j);
                 logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Iniciando chequeo para el angel de entrada!!");
 
-                List<String> resultFilterList = new ArrayList();
+                Map<String, String> resultFilterList = new HashMap();
                 String keyFilter;
                 String resultFilter;
                 Iterator itKeyFilter = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
@@ -359,7 +359,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
                     resultFilter = this.checkFilter(request, keyFilter, isTimeToCheckFilterList.get(count), false, jsonAngel, lastCheckFilterList.get(count));
                     
                     // A?adimos el resultado a la lista de resultados para enviar el email
-                    resultFilterList.add(resultFilter);
+                    resultFilterList.put(keyFilter, resultFilter);
                     
                     // Incrementamos el contador
                     count++;
