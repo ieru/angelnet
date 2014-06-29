@@ -45,6 +45,7 @@ function loadVigilantsState(idFiltro, angelsFiltro, numberFiltro) {
 }
 
 function habilitarAlertNotAngels(numberFiltro){
+    alert(1 + ": " + numberFiltro)
     $("#imgAlertNotAngels" + numberFiltro).attr("style", "");
     $("#imgAlertNotAngels" + numberFiltro).attr("title", $("#hdAlarmNotVig" + numberFiltro).val());
 }
@@ -109,14 +110,14 @@ function loadEstadoFiltro(desFiltro, srcImg){
 }
         
 function loadStateFiltro(desFiltro){
-    loadVigilantsState(desFiltro,getAngelsListByFiltro(desFiltro), getIdFiltro(desFiltro));
+    loadVigilantsState(desFiltro,getAngelsListByFiltro(desFiltro), desFiltro);
 }
 
 function habilitarEdicionVig(desFiltro){
     initActiveValoresFiltro(desFiltro);
     habilitarDivSelectAngels();
     
-    habilitarImgAlertAndFunction(desFiltro, getAngelsListByFiltro(desFiltro), getIdFiltro(desFiltro));
+    habilitarImgAlertAndFunction(desFiltro, getAngelsListByFiltro(desFiltro), desFiltro);
     
     habilitarGuardar();
 }
@@ -125,7 +126,7 @@ function deshabilitarEdicionVig(desFiltro){
    initNoActiveValoresFiltro(desFiltro);
    deshabilitarDivSelectAngels(); 
    
-   deshabilitarImgAlertAndFunction(desFiltro, getIdFiltro(desFiltro));
+   deshabilitarImgAlertAndFunction(desFiltro, desFiltro);
    
    habilitarBtnGuardar();
 }
@@ -213,7 +214,7 @@ function saveSelectionAngels(){
 }
 
 function setVigActual(posContainer){
-    $('#hdFiltroActual').attr("value", posContainer);
+    $('#hdFiltroActual').attr("value", getIdFiltro(posContainer));
 }
 
 function getDesFiltroActual(){
@@ -222,16 +223,16 @@ function getDesFiltroActual(){
 }
 
 function loadVigResources(nameVig, sentenceAlarm){
-    var arrayNameVig = nameVig.split(';');
+    var jsonNameVig = $.parseJSON(nameVig);
+    var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
     
-    for(var i = 0; i < arrayNameVig.length; i++){
+    for(var i = 0; i < arrayFilters.length; i++){
+        var keyActive = arrayFilters[i];
         
-        var index = parseInt(i) + parseInt(1);
-        
-        $("#hdNameVig" + index).attr("value", arrayNameVig[i]);
-        $("#imgContRobot" + index).attr("title", arrayNameVig[i]);
-        $("#hdAlarmNotVig" + index).attr("value", sentenceAlarm + arrayNameVig[i]);
-        $("#imgAlertNotAngels" + index).attr("title", $("#hdAlarmNotVig" + index).val());
+        $("#hdNameVig" + nameVig[keyActive]).attr("value", jsonNameVig[keyActive]);
+        $("#imgContRobot" + nameVig[keyActive]).attr("title", jsonNameVig[keyActive]);
+        $("#hdAlarmNotVig" + nameVig[keyActive]).attr("value", sentenceAlarm + jsonNameVig[keyActive]);
+        $("#imgAlertNotAngels" + nameVig[keyActive]).attr("title", $("#hdAlarmNotVig" + jsonNameVig[keyActive]).val());
     }
 }
 
@@ -241,38 +242,38 @@ function loadTurnOnOffBottons(nameTurnOn, nameTurnOff){
 }
 
 function loadHTMLFilters(strDesFilter){
-    var arrayDescriptionsFilter = strDesFilter.split(";");
+    var jsonDesFilter = $.parseJSON(strDesFilter);
     var htmlTableVigilant ='<table id="tableContentNewVigilants" width="600px">';
     
     var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
     
-    for(var i = 1 ; i <= arrayFilters.length; i++){
-        var internPos = parseInt(i) - parseInt(1);
+    for(var i = 0 ; i < arrayFilters.length; i++){
+        var keyActiveFilter = arrayFilters[i];
         
         var htmlTRVigilant = '<tr>' +
                 '<td> <!--imagen del usuario del usuario--> ' +
-                '<div id="vigilantContainer' + i + '" class="vigilantContainer" onmouseover="this.className=\'vigilantContainerOver\'" onmouseout="this.className=\'vigilantContainer\'"' +
-                'onclick="seleccionVig(\'vigilantContainer' + i + '\', \'' + internPos + '\');loadEstadoFiltro(\'' + arrayFilters[internPos] + '\', \'../SNSAngelGuardFB/resources/robots/robot' + i + '.png\');">' +
+                '<div id="vigilantContainer' + keyActiveFilter + '" class="vigilantContainer" onmouseover="this.className=\'vigilantContainerOver\'" onmouseout="this.className=\'vigilantContainer\'"' +
+                'onclick="seleccionVig(\'vigilantContainer' + keyActiveFilter + '\', \'' + keyActiveFilter+ '\');loadEstadoFiltro(\'' + keyActiveFilter + '\', \'../SNSAngelGuardFB/resources/robots/robot' + keyActiveFilter + '.png\');">' +
                 '<table width="680px">' +
                 '<tr>' +
                 '<td>' +
                 '<figure class="user">' +
-                '<img id="imgContRobot' + i + '" src="..\/SNSAngelGuardFB\/resources\/robots\/robot' + i + '.png" WIDTH="50" HEIGHT="72" alt="" />' +
+                '<img id="imgContRobot' + keyActiveFilter + '" src="..\/SNSAngelGuardFB\/resources\/robots\/robot' + keyActiveFilter + '.png" WIDTH="50" HEIGHT="72" alt="" />' +
                 '</figure>' + 
                 '<blockquote class="description arrowLeft"> <!--informacion del usuario-->' +
-                '<h1 class="vigilantDescription">' + arrayDescriptionsFilter[i] + '</h1>' +
+                '<h1 class="vigilantDescription">' + jsonDesFilter[keyActiveFilter] + '</h1>' +
                 '</blockquote>' +
                 '</td>' +
                 '<td width="35px" class="botonBox">' +
                 '<table>' +
                 '<tr>' +
                 '<td>' +
-                '<img id="imgTurnOnOff' + i + '" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />' +
+                '<img id="imgTurnOnOff' + keyActiveFilter + '" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />' +
                 '</td>' +
                 '</tr>' +
                 '<tr>' +
                 '<td>' +
-                '<img id="imgAlertNotAngels' + i + '" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />' +
+                '<img id="imgAlertNotAngels' + keyActiveFilter + '" src="../SNSAngelGuardFB/resources/alertNotAngels.png" WIDTH="20" HEIGHT="20" alt="" />' +
                 '</td>' +
                 '</tr>' +
                 '</table>' +

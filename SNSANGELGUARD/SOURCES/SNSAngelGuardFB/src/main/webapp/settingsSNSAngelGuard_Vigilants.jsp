@@ -60,7 +60,7 @@
                 loadInicioDatesVigilants('<%= controler.getHdAngels()%>', '<%= controler.getHdAngelsEd()%>', '<%= controler.getHdAngelsGoogleSelected()%>',
                         '<%= controler.getJsonFiltersInfo()%>', '<%= controler.getListActiveFilters()%>', '<%= controler.getHdAngelsAux()%>');
                         
-                loadHTMLFilters('<%= controler.getSnsObject().getStringUtilities().escaparComSimples(controler.getSnsObject().getStringUtilities().simpleArrayToString(controler.getJspResources().getArrayDes()))%>');
+                loadHTMLFilters('<%= controler.getJspResources().getArrayDes() %>');
 
                 loadTurnOnOffBottons('<%= controler.getJspResources().getTitleAltVigOn()%>', '<%= controler.getJspResources().getTitleAltVigOff()%>');
 
@@ -71,12 +71,9 @@
             });
 
             $(function() {
-                loadTitleFcbList('<%= controler.getJspResources().getTitleFbList()%>', '<%= controler.getJspResources().getTitleAngelSettAng()%>');
-                setArrayAngels('<%= controler.getSnsObject().getStringUtilities().arrayToString(controler.getArrayAngels())%>');
-
                 var keysFilterArray = $("#hdArrayKeysFilter").val().split(";");
-                for (var i = 1; i <= keysFilterArray.length; i++) {
-                    loadStateFiltro(keysFilterArray[parseInt(i) - parseInt(1)]);
+                for (var i = 0; i < keysFilterArray.length; i++) {
+                    loadStateFiltro(keysFilterArray[i]);
                 }
 
                 habilitarGuardar();
@@ -114,7 +111,7 @@
                                 <table width="100%">
                                     <tr>
                                         <td width="175px" class="botonBoxMiddle">
-                                            <img id="imgCurrentVig" src="../SNSAngelGuardFB/resources/robots/robot1.png" WIDTH="160" HEIGHT="200" alt="" />
+                                            <img id="imgCurrentVig" src="" WIDTH="160" HEIGHT="200" alt="" />
                                         </td>
                                         <td width="425px">
                                             <table width="100%">

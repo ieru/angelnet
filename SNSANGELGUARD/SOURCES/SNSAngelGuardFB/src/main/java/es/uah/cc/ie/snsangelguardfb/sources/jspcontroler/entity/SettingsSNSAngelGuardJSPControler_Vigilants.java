@@ -261,7 +261,7 @@ public class SettingsSNSAngelGuardJSPControler_Vigilants extends GenericJSPContr
     /**
      * Carga los recursos de idioma.
      */
-    public void loadResources(){
+    public void loadResources() throws JSONException{
         // Cargamos los recursos de idioma
         this.jspResources = new SettingsSNSAngelGuardJSPControlerResourcesVigilants(this.snsObject);
     }

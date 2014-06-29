@@ -5,6 +5,9 @@
 package es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources;
 
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
+import java.util.Iterator;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Clase de recursos de la pagina settingsSNSAngelGuard_Vigilants.jsp
@@ -35,10 +38,10 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
     private String titleAngelSettAng;
     
     /** Titulos de los filtros disponibles */
-    private String arrayVig;
+    private JSONObject arrayVig;
     
     /** Descripcion para cada filtro */
-    private String[] arrayDes;
+    private JSONObject arrayDes;
     
     /** Titulos del contenedor de seleccion de frecuencia */
     private String[] arrayFrc;
@@ -103,19 +106,19 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
         this.titleAngelSettAng = titleAngelSettAng;
     }
 
-    public String getArrayVig() {
+    public JSONObject getArrayVig() {
         return arrayVig;
     }
 
-    public void setArrayVig(String arrayVig) {
+    public void setArrayVig(JSONObject arrayVig) {
         this.arrayVig = arrayVig;
     }
 
-    public String[] getArrayDes() {
+    public JSONObject getArrayDes() {
         return arrayDes;
     }
 
-    public void setArrayDes(String[] arrayDes) {
+    public void setArrayDes(JSONObject arrayDes) {
         this.arrayDes = arrayDes;
     }
 
@@ -165,7 +168,7 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
      * 
      * @param snsObject 
      */
-    public SettingsSNSAngelGuardJSPControlerResourcesVigilants(SNSAngelGuardFBManager snsObject) {
+    public SettingsSNSAngelGuardJSPControlerResourcesVigilants(SNSAngelGuardFBManager snsObject) throws JSONException {
         this.snsObject = snsObject;
         this.titleSettVig = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleSettVig();
         this.titleVigilantSettVig = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigilantSettVig();
@@ -173,8 +176,8 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
         this.titleSettVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleSettVig();
         this.titleFbList = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFbListSettAng();
         this.titleAngelSettAng = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getSubTitleAngelSettAng();
-        this.arrayVig = snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig();
-        this.arrayDes = replaceVigInDesc(this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig()));
+        this.arrayVig = new JSONObject(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigSettVig());
+        this.arrayDes = replaceVigInDesc(new JSONObject(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigDescriptionSettVig()));
         this.arrayFrc = this.snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigFrecSelectSettVig());
         this.titleVigAngSettVig = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleVigAngSettVig();
         this.titleAltVigOn = this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleActiveDesactiveVig().split(";")[0];
@@ -191,30 +194,22 @@ public class SettingsSNSAngelGuardJSPControlerResourcesVigilants {
      * @return 
      *      Array con las descripciones personalizadas de todos los angeles.
      */
-    public final String[] replaceVigInDesc(String[] desc){
-        String[] resultDesc = null;
+    public final JSONObject replaceVigInDesc(JSONObject desc) throws JSONException{
         final String REPLACE_PATRON = "[1]";
         
         if(desc != null){
-            // Inicializamos el array
-            resultDesc = new String[desc.length];
             
-            // Obtenemos los nombres de los vigilantes
-            String[] nameVig = this.snsObject.getStringUtilities().stringToArray(arrayVig);
+            Iterator itActiveVigilants = this.snsObject.getConfigurationManager().getListActiveFilters().iterator();
+            String key;
             
-            // Por cada vigilante, cambiamos el patr?n de la descripcion por su nombre
-            for(int i = 0; i < desc.length; i++){
+            while(itActiveVigilants.hasNext()){
+                key = itActiveVigilants.next().toString();
                 
-                if(i == 0)
-                    // No se cambia porque el 0 indica el titulo de la descripcion
-                    resultDesc[i] = desc[i];
-                else
-                    // Realizamos el reemplazo por el nombre del vigilante
-                    resultDesc[i] = desc[i].replace(REPLACE_PATRON, nameVig[i - 1]);
+                desc.put(key, this.snsObject.getStringUtilities().escaparComSimples(desc.getString(key).replace(REPLACE_PATRON, this.arrayVig.getString(key))));
             }
         }
         
         // Retornamos el resultado
-        return resultDesc;
+        return desc;
     }
 }

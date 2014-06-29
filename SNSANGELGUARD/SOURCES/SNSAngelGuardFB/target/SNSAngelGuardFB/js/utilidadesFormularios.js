@@ -916,7 +916,7 @@ function getIdFiltro(desFiltro){
     
     for (var i = 0; i < arrayKeys.length; i++) {
        if(arrayKeys[i] === desFiltro){
-           return parseInt(i) + parseInt(1);
+           return i;
        }
     }
 }
@@ -1459,9 +1459,8 @@ function createHiddenFilters(idForm, arrayActiveFilter){
         $(idForm).append('<input type="hidden" id="hdLstAngels' + arrayFilters[i] + '" name="hdLstAngels' + arrayFilters[i] + '" value="" />');
         
         if(idForm === "#frSNSVigilants"){
-            var conVigilants = parseInt(i) + parseInt(1);
-            $(idForm).append('<input type="hidden" id="hdAlarmNotVig' + conVigilants + '" name="hdAlarmNotVig' + conVigilants +'" value="" />');
-            $(idForm).append('<input type="hidden" id="hdNameVig' + conVigilants + '" name="hdNameVig' + conVigilants + '" value="" />');
+            $(idForm).append('<input type="hidden" id="hdAlarmNotVig' + arrayFilters[i] + '" name="hdAlarmNotVig' + arrayFilters[i] +'" value="" />');
+            $(idForm).append('<input type="hidden" id="hdNameVig' + arrayFilters[i] + '" name="hdNameVig' + arrayFilters[i] + '" value="" />');
         }
     }
 }
@@ -2012,6 +2011,8 @@ function borrarItems(desFiltro){
 }
 
 function borrarItemSelected(idItem, idLista){
+    alert(idItem)
+    alert(idLista)
     var lstAux = '';
     var arrayLstAngels = '';
     
