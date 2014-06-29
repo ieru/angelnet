@@ -480,7 +480,7 @@ public class UserSettingsDaoManager {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setUser_UserSettings: Inicio setUser_UserSettings...");
         try {
             Long uidLong = (new Double(uid)).longValue();
-            this.snsObject.getClient().user_setUserByUid(String.class, user, "\"" + uidLong + "\"");
+            this.snsObject.getClient().user_setUserByUid(String.class, user, uidLong.toString());
         } catch (UniformInterfaceException e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - setUserFacebook_UserSettings: Informacion del perfil del usuario actualizada!!");
         }

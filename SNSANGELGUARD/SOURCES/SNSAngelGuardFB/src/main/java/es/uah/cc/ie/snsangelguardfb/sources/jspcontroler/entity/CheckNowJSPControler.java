@@ -7,6 +7,7 @@ import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterProcessException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.GenericJSPControler;
+import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity.threads.ThUpdateInformationUser;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -183,7 +184,9 @@ public class CheckNowJSPControler extends GenericJSPControler{
 
         snsObject.getUserSettingsDaoManager().getUserSettingsDAO().setAngelsUserSettings(getActiveFilters(), snsObject.isNewConnection());
 
-        snsObject.getUserSettingsDaoManager().getUserInfo(false);
+        logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAndReturn: Iniciando el hilo para actualizar la informacion del usuario...");
+        ThUpdateInformationUser thUpdateInformation = new ThUpdateInformationUser(this.snsObject);
+        thUpdateInformation.start();
 
         // Cerramos la conexi?n con la Base de Datos
         snsObject.getLocaleSettingsDaoManager().getSnsObject().cerrarConexionSNS();

@@ -307,7 +307,7 @@ function loadHTMLFilters(strDesFilter){
 }
 
 function obtenerFrecuencia(idSelect) {
-    var objectFrec = $("#" + idSelect.val());
+    var objectFrec = $("#" + idSelect);
     var arrayFilters = $("#hdArrayKeysFilter").val().split(";");
     var currentFilter = $("#hdFiltroActual").val();
 
