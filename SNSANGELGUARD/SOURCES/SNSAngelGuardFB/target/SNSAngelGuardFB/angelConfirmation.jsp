@@ -4,8 +4,7 @@
     Author     : tote
 --%>
 
-
-<%@page import="es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity.data.ThProcessCheckFilter"%>
+<%@page import="es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity.threads.ThProcessCheckFilter"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterProcessException"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterEmailException"%>
 <%@page import="es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException"%>

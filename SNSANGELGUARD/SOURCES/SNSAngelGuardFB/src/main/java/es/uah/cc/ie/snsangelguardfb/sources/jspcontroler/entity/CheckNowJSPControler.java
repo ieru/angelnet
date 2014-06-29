@@ -188,9 +188,6 @@ public class CheckNowJSPControler extends GenericJSPControler{
         ThUpdateInformationUser thUpdateInformation = new ThUpdateInformationUser(this.snsObject);
         thUpdateInformation.start();
 
-        // Cerramos la conexi?n con la Base de Datos
-        snsObject.getLocaleSettingsDaoManager().getSnsObject().cerrarConexionSNS();
-
         // Volvemos a la pagina de configuraci?n
         response.sendRedirect(request.getContextPath() + "/settingsSNSAngelGuard.jsp?newConection=1&ok=1");
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateInformationAndReturn: Fin updateInformationAndReturn...");

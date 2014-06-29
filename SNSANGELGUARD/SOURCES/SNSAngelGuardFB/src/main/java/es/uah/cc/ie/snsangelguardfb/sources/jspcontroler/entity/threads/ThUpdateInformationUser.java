@@ -44,6 +44,10 @@ public class ThUpdateInformationUser extends Thread {
         try {
             logger.info("ThUpdateInformationUser - run: Actualizando informaci?n...");
             snsObject.getUserSettingsDaoManager().getUserInfo(false);
+            
+            // Cerramos la conexi?n con la Base de Datos
+            snsObject.getLocaleSettingsDaoManager().getSnsObject().cerrarConexionSNS();
+            
             logger.info("ThUpdateInformationUser - run: Informaci?n del usuario correctamente actualizada!!");
         } catch (UniformInterfaceException | IOException | JSONException | MySQLIntegrityConstraintViolationException | InterDataBaseException | InterProcessException | InterEmailException ex) {
             logger.info("ThUpdateInformationUser - run: Se ha producido una excepcion del tipo " + ex.getClass() + ": " + ex.getMessage());

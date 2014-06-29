@@ -584,12 +584,18 @@ public class UserSettingsDAO {
     public void setAngelsUserSettings(String activeFilter, boolean newConnection) throws JSONException, NoSuchProviderException, MessagingException, UniformInterfaceException, IOException, InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.uid + " - setAngelsUserSettings: Inicio setAngelsUserSettings...");
       
+        logger.info(this.uid + " - setAngelsUserSettings: Borrando las relaciones del angel...");
         this.deleteAngelsRelationship();
+        logger.info(this.uid + " - setAngelsUserSettings: Relaciones del angel correctamente eliminadas...");
+        
+        logger.info(this.uid + " - setAngelsUserSettings: Estableciendo nuevas relaciones para el angel...");
         this.getNewAngels();
+        logger.info(this.uid + " - setAngelsUserSettings: Nuevas relaciones del angel correctamente establecidas!!");
 
-        //String[] arrActiveFilter = getArrayActiveFilter(activeFilter);
-
+        // Actualizamos los filtros
+        logger.info(this.uid + " - setAngelsUserSettings: Actualizando los filtros del usuario...");
         this.updateFilters();
+        logger.info(this.uid + " - setAngelsUserSettings: Los filtros del usuario han sido actualizados!!");
         logger.info(this.uid + " - setAngelsUserSettings: Fin setAngelsUserSettings...");
     }
 
