@@ -97,14 +97,12 @@ public class SNSdataBaseClient {
         return webResource.path("settingsFilters").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
     }
 
-    public <T> T settingsFilter_updateFilterByIdFilter(Class<T> responseType, String idFilter, Object requestEntity) throws UniformInterfaceException {
-        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
+    public <T> T settingsFilter_updateFilterByIdFilter(Class<T> responseType, String idFilter, Object requestEntity, String mode) throws UniformInterfaceException {
+        String[] queryParamNames = new String[]{"mode"};
+        String[] queryParamValues = new String[]{mode};
+        return webResource.path("settingsFilters").path(idFilter).queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType, requestEntity);
     }
-
-    public <T> T settingsFilter_setLastCheckByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
-        return webResource.path("settingsFilters").path(idFilter).accept(javax.ws.rs.core.MediaType.APPLICATION_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).put(responseType);
-    }
-
+    
     public <T> T settingsFilter_getAngelsCollectionByIdFilter(Class<T> responseType, String idFilter) throws UniformInterfaceException {
         return webResource.path("settingsFilters").path(idFilter).path("settingsAngelsCollection").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }

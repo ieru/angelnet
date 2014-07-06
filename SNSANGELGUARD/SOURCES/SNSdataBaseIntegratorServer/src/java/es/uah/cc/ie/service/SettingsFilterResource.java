@@ -74,12 +74,20 @@ public class SettingsFilterResource {
      */
     @PUT
     @Consumes({"application/xml", "application/json"})
-    public void put(SettingsFilterConverter data) {
+    public void put(@QueryParam("mode") 
+            @DefaultValue("1") String mode, 
+            SettingsFilterConverter data) {
+        
         PersistenceService persistenceSvc = PersistenceService.getInstance();
         try {
             persistenceSvc.beginTx();
             EntityManager em = persistenceSvc.getEntityManager();
-            data.getEntity().setLastCheck(new Date());
+            SettingsFilter entity = data.resolveEntity(em);
+            
+            // Si es una ejecucion del filtro, actualizamos la fecha de ejecucion
+            if(mode.equals("1"))
+                entity.setLastCheck(new Date());
+            
             updateEntity(getEntity(), data.resolveEntity(em));
             persistenceSvc.commitTx();
         } finally {

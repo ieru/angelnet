@@ -307,7 +307,7 @@ public class UserSettings_SettingsFilterDAO {
         resultNewInstanceFilter = getFilterWithRelationshipWithUserSettings(resultNewInstanceFilter, this.manager.getUserSettingsDAO().getUid());
         
         // Actualizamos el filtro en base de datos ya relacionado con su usuario
-        this.manager.getSnsObject().getClient().settingsFilter_updateFilterByIdFilter(String.class, resultNewInstanceFilter.getString("idFilter"), resultNewInstanceFilter);
+        this.manager.getSnsObject().getClient().settingsFilter_updateFilterByIdFilter(String.class, resultNewInstanceFilter.getString("idFilter"), resultNewInstanceFilter, "0");
 
         logger.info(this.typeFilter + " - initDBnewFilter: Fin initDBnewFilter!!");
     }
@@ -339,6 +339,30 @@ public class UserSettings_SettingsFilterDAO {
 
         logger.info(this.typeFilter + " - getFilterWithRelationshipWithUserSettings: Fin getFilterWithRelationshipWithUserSettings!!");
         return instanceFilter;
+    }
+    
+    /**
+     * Elimina las relaciones entre un filtro y sus angeles.
+     * 
+     * @param instanceFilter Instancia del filtro
+     * @return Instancia del filtro sin los angeles.
+     * @throws JSONException 
+     */
+    public JSONObject resetAngelsToFilter(JSONObject instanceFilter) throws JSONException{
+        logger.info(this.typeFilter + " - resetAngelsToFilter: Inicio resetAngelsToFilter...");
+        JSONObject jsonAngelsCollection = new JSONObject();
+        
+        jsonAngelsCollection.put("uri", this.manager.getSnsObject().getConfigurationManager().getConfigHostApplication()
+                + "SNSdataBaseIntegratorServer/resources/settingsFilters/" + instanceFilter.getString("idFilter")
+                + "/settingsAngelsCollection/");
+        
+        jsonAngelsCollection.put("settingsAngels", new JSONArray());
+        
+        instanceFilter.put("settingsAngelsCollection", jsonAngelsCollection);
+        
+        logger.info(this.typeFilter + " - resetAngelsToFilter: Fin resetAngelsToFilter!!");
+        return instanceFilter;
+     
     }
     
     /**

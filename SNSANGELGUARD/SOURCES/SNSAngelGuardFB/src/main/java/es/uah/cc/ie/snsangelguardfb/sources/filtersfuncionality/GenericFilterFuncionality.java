@@ -313,8 +313,8 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
     public void checkUserSettingsOffLine(HttpServletRequest request, JSONArray angelsUser) throws InterDataBaseException, InterProcessException, InterEmailException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkUserSettingsOffLine: Inicio checkUserSettingsOffLine...");
         Date lastCheck;
-        List<Date> lastCheckFilterList = new ArrayList();
-        List<Boolean> isTimeToCheckFilterList = new ArrayList();
+        Map<String, Date> lastCheckFilterList = new HashMap();
+        Map<String, Boolean> isTimeToCheckFilterList = new HashMap();
         String key;
         
         // Obtenemos el iterador para la lista de keys de filtros
@@ -329,10 +329,10 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
             lastCheck = getLastCheckGenericFilter(key);
             
             // Introducimos la fecha en la lista
-            lastCheckFilterList.add(lastCheck);
+            lastCheckFilterList.put(key, lastCheck);
             
             // Introducimos el resultado en la lista
-            isTimeToCheckFilterList.add(isTimeToCheck(key,lastCheck));
+            isTimeToCheckFilterList.put(key, isTimeToCheck(key,lastCheck));
         }
         
         Integer count = 0;
@@ -356,7 +356,7 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
                     keyFilter = itKeyFilter.next().toString();
                     
                     // Ejecutamos el filtro
-                    resultFilter = this.checkFilter(request, keyFilter, isTimeToCheckFilterList.get(count), false, jsonAngel, lastCheckFilterList.get(count));
+                    resultFilter = this.checkFilter(request, keyFilter, isTimeToCheckFilterList.get(keyFilter), false, jsonAngel, lastCheckFilterList.get(keyFilter));
                     
                     // A?adimos el resultado a la lista de resultados para enviar el email
                     resultFilterList.put(keyFilter, resultFilter);

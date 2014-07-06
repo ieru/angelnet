@@ -1316,6 +1316,24 @@ public class UserSettingsDAO {
     }
     
     /**
+     * Actualiza las relaciones entre un filtro y los angeles definidos.
+     * 
+     * @param jsonArrayAngels Angeles de un filtro.
+     * @param des Identificador del filtro
+     * @throws JSONException 
+     */
+    public void updateOfflineAngelsFilter(JSONArray jsonArrayAngels, String des) throws JSONException {
+        JSONObject jsonAngel;
+
+        for (int i = 0; i < jsonArrayAngels.length(); i++) {
+            jsonAngel = jsonArrayAngels.getJSONObject(i);
+
+            this.filterDaoMap.get(des).putAngelInCollectionFilter(jsonAngel);
+
+        }
+    }
+    
+    /**
      * Obtiene un angel con todas sus relaciones actualizadas.
      * 
      * @param jsonAngel
@@ -1367,7 +1385,7 @@ public class UserSettingsDAO {
             
             try {
                 // Actualizamos la informacion del filtro en base de datos
-                this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, newInstanceFilter.getString("idFilter"), newInstanceFilter);
+                this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, newInstanceFilter.getString("idFilter"), newInstanceFilter, "0");
             } catch (UniformInterfaceException e) {
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewInstanceFilter: Excepcion capturada UniformInterfaceException: " + e.getMessage());
                 
@@ -1632,14 +1650,29 @@ public class UserSettingsDAO {
     public JSONObject updateFilter(String desFilter) throws JSONException {
         logger.info(this.uid + " - updateFilter: Inicio updateFilter para " + desFilter);
         JSONObject jsonFilter ;
-        Long uidLong = (new Double(this.getUid())).longValue();
 
-        jsonFilter = this.filterDaoMap.get(desFilter).getObjectFilter();
+        // Obtenemos los angeles del filtro antes de resetearlos
+        JSONObject jsonRespuesta = new JSONObject(this.snsObject.getClient().settingsAngels_getAngelsByPropUid(String.class, "\"" + this.uid + "\""));
+        JSONArray jsonArrayAngels = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels"));
+        
+        // Obtenemos el objeto JSON del filtro
+        String resultFilter = this.manager.getSnsObject().getClient().settingsFilter_getFiltersByIdFilter(String.class, this.filterDaoMap.get(desFilter).getUid().toString());
+        jsonFilter = new JSONObject(resultFilter);
+        
+        // Aniadimos la relacion con el usuario de la aplicacion
+        jsonFilter = this.filterDaoMap.get(desFilter).getFilterWithRelationshipWithUserSettings(jsonFilter, this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid());
+        
+        // Reseteamos los angeles del filtro
+        jsonFilter = this.filterDaoMap.get(desFilter).resetAngelsToFilter(jsonFilter);
+        
         try {
-            this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, uidLong.toString(), jsonFilter);
-        } catch (Exception e) {
+            this.snsObject.getClient().settingsFilter_updateFilterByIdFilter(String.class, jsonFilter.getString("idFilter"), jsonFilter, "1");
+        } catch (JSONException | UniformInterfaceException e) {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Filtro " + desFilter + " actualizado");
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updateFilter: Excepcion capturada Exception: " + e.getMessage());
+            
+            // Actualizamos los angeles del filtro
+            updateOfflineAngelsFilter(jsonArrayAngels, desFilter);
         }
         jsonFilter = new JSONObject(this.snsObject.getClient().settingsFilter_getFiltersByIdFilter(String.class, jsonFilter.getString("idFilter")));
 

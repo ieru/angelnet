@@ -75,16 +75,16 @@ public class HarvestedSNS extends HttpServlet {
                 /** Cargamos los recursos de idioma */
                 this.snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
 
-                /** Si la aplicaci?n se encuentra activada, realizamos el tratamiento de la informaci?n */
+                /** Si la aplicacion se encuentra activada, realizamos el tratamiento de la informacion */
                 if (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().isAppActivated()) {
                     try {
-                        /** Abrimos la conexi?n para el usuario actual */
+                        /** Abrimos la conexion para el usuario actual */
                         session = openConectionOffLine(session);
 
                         /** Actualizamos la fecha de backup a la fecha actual */
                         this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().updateBackUpCheckUS();
 
-                        /** Realizamos la actualizaci?n de la informaci?n del usuario en la base de datos */
+                        /** Realizamos la actualizacion de la informacion del usuario en la base de datos */
                         this.snsObject.getUserSettingsDaoManager().getUserInfo(false);
 
                         /** Obtenemos los angeles definidos por el usuario */
@@ -92,10 +92,10 @@ public class HarvestedSNS extends HttpServlet {
                         JSONObject jsonRespuesta = new JSONObject(respuesta);
                         JSONArray angelsUser = this.snsObject.getJsonUtilities().getJSONArray(jsonRespuesta.getString("settingsAngels").toString());
 
-                            // Realizamos los chequeos de informaci?n para los ?ngeles definidos
-                            this.snsObject.getGenericFilter().checkUserSettingsOffLine(request, angelsUser);
+                        // Realizamos los chequeos de informacion para los angeles definidos
+                        this.snsObject.getGenericFilter().checkUserSettingsOffLine(request, angelsUser);
 
-                        /** Cerramos la conexi?n para el usuario actual */
+                        /** Cerramos la conexion para el usuario actual */
                         session = closeConectionOffLine(session);
 
                         logger.debug(formateador.format(new Date()) + " - updateUsers: Proceso harvested terminado para el usuario: " + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid());
