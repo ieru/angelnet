@@ -25,7 +25,9 @@ import es.uah.cc.ie.converter.UserSettingssConverter;
 import es.uah.cc.ie.converter.UserSettingsConverter;
 import com.sun.jersey.api.core.ResourceContext;
 import es.uah.cc.ie.persistence.User;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -79,8 +81,18 @@ public class UserSettingssResource {
             persistenceSvc.beginTx();
             EntityManager em = persistenceSvc.getEntityManager();
             UserSettings entity = data.resolveEntity(em);
-            entity.setLastCheck(new Date());
-            entity.setBackupCheck(new Date());
+            
+            // Local to GMT
+            long ts = System.currentTimeMillis();
+            Date localTime = new Date(ts);
+            String format = "yyyy/MM/dd HH:mm:ss";
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date gmtTime = new Date(sdf.format(localTime));
+            
+            entity.setLastCheck(gmtTime);
+            entity.setBackupCheck(gmtTime);
             createEntity(data.resolveEntity(em));
             persistenceSvc.commitTx();
             return Response.status(Response.Status.OK).entity(entity.getUid().toString()).build();

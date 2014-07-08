@@ -161,7 +161,7 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updatePostWall: Inicio updatePostWall...");
 
         Long uidLong = (new Double(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid().toString())).longValue();
-        SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updatePostWall: Actualizando los post del muro del usuario, ultima actualizacion: " + formateador.format(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getBackupCheck().getTime()));
 

@@ -24,7 +24,9 @@ import es.uah.cc.ie.persistence.UserSettings;
 import java.util.Collection;
 import es.uah.cc.ie.converter.SettingsFilterConverter;
 import com.sun.jersey.api.core.ResourceContext;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -84,9 +86,18 @@ public class SettingsFilterResource {
             EntityManager em = persistenceSvc.getEntityManager();
             SettingsFilter entity = data.resolveEntity(em);
             
+            // Local to GMT
+            long ts = System.currentTimeMillis();
+            Date localTime = new Date(ts);
+            String format = "yyyy/MM/dd HH:mm:ss";
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date gmtTime = new Date(sdf.format(localTime));
+            
             // Si es una ejecucion del filtro, actualizamos la fecha de ejecucion
             if(mode.equals("1"))
-                entity.setLastCheck(new Date());
+                entity.setLastCheck(gmtTime);
             
             updateEntity(getEntity(), data.resolveEntity(em));
             persistenceSvc.commitTx();

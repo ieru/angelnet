@@ -26,6 +26,8 @@ import es.uah.cc.ie.converter.UserSettingsConverter;
 import com.sun.jersey.api.core.ResourceContext;
 import es.uah.cc.ie.persistence.User;
 import java.util.Date;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -78,15 +80,26 @@ public class UserSettingsResource {
             @DefaultValue("1") String mode,
             @QueryParam("oauthToken") String oauthToken) {
         PersistenceService persistenceSvc = PersistenceService.getInstance();
+        
         try {
             persistenceSvc.beginTx();
             EntityManager em = persistenceSvc.getEntityManager();
             UserSettings entity = em.find(UserSettings.class, id);
+            
+            // Local to GMT
+            long ts = System.currentTimeMillis();
+            Date localTime = new Date(ts);
+            String format = "yyyy/MM/dd HH:mm:ss";
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date gmtTime = new Date(sdf.format(localTime));
+            
             if(mode.equals("1")){
-                entity.setLastCheck(new Date());
+                entity.setLastCheck(gmtTime);
             }
             else{
-                entity.setBackupCheck(new Date());
+                entity.setBackupCheck(gmtTime);
             }
             entity.setUserSession(oauthToken);
             persistenceSvc.commitTx();
