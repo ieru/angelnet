@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -120,12 +119,16 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
     public String getStreamComents(String postId, String modo) throws JSONException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Inicio getStreamComents...");
         String query = "";
-        if (modo.equals("newComment")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Modo de funcionamiento: " + modo);
-            query = "SELECT xid,object_id,post_id,fromid,time,text,id,username,reply_xid FROM comment WHERE post_id ='" + postId + "' ;";
-        } else if (modo.equals("updateComment")) {
-            logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Modo de funcionamiento: " + modo);
-            query = "SELECT xid,object_id,post_id,fromid,time,text,id,username,reply_xid FROM comment WHERE post_id ='" + postId + "' AND time>" + (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getLastCheck().getTime() / 1000) + ";";
+        
+        switch (modo) {
+            case "newComment":
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Modo de funcionamiento: " + modo);
+                query = "SELECT xid,object_id,post_id,fromid,time,text,id,username,reply_xid FROM comment WHERE post_id ='" + postId + "' ;";
+                break;
+            case "updateComment":
+                logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getStreamComents: Modo de funcionamiento: " + modo);
+                query = "SELECT xid,object_id,post_id,fromid,time,text,id,username,reply_xid FROM comment WHERE post_id ='" + postId + "' AND time>" + (this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getLastCheck().getTime() / 1000) + ";";
+                break;
         }
 
         List<StreamCommentsFacebook> streamCommentsList = this.snsObject.getFacebookQueryClient().executeQuery(query, StreamCommentsFacebook.class);
@@ -169,15 +172,12 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
         try {
             List<PostWallFacebook> postList = this.snsObject.getFacebookQueryClient().executeQuery(query, PostWallFacebook.class);
 
-            String respuesta = "";
-
             for (int i = 0; i < postList.size(); i++) {
 
                 PostWallFacebook auxPost = postList.get(i);
                 JSONObject jsonAuxPost = auxPost.toJson();
 
                 logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - updatePostWall: Identificador del post: " + jsonAuxPost.getString("postId"));
-                //jsonAuxPost.put("userFacebookIdUserFacebook", uidLong.toString());
 
                 if (isNewStreamPost(jsonAuxPost)) {
                     this.snsObject.getClient().userFacebook_setNewStreamComentsByUid(String.class, jsonAuxPost, uidLong.toString());
@@ -215,7 +215,7 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
             this.snsObject.getClient().userFacebook_getStreamComentByUid(String.class, comentario.getString("postId"));
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewStreamPost: El post existe dentro de la base de datos!!");
             return false;
-        } catch (Exception e) {
+        } catch (JSONException | UniformInterfaceException e) {
             logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewStreamPost: El post es nuevo y no esta registrado en la base de datos!!");
             logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isNewStreamPost: Excepcion capturada Exception: " + e.getMessage());
             logger.fatal(e);
@@ -284,12 +284,11 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
     public String checkPostWall(HttpServletRequest request, boolean firstCheck, JSONObject jsonFilter, Date lastCheck) throws FileNotFoundException, IOException, JSONException, NoSuchProviderException, MessagingException, ParseException, bsh.ParseException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Inicio checkPostWall...");
         String informe = "";
-        String comentarios = "";
+        String comentarios;
         String menDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getMailNotification());
-        JSONArray badWordsArray = null;
-        JSONArray lstComentarios = null;
-        Boolean badWord = false;
-        HttpSession session = request.getSession(false);
+        JSONArray badWordsArray;
+        JSONArray lstComentarios;
+        Boolean badWord;
 
         badWordsArray = loadFileBadWords();
         if (!this.snsObject.isNewConnection() && firstCheck) {
@@ -323,10 +322,10 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
                             informe += menDB[2] + "\"" + lstComentarios.getJSONObject(i).getString("message") + "\" " + menDB[4] + " <br>";
                         }
 
-                        informe = checkCommentPost(lstComentarios.getJSONObject(i), badWordsArray, informe, firstCheck, jsonFilter);
+                        informe = checkCommentPost(lstComentarios.getJSONObject(i), badWordsArray, informe, firstCheck, lastCheck);
                     }
                 }
-            } catch (Exception e) {
+            } catch (JSONException | IOException | ParseException e) {
                 logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: No existen nuevos comentarios...");
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkPostWall: Excepcion capturada Exception: " + e.getMessage());
                 logger.fatal(e);
@@ -356,22 +355,19 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
      * @throws ParseException
      * @throws bsh.ParseException
      */
-    public String checkCommentPost(JSONObject streamComment, JSONArray badWordsArray, String informe, boolean firstCheck, JSONObject jsonFilter) throws JSONException, ParseException, bsh.ParseException {
+    public String checkCommentPost(JSONObject streamComment, JSONArray badWordsArray, String informe, boolean firstCheck, Date lastCheck) throws JSONException, ParseException, bsh.ParseException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkCommentPost: Inicio checkCommentPost...");
 
-        Boolean badWord = false;
-        String commentPost = "";
+        Boolean badWord;
+        String commentPost;
         JSONObject auxCommentPost = null;
-        JSONArray lstCommentPost = null;
+        JSONArray lstCommentPost;
         String menDB[] = this.snsObject.getStringUtilities().stringToArray(this.snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getMailNotification());
 
         if (!this.snsObject.isNewConnection() && firstCheck) {
             commentPost = this.snsObject.getClient().userFacebook_getComentsPostById(String.class, "\"" + streamComment.getString("postId") + "\"");
         } else {
-            SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            System.out.println("Nueva fecha: " + jsonFilter.getString("lastCheck"));
-            //this.snsObject.getClient().userFacebook_getStreamFacebookByUpdatedTime(String.class, "\"" + this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'");
-            commentPost = this.snsObject.getClient().userFacebook_getComentsPostByTime(String.class, "\"" + streamComment.getString("postId") + "\"", "'" + formateador.format(this.snsObject.getDateTimeUtilities().formatTime(jsonFilter.getString("lastCheck").replace("T", " "))) + "'");
+            commentPost = this.snsObject.getClient().userFacebook_getComentsPostByTime(String.class, "\"" + streamComment.getString("postId") + "\"", lastCheck.getTime());
         }
         logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkCommentPost: Comentarios al post: " + commentPost);
 
@@ -398,7 +394,7 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
 
                     }
                 }
-            } catch (Exception e) {
+            } catch (JSONException | IOException e) {
                 logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkCommentPost: No existen nuevos comentarios...");
                 logger.error(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - checkCommentPost: Excepcion capturada Exception: " + e.getMessage());
                 logger.fatal(e);
@@ -422,7 +418,7 @@ public class WallFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilter 
     public JSONArray cargarFichero(BufferedReader buffer) throws JSONException, IOException {
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - Inicio cargarFichero...");
         JSONArray aux = new JSONArray();
-        String wordFile = "";
+        String wordFile;
         int i = 0;
 
         while ((wordFile = buffer.readLine()) != null) {

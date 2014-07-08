@@ -198,7 +198,7 @@ public class SNSdataBaseClient {
         return webResource.path("commentFacebooks").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T userFacebook_getComentsPostByTime(Class<T> responseType, String postId, String time) throws UniformInterfaceException {
+    public <T> T userFacebook_getComentsPostByTime(Class<T> responseType, String postId, Long time) throws UniformInterfaceException {
         String[] queryParamNames = new String[]{"start", "max", "expandLevel", "query"};
         String[] queryParamValues = new String[]{"0", "1000", "1", "SELECT c FROM CommentFacebook c WHERE c.postId = " + postId + " AND c.timeComment > " + time};
         return webResource.path("commentFacebooks").queryParams(getQParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);

@@ -188,7 +188,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
      * @param postId Entrada en el muro de un usuario.
      * @return Numero de comentarios de un amigo a un comentario.
      */
-    private int getCommentsNumberPost(String uidFriend, String postId, boolean firstCheck){
+    private int getCommentsNumberPost(String uidFriend, String postId, boolean firstCheck, Date lastCheckFilter){
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getCommentsNumberPost: Inicio busqueda de comentarios de " + uidFriend + " en el post " + postId + "...");
         int countPost = 0;
         String commentsPost = null;
@@ -196,10 +196,9 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
             if (firstCheck) {
                 commentsPost = this.snsObject.getClient().userFacebook_getComentsPostById(String.class, "\"" + postId + "\"");
             } else {
-                Date lastCheck = this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getFilterDaoMap().get(idFilter).getLastCheck();
                 SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getCommentsNumberPost: Buscando comentarios al post " + postId + " hasta la fecha de actualizaci?n: " + formateador.format(lastCheck));
-                commentsPost = this.snsObject.getClient().userFacebook_getComentsPostByTime(String.class, "\"" + postId + "\"", "'" + formateador.format(lastCheck) + "'");
+                logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getCommentsNumberPost: Buscando comentarios al post " + postId + " hasta la fecha de actualizaci?n: " + formateador.format(lastCheckFilter));
+                commentsPost = this.snsObject.getClient().userFacebook_getComentsPostByTime(String.class, "\"" + postId + "\"", lastCheckFilter.getTime());
             }
 
             if (commentsPost != null) {
@@ -288,7 +287,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - getRankingPostFriends: Inicio getRankingPostFriends...");
         String resultado = "";
         Long uidLong = (new Double(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid().toString())).longValue();
-        String userFacebook = null;
+        String userFacebook;
 
         if (firstCheck) {
             userFacebook = this.snsObject.getClient().userFacebook_getStreamFacebookByUid(String.class, "'" + uidLong.toString() + "'");
@@ -329,7 +328,7 @@ public class VisitsFilterFuncionality implements ILifeCycleFilter, IKeyArgsFilte
                     int countNumberStream = postsOfFriendArray.length();
 
                     for (int j = 0; j < postsOfFriendArray.length(); j++) {
-                        countNumberStream = countNumberStream + getCommentsNumberPost(friendsWithPostArray.getString(i), postsOfFriendArray.getJSONObject(j).getString("postId"), firstCheck);
+                        countNumberStream = countNumberStream + getCommentsNumberPost(friendsWithPostArray.getString(i), postsOfFriendArray.getJSONObject(j).getString("postId"), firstCheck, lastCheckFilter);
                     }
 
                     if (!friendsWithPostArray.getString(i).equals(uidLong.toString())) {
