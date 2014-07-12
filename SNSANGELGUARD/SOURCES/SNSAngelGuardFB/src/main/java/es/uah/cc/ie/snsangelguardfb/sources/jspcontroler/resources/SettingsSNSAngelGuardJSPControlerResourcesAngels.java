@@ -44,8 +44,14 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
     /** Mensaje de guardado */
     private final String menSave;
     
+    /** Mensaje de cargado */
+    private final String loadFacebookFriendsUpdate;
+    
     /** Mensaje de espera */
     private final String menWait;
+    
+    /** Titulo para el boton de actualizado de contactos de Facebook */
+    private final String titleButtonUpdateFacebookContacts;
 
     public SNSAngelGuardFBManager getSnsObject() {
         return snsObject;
@@ -111,6 +117,10 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
         this.delete = delete;
     }
 
+    public String getLoadFacebookFriendsUpdate() {
+        return loadFacebookFriendsUpdate;
+    }
+    
     public String getMenSave() {
         return menSave;
     }
@@ -118,7 +128,10 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
     public String getMenWait() {
         return menWait;
     }
-    
+
+    public String getTitleButtonUpdateFacebookContacts() {
+        return titleButtonUpdateFacebookContacts;
+    }
     
     
     /**
@@ -138,6 +151,8 @@ public class SettingsSNSAngelGuardJSPControlerResourcesAngels {
         this.confirm = this.warnings[6];
         this.delete = this.warnings[5];
         this.menSave = this.warnings[2];
+        this.loadFacebookFriendsUpdate = this.warnings[16];
         this.menWait = this.warnings[4];
+        this.titleButtonUpdateFacebookContacts = this.warnings[17];
     }
 }

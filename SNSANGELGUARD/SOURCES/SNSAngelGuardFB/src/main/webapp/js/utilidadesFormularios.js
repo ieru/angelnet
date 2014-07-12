@@ -2309,3 +2309,15 @@ function showLinkTutorial(isOffline, title, wait, menWait){
         $("#idShowTutorial").html(htmlLink);
     }
 }
+
+function updateFacebookFriends(menSave, menWait){
+    $(function(){
+        // Mostramos el loader de la operacion
+        muestraLoader(menSave, menWait);
+        
+        // Lanzamos la operacion de borrado en servidor
+        document.getElementById('frSNSAngels').setAttribute('action', 'updateFacebookFriendsOnline.jsp');
+        document.getElementById('frSNSAngels').setAttribute('method','post');
+        document.getElementById('frSNSAngels').submit();
+    });
+}

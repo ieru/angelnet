@@ -91,7 +91,16 @@
             <input type="hidden" id="hdMenWait" name="hdMenWait" value="<%= controler.getJspResources().getMenWait() %>" />
 
             <div id="friendsContent" class="friendsContent">
-                <h1 class="tituloMed"><%= controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFriendsContentSettAng()%></h1>
+                <table width="99%">
+                    <tr>
+                        <td width="98%">
+                          <h1 class="tituloMed"><%= controler.getSnsObject().getLocaleSettingsDaoManager().getLocaleSettingsDao().getTitleFriendsContentSettAng()%></h1>
+                        </td>
+                        <td width="2%">
+                            <img class="enabledPag" title="<%= controler.getJspResources().getTitleButtonUpdateFacebookContacts() %>" id="refreshFacebookFriends" onclick="updateFacebookFriends('<%= controler.getJspResources().getLoadFacebookFriendsUpdate() %>', '<%= controler.getJspResources().getMenWait() %>');" width="16px" height="16px" src="../SNSAngelGuardFB/resources/refresh.png" />   
+                        </td>
+                    </tr>
+                </table>
                 <ul id="fcbklist">
                 </ul>
             </div>
