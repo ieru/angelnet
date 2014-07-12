@@ -231,7 +231,7 @@
                             <td width="210px" style="vertical-align:top;">
                                 <div id="Menu">
                                 </div>
-                                <A class="linkHelp" onclick="lanzarModalAyuda('<%= jspControler.getJspResources().DESTINY_JSP_HELP%>',700,420);">
+                                <A class="linkHelp" onclick="lanzarModalAyuda('<%= jspControler.getJspResources().DESTINY_JSP_HELP%>',900,655);">
                                     <h1 class="letraNorm"><%= jspControler.getJspResources().getTitleHelp()[0]%></h1>
                                 </A>
                             </td>

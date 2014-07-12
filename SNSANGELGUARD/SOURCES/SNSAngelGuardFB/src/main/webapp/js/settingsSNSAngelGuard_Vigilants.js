@@ -11,8 +11,7 @@ function setArrayAngels(arrayAngels){
 
 function habilitarImgAlertAndFunction(idFiltro, angelsFiltro, numberFiltro){
 
-    $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOff.png");
-    $("#imgTurnOnOff" + numberFiltro).attr("title", $("#hdTitleAltVigOff").val());
+    $("#imgTurnOnOff" + numberFiltro).attr("checked", "checked");
 
     $('#imgTurnOnOff' + numberFiltro).unbind('click');
     $('#imgTurnOnOff' + numberFiltro).click(function() {
@@ -24,8 +23,7 @@ function habilitarImgAlertAndFunction(idFiltro, angelsFiltro, numberFiltro){
 
 function deshabilitarImgAlertAndFunction(idFiltro, numberFiltro){
 
-    $("#imgTurnOnOff" + numberFiltro).attr("src", "../SNSAngelGuardFB/resources/turnOn.png");
-    $("#imgTurnOnOff" + numberFiltro).attr("title", $("#hdTitleAltVigOn").val());
+    $("#imgTurnOnOff" + numberFiltro).attr("checked", "");
 
     $('#imgTurnOnOff' + numberFiltro).unbind('click');
     $('#imgTurnOnOff' + numberFiltro).click(function() {
@@ -269,7 +267,7 @@ function loadHTMLFilters(strDesFilter){
                 '<td> <!--imagen del usuario del usuario--> ' +
                 '<div id="vigilantContainer' + keyActiveFilter + '" class="vigilantContainer" onmouseover="this.className=\'vigilantContainerOver\'" onmouseout="this.className=\'vigilantContainer\'"' +
                 'onclick="seleccionVig(\'vigilantContainer' + keyActiveFilter + '\', \'' + keyActiveFilter+ '\');loadEstadoFiltro(\'' + keyActiveFilter + '\', \'../SNSAngelGuardFB/resources/robots/robot' + keyActiveFilter + '.png\');">' +
-                '<table width="680px">' +
+                '<table width="685px">' +
                 '<tr>' +
                 '<td>' +
                 '<figure class="user">' +
@@ -283,7 +281,11 @@ function loadHTMLFilters(strDesFilter){
                 '<table>' +
                 '<tr>' +
                 '<td>' +
-                '<img id="imgTurnOnOff' + keyActiveFilter + '" src="../SNSAngelGuardFB/resources/turnOn.png" WIDTH="20" HEIGHT="20" alt="" />' +
+                '<label class="switch switch-green">' +
+                '<input type="checkbox" id="imgTurnOnOff' + keyActiveFilter + '" class="switch-input" checked>' +  
+                '<span class="switch-label" data-on="On" data-off="Off"></span>' +
+                '<span class="switch-handle"></span>' +
+                '</label>' +
                 '</td>' +
                 '</tr>' +
                 '<tr>' +

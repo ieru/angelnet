@@ -119,9 +119,7 @@ function removeApp(){
 
 function pintarTutorial(inicio, title) {
     if (inicio === "0") {
-        $(function() {
             showDialogWithTitle("../SNSAngelGuardFB/tutorialInicio.jsp", 900, 660, title);
-        });
     }
 }
 
@@ -129,8 +127,18 @@ function pintarTutorial(inicio, title) {
 var vent = null;
 var miVentana;
 
+function closeModal(){
+    var dialogDiv = $('#modalDialog');
+    dialogDiv = $('<div id=\"modalDialog\"></div>').appendTo('#modalContainer');
+    dialogDiv.dialog("destroy").remove();
+}
+
 function showDialogWithTitle(url, ancho, alto, title){
     var dialogDiv = $('#modalDialog');
+    
+    if(dialogDiv){
+        closeModal();
+    }
 
     dialogDiv.html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
             .dialog({
@@ -2289,4 +2297,15 @@ function isCompatibleNavigator(){
     
     return false;
     
+}
+
+function showLinkTutorial(isOffline, title, wait, menWait){
+    
+    if(isOffline === false){
+        var htmlLink = "<A class=\"linkHelp\" onclick=\"loadForm('../SNSAngelGuardFB/tutorialInicio.jsp', '" + wait + "', '" + menWait + "'); \">" +
+                                    "<h1 class=\"tituloMed\">" + title + "</h1>" +
+                                "</A>";
+                        
+        $("#idShowTutorial").html(htmlLink);
+    }
 }

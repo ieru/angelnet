@@ -15,12 +15,10 @@ import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsF
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_JSONFILTER;
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_LASTCHECK;
 import static es.uah.cc.ie.snsangelguardfb.sources.filtersfuncionality.IKeyArgsFilter.ARGS_KEY_REQUEST;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;

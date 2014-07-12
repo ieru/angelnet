@@ -267,6 +267,11 @@ div.Menu{
     padding:0 0 3px 0;
 }
 
+div.showTutorial{
+    text-align: right;
+    height: 30px;
+}
+
 div.Menu ul{
     margin:0 auto;
     padding:0;
@@ -421,9 +426,9 @@ td.botonBoxMiddle{
 }
 
 .arrowLeft::after { 
-    position:absolute;
+    position:relative;
     left:-20px; 
-    top:15px; 
+    top:-25px; 
     content:"\00a0"; 
     display:block; 
     width:0px; 
@@ -437,7 +442,7 @@ td.botonBoxMiddle{
 
 div.vigilantDescription{
     padding:10px 20px;
-    width:475px;
+    width:450px;
     background:#f7f7f7;
     height:50px;
     margin:5px;

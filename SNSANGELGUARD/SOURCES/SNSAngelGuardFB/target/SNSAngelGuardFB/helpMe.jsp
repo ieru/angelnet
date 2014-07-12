@@ -14,6 +14,10 @@
 <%
         SNSAngelGuardFBManager snsObject = null;
         String[] localeHelp = null;
+        boolean ifOffline = false;
+        String wait = "";
+        String menWait = "";
+        
         try {
             //Obtenemos la conexión a Facebook
             snsObject = SNSAngelGuardFBManager.getSessionInstance(request);
@@ -24,13 +28,16 @@
             if (uidPublic != null) {
                 // Obtener informaci√≥n de userSettings por su uidPublic
                 JSONObject jsonUser = snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getJsonUserByUidPublic(snsObject, uidPublic);
-                System.out.println("JSON USER ANGEL: " + jsonUser.toString());
 
                 snsObject.getUserSettingsDaoManager().loadUserConnected(jsonUser);
                 snsObject.getLocaleSettingsDaoManager().loadLocaleSettingsOffLine();
+                
+                ifOffline = true;
             }
             
             localeHelp = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getHelpMe());
+            wait = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings())[3];
+            menWait = snsObject.getStringUtilities().stringToArray(snsObject.getLocaleSettingsDaoManager().getLocaleSettingsDao().getWarnings())[4];
         } catch (FileNotFoundException e) {
             String exceptionAsString = snsObject.getExceptionManager().exceptionToString(e);
 
@@ -52,12 +59,26 @@
 
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
 
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.23/ui/jquery-ui.js"></script>
         <script type="text/javascript" charset="ISO-8859-1" src="js/utilidadesFormularios.js"></script>
+        
+        <script type="text/javascript">
+            // Si estamos online, muestra el link para acceder de nuevo al tutorial
+            $(document).ready(function() {
+                showLinkTutorial(<%= ifOffline %>, '<%= localeHelp[8] %>', '<%= wait %>', '<%= menWait %>');
+            });
+        </script>
     </head>
     <body >
         <form id="frAngelNotification" action="">
             <div id="divAngelNotificationContainer" class="divAngelNotificationContainer">
                 <table width="100%">
+                    <tr>
+                        <td width="95%">
+                            <div id="idShowTutorial" class="showTutorial"></div>
+                        </td>
+                    </tr>
                     <tr>
                         <td width="95%">
                             <h1 class="tituloMed"><%= localeHelp[2] %></h1>

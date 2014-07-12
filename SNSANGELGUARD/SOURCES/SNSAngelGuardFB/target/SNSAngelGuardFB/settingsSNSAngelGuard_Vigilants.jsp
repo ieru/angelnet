@@ -44,6 +44,7 @@
         <link type="text/css" rel="stylesheet" href="Styles/facebook.css" />
         <link type="text/css" rel="stylesheet" href="Styles/jquery.loader.css" />
         <link type="text/css" rel="stylesheet" href="Styles/fcbklistselectionVig.css" />
+        <link type="text/css" rel="stylesheet" href="Styles/styleSwitchVig.css" />
 
         <script type="text/javascript" charset="UTF-8" src="js/jquery-1.5.1.min.js"></script>
         <script type="text/javascript" charset="UTF-8" src="js/jquery-ui-1.8.12.custom.min.js"></script>
