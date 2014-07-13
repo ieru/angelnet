@@ -1570,7 +1570,7 @@ public class UserSettingsDAO {
         
         try {
             logger.info(this.uid + " - getFiltersUserFromDB: Accediendo a base de datos para obtener los filtros...");
-            JSONObject jsonFiltersUserSettings = new JSONObject(this.snsObject.getClient().settingsFilter_getFilterByType(String.class, this.uid.toString()));
+            JSONObject jsonFiltersUserSettings = new JSONObject(this.snsObject.getClient().settingsFilter_getFiltersByUserSettingsUid(String.class, this.uid.toString()));
             
             resultFilters = jsonFiltersUserSettings.getJSONArray("settingsFilter");
             logger.info(this.uid + " - getFiltersUserFromDB: Filtros obtenidos!!");

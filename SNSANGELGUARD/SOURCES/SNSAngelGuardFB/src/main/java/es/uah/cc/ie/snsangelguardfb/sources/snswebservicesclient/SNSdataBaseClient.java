@@ -88,10 +88,6 @@ public class SNSdataBaseClient {
     public <T> T settingsFilter_getFiltersByUserSettingsUid(Class<T> responseType, String uid) throws UniformInterfaceException {
         return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
-    
-    public <T> T settingsFilter_getFilterByType(Class<T> responseType, String uid) throws UniformInterfaceException {
-        return webResource.path("userSettingss").path(uid).path("settingsFilterCollection").accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
 
     public <T> T settingsFilter_setNewFilter(Class<T> responseType, Object requestEntity) throws UniformInterfaceException {
         return webResource.path("settingsFilters").accept(javax.ws.rs.core.MediaType.TEXT_XML, javax.ws.rs.core.MediaType.APPLICATION_JSON).post(responseType, requestEntity);
