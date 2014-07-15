@@ -18,7 +18,6 @@ import es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.resources.SettingsSNSAn
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 import java.util.Date;
-import java.util.Iterator;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -169,7 +168,7 @@ public class SettingsSNSAngelGuardJSPControler extends GenericJSPControler {
             this.idFacebookAngel = request.getParameter("idFacebookAngel");
             this.uidAngel = request.getParameter("uidAngel");
             this.uidPublic = request.getParameter("uidPublic");
-        } catch (Exception ex) {
+        } catch (IOException | JSONException ex) {
             logger.error(CodeException.UKNOWN_ERROR, ex);
             this.snsObject.getExceptionManager().initControlException(ex);
         }

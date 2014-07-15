@@ -4,7 +4,6 @@
  */
 package es.uah.cc.ie.snsangelguardfb.sources.jspcontroler.entity;
 
-import bsh.ParseException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import es.uah.cc.ie.snsangelguardfb.exception.InterDataBaseException;
 import es.uah.cc.ie.snsangelguardfb.exception.InterEmailException;

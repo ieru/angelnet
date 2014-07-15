@@ -46,9 +46,6 @@ public class DoOperationWithGoogleContactsJSPControler extends GenericJSPControl
     /** Key para el acceso al id del angel */
     private static final String KEY_ID_ANGEL_GOOGLE_DEL = "idContactGoogleSelectedDel";
     
-    /** Key para el acceso al email del angel a borrar */
-    private static final String KEY_EMAIL_ANGEL_GOOGLE_DEL = "emailAngelGoogleSelectedDel";
-    
     /** Manager de la aplicacion */
     private SNSAngelGuardFBManager snsObject;
     

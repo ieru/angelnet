@@ -57,15 +57,38 @@ public class ConfigurationManager {
     
     /** Clave de la direccion de la aplicacion en Facebook */
     public static final String PATH_APPLICATION_FACEBOOK = "pathApplicationFacebook";
-    
-    /** Clave de la direcci?n del servidor donde se encuentran los ficheros de idioma referentes al control del lenguaje */
+    /**
+     * Clave de la direcci?n del servidor donde se encuentran los ficheros de
+     * idioma referentes al control del lenguaje
+     */
     public static final String PATH_LEXICAL_FILES = "pathLexicalFiles";
     
-    /** Key para el identificador del filtro en el fichero xml */
+    /**
+     * Key para el identificador del filtro en el fichero xml
+     */
     private static final String XML_KEY_ID_FILTER = "idFilter";
     
-    /** Key para el valor de la clase del filtro */
+    /**
+     * Key para el valor de la clase del filtro
+     */
     private static final String XML_VALUE_CLASS = "valueClass";
+    
+    /**
+     * Key para el nombre de la aplicacion dada de alta en Google API Console
+     */
+    private static final String GOOGLE_APP_NAME_KEY = "googleAppName";
+    
+    /**
+     * Key para el identificador de la aplicacion generado automaticamente al
+     * dar de alta la apliacion en Google API Console
+     */
+    private static final String GOOGLE_APP_CLIENT_ID_KEY = "googleClientId";
+    
+    /**
+     * Key para el identificador secreto de la aplicacion generado
+     * automaticamanete al dar de alta la aplicacion en google API Console
+     */
+    private static final String GOOGLE_APP_CLIENT_SECRET_KEY = "googleClientSecret";
     
     /** Host de la aplicacion */
     private String configHostApplication;
@@ -93,6 +116,23 @@ public class ConfigurationManager {
     
     /** Path a los ficheros de idioma propios del filtro de control de lenguaje */
     private String pathLexicalFiles;
+    
+    /**
+     * Nombre de la aplicacion dada de alta en Google API Console
+     */
+    private String googleAppName;
+    
+    /**
+     * Identificador de la aplicacion generado automaticamente al dar de alta la
+     * apliacion en Google API Console
+     */
+    private String googleClientId;
+    
+    /**
+     * Identificador secreto de la aplicacion generado automaticamanete al dar
+     * de alta la aplicacion en google API Console
+     */
+    private String googleClientSecret;
     
     /** Lista de keys de los filtros activos */
     private List<String> listActiveFilters;
@@ -141,6 +181,18 @@ public class ConfigurationManager {
         this.pathLexicalFiles = pathLexicalFiles;
     }
 
+    public String getGoogleAppName() {
+        return googleAppName;
+    }
+
+    public String getGoogleClientId() {
+        return googleClientId;
+    }
+
+    public String getGoogleClientSecret() {
+        return googleClientSecret;
+    }
+
     public List<String> getListActiveFilters() {
         return listActiveFilters;
     }
@@ -183,6 +235,9 @@ public class ConfigurationManager {
             this.passwordKeyStoreSSL = defaultProps.getProperty(PASSWORD_KEYSTORE_SSL);
             this.pathApplicationFacebook = defaultProps.getProperty(PATH_APPLICATION_FACEBOOK);
             this.pathLexicalFiles = defaultProps.getProperty(PATH_LEXICAL_FILES);
+            this.googleAppName = defaultProps.getProperty(GOOGLE_APP_NAME_KEY);
+            this.googleClientId = defaultProps.getProperty(GOOGLE_APP_CLIENT_ID_KEY);
+            this.googleClientSecret = defaultProps.getProperty(GOOGLE_APP_CLIENT_SECRET_KEY);
         } finally {
             try {
                 in.close();

@@ -17,6 +17,10 @@ import com.google.gdata.util.ServiceException;
 import es.uah.cc.ie.snsangelguardfb.SNSAngelGuardFBManager;
 import java.io.FileNotFoundException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,15 +43,6 @@ public class GoogleContactsServlet extends HttpServlet {
     
     /** Logger Class */
     private static Logger logger = Logger.getLogger(GoogleContactsServlet.class);
-    
-    /** Nombre de la aplicacion dada de alta en Google API Console */
-    public static final String APP_NAME = "SNSAngelGuardFB";
-
-    /** Identificador de la aplicacion generado automaticamente al dar de alta la apliacion en Google API Console*/
-    public static final String CLIENT_ID = "541921444258.apps.googleusercontent.com";
-    
-    /** Identificador secreto de la aplicacion generado automaticamanete al dar de alta la aplicacion en google API Console */
-    public static final String CLIENT_SECRET = "iU3fBdbX_2PFSTwsGpVQe-Dm";
     
     /** URL de peticion de datos a Google */
     public static final String URL_GET_CONTACTS = "https://www.google.com/m8/feeds/contacts/default/full?max-results=999999";
@@ -80,11 +75,11 @@ public class GoogleContactsServlet extends HttpServlet {
             String hdAngelsGoogleSelected = URLDecoder.decode(request.getParameter("hdAngelsGoogleSelected"), "UTF8");
             
             // Creamos el Servicio de Google para realizar las llamadas a su API
-            ContactsService contactsService = new ContactsService(APP_NAME);
+            ContactsService contactsService = new ContactsService(this.snsObject.getConfigurationManager().getGoogleAppName());
             contactsService.setHeader("Authorization", "Bearer " + access_token);
          
-            // Obtenemos el array con todos los contactos en Google que seran pintados en la aplicacion
-            JSONArray jsonArrayContacts = getJSONArrayAllContactsUser(contactsService, hdAngelsGoogleSelected);
+            // Obtenemos el array ordenado con todos los contactos en Google que seran pintados en la aplicacion
+            JSONArray jsonArrayContacts = sortJSONArray(getJSONArrayAllContactsUser(contactsService, hdAngelsGoogleSelected));
             
             // Devolvemos los datos obtenidos al cliente
             response.setContentType("application/json");
@@ -141,6 +136,48 @@ public class GoogleContactsServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    /**
+     * Ordena un JSONArray por nombre.
+     * 
+     * @param contacts JSONArray con los contactos sin ordenar.
+     * @return JSONArray con los contactos ordenados por nombre.
+     * @throws JSONException 
+     */
+    private JSONArray sortJSONArray(JSONArray contacts) throws JSONException {
+        logger.info(snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sortJSONArray: Inicio sortJSONArray...");
+        JSONArray sortedJsonArray = new JSONArray();
+
+        List<JSONObject> jsonValues = new ArrayList();
+        for (int i = 0; i < contacts.length(); i++) {
+            jsonValues.add(contacts.getJSONObject(i));
+        }
+        Collections.sort(jsonValues, new Comparator<JSONObject>() {
+            // Comparamos seg?n la clave
+            private static final String KEY_NAME = "nameContact";
+
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = new String();
+                String valB = new String();
+
+                try {
+                    valA = (String) a.get(KEY_NAME);
+                    valB = (String) b.get(KEY_NAME);
+                } catch (JSONException e) {    
+                    logger.error(snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sortJSONArray: Se ha producido una Excepci?n: " + e.getMessage());
+                }
+
+                return valA.compareTo(valB);
+            }
+        });
+
+        for (int i = 0; i < contacts.length(); i++) {
+            sortedJsonArray.put(jsonValues.get(i));
+        }
+
+        logger.info(snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - sortJSONArray: Fin sortJSONArray!!");
+        return sortedJsonArray;
+    }
     
     /**
      * Obtiene un JSONArray con todos los datos de todos los contactos del usuario

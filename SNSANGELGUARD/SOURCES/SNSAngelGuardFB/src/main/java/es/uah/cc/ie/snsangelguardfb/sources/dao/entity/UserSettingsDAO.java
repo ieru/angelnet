@@ -51,9 +51,6 @@ public class UserSettingsDAO {
     /** Valor por defecto para el activado del filtro */
     private final static String FILTER_DEFAULT_ACTIVE_VALUE = "0";
     
-    /** Valor por defecto para los angeles de un filtro */
-    private final static String FILTER_DEFAULT_ANGELS_VALUE = "";
-    
     /** Valor por defecto para la frecuencia de un filtro */
     private final static String FILTER_DEFAULT_FREC_VALUE = "3";
    
@@ -625,6 +622,12 @@ public class UserSettingsDAO {
         logger.info(this.uid + " - setAngelsUserSettingsByFilter: Fin setAngelsUserSettingsByFilter...");
     }
 
+    /**
+     * Incluye en un angel la relacion con el usuario de la aplicacion que le ha dado de alta.
+     * @param jsonAngel
+     * @return
+     * @throws JSONException 
+     */
      public JSONObject getJsonAngelWithUserSettingsRelationship(JSONObject jsonAngel) throws JSONException{
          logger.info(this.uid + " - getJsonAngelWithFilterRelationship: Inicio getJsonAngelWithFilterRelationship...");
          JSONObject jsonCollection;
@@ -1023,6 +1026,12 @@ public class UserSettingsDAO {
         logger.info(this.uid + " - putNewAngelsNewUser: Fin putNewAngelsNewUser...");
     }
 
+    /**
+     * Establece un nuevo angel de tipo Facebook.
+     * 
+     * @param jsonNewAngel
+     * @return 
+     */
     public JSONObject putNewAngelFacebook(JSONObject jsonNewAngel) {
         try {
             logger.debug(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - putNewAngelsUser: Nuevo angel...");
@@ -1033,17 +1042,11 @@ public class UserSettingsDAO {
                     snsObject.getEmailObject().sendMailConfirmationAngel(jsonNewAngel, this.getUidPublic());
                 }
             }
-        } catch (JSONException ex) {
+        } catch (JSONException | UniformInterfaceException | java.security.NoSuchProviderException | MessagingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (UniformInterfaceException ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (java.security.NoSuchProviderException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (MessagingException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -1548,6 +1551,9 @@ public class UserSettingsDAO {
         return jsonArray;
     }
 
+    /**
+     * Inicializa en el objeto el mapa de filtros disponibles para el usuario.
+     */
     private void initFiltersMap(){
         // Inicializamos el map de los filtros
         this.filterDaoMap = new HashMap();
@@ -1564,6 +1570,14 @@ public class UserSettingsDAO {
         }
     }
     
+    /**
+     * Obtiene de base de datos los filtros definidos para un usuario.
+     * 
+     * @return
+     * @throws InterDataBaseException
+     * @throws InterProcessException
+     * @throws InterEmailException 
+     */
     public JSONArray getFiltersUserFromDB() throws InterDataBaseException, InterProcessException, InterEmailException{
         logger.info(this.uid + " - getFiltersUserFromDB: Inicio getFiltersUserFromDB...");
         JSONArray resultFilters = new JSONArray();

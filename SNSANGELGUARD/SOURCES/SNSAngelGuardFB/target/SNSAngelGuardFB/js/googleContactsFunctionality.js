@@ -3,10 +3,15 @@
  * and open the template in the editor.
  */
 
-var clientId = '541921444258.apps.googleusercontent.com';
-var apiKey = 'iU3fBdbX_2PFSTwsGpVQe-Dm';
+var clientId;
+var apiKey;
 var scopes = 'https://www.googleapis.com/auth/plus.me';
 var MAX = 8;
+
+function initGoogleContactsFunctionality(clientIdValue, apiKeyValue){
+    clientId = clientIdValue;
+    apiKye = apiKeyValue;
+}
 
 function auth() {
     

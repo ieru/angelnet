@@ -32,7 +32,6 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.openide.util.Exceptions;
 
 /**
  * Clase Manager que controla toda la gestion de base de datos referente a las

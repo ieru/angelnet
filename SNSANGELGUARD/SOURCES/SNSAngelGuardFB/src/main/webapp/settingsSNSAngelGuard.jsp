@@ -18,6 +18,7 @@
            String exceptionAsString = null;
            String typeAngel = null;
            String idAngel = null;
+           String imgLogo = null;
                   
                 try {
                     //Obtenemos la conexión a Facebook
@@ -201,8 +202,8 @@
               window.fbAsyncInit = function() {
                 // init the FB JS SDK
                 FB.init({
-                  appId      : '179105958774916',                        // App ID from the app dashboard
-                  channelUrl : '//localhost/SNSAngelGuardFB/index.jsp', // Channel file for x-domain comms
+                  appId      : '<%= jspControler.getSnsObject().getConfigurationManager().getApiKey() %>',                        // App ID from the app dashboard
+                  channelUrl : '<%= jspControler.getSnsObject().getConfigurationManager().getConfigHostApplication() %>' + 'SNSAngelGuardFB/index.jsp', // Channel file for x-domain comms
                   status     : true,                                 // Check Facebook Login status
                   xfbml      : true                                  // Look for social plugins on the page
                 });

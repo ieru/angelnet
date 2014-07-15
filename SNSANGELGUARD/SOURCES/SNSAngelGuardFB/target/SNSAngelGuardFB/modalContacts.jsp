@@ -39,6 +39,12 @@
         <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
         <script type='text/javascript' src="js/googleContactsFunctionality.js"></script>
         
+        <script type="text/javascript" >
+            $(function(){
+                initGoogleContactsFunctionality('<%= snsObject.getConfigurationManager().getGoogleClientId() %>', '<%= snsObject.getConfigurationManager().getGoogleClientSecret() %>');
+            });
+        </script>
+        
     </head>
     <body onload="iniciarModal();deshabilitarBotonQuery('#btnAceptarModal');">
         <form id="frModalContacts" action="" method="GET">

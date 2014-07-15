@@ -276,6 +276,13 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
         }
     }
     
+    /**
+     * Comprueba si el filtro debe pasarse en la ejecuci?n presente.
+     * 
+     * @param desFilter
+     * @param lastCheck
+     * @return 
+     */
     private boolean isTimeToCheck(String desFilter, Date lastCheck){
         logger.info(this.snsObject.getUserSettingsDaoManager().getUserSettingsDAO().getUid() + " - isTimeToCheck: Inicio isTimeToCheck con resultado para el filtro " + desFilter);
         
@@ -405,7 +412,15 @@ public class GenericFilterFuncionality implements IKeyArgsFilter {
         }
     }
     
-    
+    /**
+     * Obtiene, en una cadena de texto separados por el caracter ;, todos los
+     * angeles actualizados.
+     *
+     * @param idNewAngel
+     * @param idOlderAngel
+     * @param olderAngels
+     * @return
+     */
     private String getAngelsFilterUpdated(String idNewAngel, String idOlderAngel, String olderAngels) {
         String newAngels = "";
 
